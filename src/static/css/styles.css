@@ -1,0 +1,239 @@
+body {
+  font-family: 'CircularPro', 'appleLogo', sans-serif;
+  color: #1d1d1d;
+  font-size: 16px;
+  line-height: 1.5rem;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+nav > div, header > div, main > div, footer > div {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 1342px;
+  padding-left: 8px;
+  padding-right: 8px;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+nav {
+  min-height: 72px;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #E8E8E8;
+}
+
+nav > div {
+  flex-direction: row;
+}
+
+nav > div > :first-child {
+  flex: 1;
+}
+
+nav > div > div, nav > div > a {
+  display: flex;
+  align-items: center;
+}
+
+nav img {
+  height: 42px;
+  padding-right: 12px;
+  border-right: 1px solid #E8E8E8;
+}
+
+nav .title {
+  color: #414141;
+  font-size: 22px;
+  padding-left: 10px;
+  font-weight: 200;
+}
+
+nav a {
+  color: #414141;
+  text-decoration: none !important;
+  margin-right: 25px;
+}
+
+header {
+  background: white;
+  border-bottom: 1px solid #E8E8E8
+}
+
+header > div {
+  padding-top: 32px;
+  padding-bottom: 32px;
+  padding-left: 56px;
+  padding-right: 56px;
+}
+
+main {
+  background: #F5F5F5;
+}
+
+main > div {
+  padding-left: 56px;
+  padding-right: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 90px;
+  flex-direction: row;
+}
+
+footer {
+  background: white;
+  border-top: 1px solid #E8E8E8;
+  padding-top: 64px;
+  padding-bottom: 32px;
+}
+
+footer > div {
+  display: flex;
+  flex-direction: row;
+}
+
+footer > div > :first-child {
+  width: 40%;
+}
+
+footer > div > :first-child > img {
+  height: 96px;
+}
+
+footer > div > :last-child a {
+  text-decoration: none !important;
+  color: #414141;
+  margin-right: 16px;
+}
+
+.month {
+  width: 289px;
+  background-color: white;
+  margin: 8px;
+  padding: 15px 15px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .month {
+    width: 394px;
+    padding: 24px 24px 36px;
+  }
+}
+
+.month_row.header {
+  height: 60px;
+  padding-left: 15px;
+  padding-right: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month_row.header > h3 {
+  font-weight: 700;
+  font-family: 'Arimo', 'CircularPro', 'appleLogo', sans-serif;
+}
+
+.month_row.header > p {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #414141;
+}
+
+.month_row {
+  display: flex;
+  flex-direction: row;
+}
+
+.month_day {
+  flex: 1;
+  position: relative;
+  height: 40px;
+  width: 37px;
+  line-height: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.month_day .info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.month_day .info > i {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background-color: #6554C0;
+  color: white;
+  font-size: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.month_day .info > i:not(:last-child) {
+  margin-right: 4px;
+}
+
+@media (min-width: 768px) {
+  .month_day {
+    height: 58px;
+    width: 58px;
+    line-height: 58px;
+  }
+
+  .month_day .info {
+    bottom: 3px;
+  }
+}
+
+.month_row.day_row .month_day {
+  color: #414141;
+  user-select: none;
+}
+
+.month_row:not(.day_row) .month_day.has-releases {
+  cursor: pointer;
+}
+
+.month_row:not(.day_row) .month_day:not(.has-releases) {
+  user-select: none;
+}
+
+.month_row:not(.day_row) .month_day.has-releases:hover {
+  background-color: #F5F5F5
+}
+
+.month_row:not(.day_row) .month_day.no-nightly {
+  background-color: #FF563082;
+}
+
+.month_row:not(.day_row) .month_day.has-releases.no-nightly:hover {
+  background-color: #FF5630CC;
+}
+
+.month_day.future {
+  opacity: 0.45;
+}

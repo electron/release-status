@@ -1,0 +1,19 @@
+{
+  "name": "@electron/history",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "watch": "nodemon --watch src --exec \"npm run start\"",
+    "start": "node src/index.js"
+  }
+}
