@@ -27,7 +27,15 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 app.set('views', path.resolve(__dirname, 'views'));
 
+function requireHTTPS(req, res, next) {
+  if (!req.secure && req.get('x-forwarded-proto') !== 'https') {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  next();
+}
+
 if (process.env.NODE_ENV === 'production') {
+  app.use(requireHTTPS);
   app.enable('view cache');
 }
 
