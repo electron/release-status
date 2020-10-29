@@ -61,7 +61,7 @@ function generateMonth(year, month, getDateInfo) {
       const valid = n > 0 && currentDay.getMonth() === month - 1;
       const future = currentDay.getTime() > today.getTime();
 
-      const cell = document.createElement('div');
+      const cell = document.createElement('a');
       cell.classList.add('month_day');
       if (future) {
         cell.classList.add('future');
@@ -98,6 +98,7 @@ function generateMonth(year, month, getDateInfo) {
 
         if (hasBeta || hasNightly || hasStable) {
           cell.classList.add('has-releases');
+          cell.href = `/history/${year}-${month < 10 ? `0${month}` : month}-${n < 10 ? `0${n}` : n}`;
         }
       }
 
@@ -112,7 +113,7 @@ async function main() {
   const response = await fetch('/releases.json');
   const releases = await response.json();
 
-  const calendarSection = document.querySelector('main > div');
+  const calendarSection = document.querySelector('main > div .calendar');
   // Clear out the loading...
   calendarSection.innerHTML = '';
 
