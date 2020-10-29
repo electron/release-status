@@ -1,1 +1,28 @@
-Nothing to see here yet, we're working on it...
+{{#*inline "releaseBar"}}
+<a class="release" href="https://github.com/electron/electron/releases/tag/v{{version}}" target="_blank">
+  <div class="version">
+    <span>{{version}}</span>
+    <span>{{timeSince date}}</span>
+  </div>
+  <div class="dependency-info">
+    <span>
+      <i class="fab fa-chrome"></i>
+      {{chrome}}
+    </span>
+    <span>
+      <i class="fab fa-node-js"></i>
+      {{node}}
+    </span>
+  </div>
+</a>
+{{/inline}}
+<div class="releases">
+  <h4>Nightly</h4>
+  {{> releaseBar lastNightly}}
+  <h4>Beta</h4>
+  {{> releaseBar lastBeta}}
+  <h4>Supported</h4>
+  {{#each latestSupported}}
+    {{> releaseBar this}}
+  {{/each}}
+</div>

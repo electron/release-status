@@ -7,13 +7,15 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "semver": "^7.3.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
   },
   "scripts": {
     "watch": "nodemon --watch src --exec \"npm run start\"",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "prettier": "prettier --write \"src/**/*.js\""
   }
 }
