@@ -1,4 +1,17 @@
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 function generateMonth(year, month, getDateInfo) {
@@ -42,7 +55,7 @@ function generateMonth(year, month, getDateInfo) {
     container.appendChild(row);
 
     for (let day = 0; day < 7; day++) {
-      const n = (week * 7) + day - offset;
+      const n = week * 7 + day - offset;
       const currentDay = new Date(year, month - 1, n, 0, 0, 0, 0);
 
       const valid = n > 0 && currentDay.getMonth() === month - 1;
@@ -111,16 +124,20 @@ async function main() {
       month += 12;
       year--;
     }
-    calendarSection.appendChild(generateMonth(year, month, (y, m, d) => {
-      const dateString = `${y}-${m < 10 ? `0${m}` : m}-${d < 10 ? `0${d}` : d}`;
-      const onDate = releases.filter(r => r.date === dateString);
+    calendarSection.appendChild(
+      generateMonth(year, month, (y, m, d) => {
+        const dateString = `${y}-${m < 10 ? `0${m}` : m}-${d < 10 ? `0${d}` : d}`;
+        const onDate = releases.filter((r) => r.date === dateString);
 
-      return {
-        hasBeta: onDate.some(r => r.version.includes('-beta.')),
-        hasStable: onDate.some(r => !r.version.includes('-beta.') && !r.version.includes('-nightly.')),
-        hasNightly: onDate.some(r => r.version.includes('-nightly.')),
-      }
-    }));
+        return {
+          hasBeta: onDate.some((r) => r.version.includes('-beta.')),
+          hasStable: onDate.some(
+            (r) => !r.version.includes('-beta.') && !r.version.includes('-nightly.'),
+          ),
+          hasNightly: onDate.some((r) => r.version.includes('-nightly.')),
+        };
+      }),
+    );
   }
 
   for (let i = 0; i < 12; i++) {
@@ -135,10 +152,14 @@ async function main() {
       fMonth = `0${month}`;
     }
 
-    const dayNodes = [...document.querySelectorAll(`[data-month="${year}-${month}"] .month_row:not(.header):not(.day_row) .month_day:not(:empty):not(:first-child):not(:last-child)`)].filter(n => !!n.innerText);
-    const count = dayNodes.filter(n => !n.classList.contains('no-nightly')).length;
+    const dayNodes = [
+      ...document.querySelectorAll(
+        `[data-month="${year}-${month}"] .month_row:not(.header):not(.day_row) .month_day:not(:empty):not(:first-child):not(:last-child)`,
+      ),
+    ].filter((n) => !!n.innerText);
+    const count = dayNodes.filter((n) => !n.classList.contains('no-nightly')).length;
     const total = dayNodes.length;
-    const pcnt = Math.round(count * 10000 / total) / 100;
+    const pcnt = Math.round((count * 10000) / total) / 100;
 
     document.querySelector(`[data-nightly="${year}-${month}"]`).innerText = `${pcnt}% nightly`;
   }

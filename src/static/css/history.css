@@ -65,7 +65,7 @@
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background-color: #6554C0;
+  background-color: #6554c0;
   color: white;
   font-size: 10px;
   display: inline-flex;
@@ -103,15 +103,15 @@
 }
 
 .month_row:not(.day_row) .month_day.has-releases:hover {
-  background-color: #F5F5F5
+  background-color: #f5f5f5;
 }
 
 .month_row:not(.day_row) .month_day.no-nightly {
-  background-color: #FF563082;
+  background-color: #ff563082;
 }
 
 .month_row:not(.day_row) .month_day.has-releases.no-nightly:hover {
-  background-color: #FF5630CC;
+  background-color: #ff5630cc;
 }
 
 .month_day.future {

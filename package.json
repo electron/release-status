@@ -11,11 +11,12 @@
     "semver": "^7.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "prettier": "^2.1.2"
   },
   "scripts": {
     "watch": "nodemon --watch src --exec \"npm run start\"",
     "start": "node src/index.js",
-    "prettier": "prettier --write \"src/**/*.js\""
+    "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\""
   }
 }
