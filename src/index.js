@@ -37,7 +37,7 @@ app.get('/releases.json', (req, res) => {
     .catch(() => res.status(500).json({ error: true }));
 });
 
-Handlebars.registerHelper('timeSince', function (str) {
+const timeSince = (str) => {
   const d = new Date();
   const today = new Date(d.getFullYear(), d.getMonth() + 1, d.getDate());
   const parts = str.split('-').map((n) => parseInt(n, 10));
@@ -46,6 +46,27 @@ Handlebars.registerHelper('timeSince', function (str) {
   if (daysAgo === 0) return 'Today';
   if (daysAgo === 1) return 'Yesterday';
   return `${daysAgo} days ago`;
+};
+
+Handlebars.registerPartial('releaseBar', function (version) {
+  return `<a class="release" href="https://github.com/electron/electron/releases/tag/v${
+    version.version
+  }" target="_blank">
+  <div class="version">
+    <span>${version.version}</span>
+    <span>${timeSince(version.date)}</span>
+  </div>
+  <div class="dependency-info">
+    <span>
+      <i class="fab fa-chrome"></i>
+      ${version.chrome}
+    </span>
+    <span>
+      <i class="fab fa-node-js"></i>
+      ${version.node}
+    </span>
+  </div>
+</a>`;
 });
 
 app.get('/', (req, res) =>
@@ -73,6 +94,19 @@ app.get('/history', (req, res) =>
     css: 'history',
   }),
 );
+app.get('/history/:date', (req, res) => {
+  getReleasesOrUpdate()
+    .then((releases) => {
+      const onDate = releases.filter((r) => r.date === req.params.date);
+      if (onDate.length === 0) return res.redirect('/history');
+      res.render('date', {
+        releases: onDate,
+        css: 'home',
+        title: req.params.date,
+      });
+    })
+    .catch(() => res.status(500).json({ error: true }));
+});
 
 app.use(
   express.static(path.resolve(__dirname, 'static'), {
