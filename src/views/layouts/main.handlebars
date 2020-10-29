@@ -11,6 +11,9 @@
     />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css" type="text/css" />
+    {{#if css}}
+    <link rel="stylesheet" href="/css/{{css}}.css" type="text/css" />
+    {{/if}}
     <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -44,7 +47,7 @@
           <a href="https://electronjs.org">Website</a>
           <a href="https://github.com/electron/electron">Repository</a>
           <div>
-            <p>Provided with ❤️ by Electron JS</p>
+            <p>Provided with&nbsp;❤️&nbsp;by Electron JS</p>
           </div>
         </div>
       </div>

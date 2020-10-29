@@ -1,0 +1,51 @@
+.releases {
+  width: 100%;
+}
+
+.release {
+  background: white;
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  border-left: 1px solid #E8E8E8;
+  border-right: 1px solid #E8E8E8;
+  border-bottom: 1px solid #E8E8E8;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.release:hover {
+  background-color: #F8F8F8;
+}
+
+.release:nth-child(2) {
+  border-top: 1px solid #E8E8E8;
+  margin-bottom: 16px;
+}
+
+.release:nth-child(4) {
+  border-top: 1px solid #E8E8E8;
+}
+
+.release:nth-child(6) {
+  border-top: 1px solid #E8E8E8;
+}
+
+.version {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+.version :last-child {
+  font-style: italic;
+  font-size: 14px;
+}
+
+.dependency-info {
+  width: 40%;
+  justify-content: space-evenly;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

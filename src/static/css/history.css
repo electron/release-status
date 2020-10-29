@@ -1,0 +1,119 @@
+.month {
+  width: 289px;
+  background-color: white;
+  margin: 8px;
+  padding: 15px 15px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .month {
+    width: 394px;
+    padding: 24px 24px 36px;
+  }
+}
+
+.month_row.header {
+  height: 60px;
+  padding-left: 15px;
+  padding-right: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month_row.header > h3 {
+  font-weight: 700;
+  font-family: 'Arimo', 'CircularPro', 'appleLogo', sans-serif;
+}
+
+.month_row.header > p {
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #414141;
+}
+
+.month_row {
+  display: flex;
+  flex-direction: row;
+}
+
+.month_day {
+  flex: 1;
+  position: relative;
+  height: 40px;
+  width: 37px;
+  line-height: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.month_day .info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: inline-flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.month_day .info > i {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background-color: #6554C0;
+  color: white;
+  font-size: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.month_day .info > i:not(:last-child) {
+  margin-right: 4px;
+}
+
+@media (min-width: 768px) {
+  .month_day {
+    height: 58px;
+    width: 58px;
+    line-height: 58px;
+  }
+
+  .month_day .info {
+    bottom: 3px;
+  }
+}
+
+.month_row.day_row .month_day {
+  color: #414141;
+  user-select: none;
+}
+
+.month_row:not(.day_row) .month_day.has-releases {
+  cursor: pointer;
+}
+
+.month_row:not(.day_row) .month_day:not(.has-releases) {
+  user-select: none;
+}
+
+.month_row:not(.day_row) .month_day.has-releases:hover {
+  background-color: #F5F5F5
+}
+
+.month_row:not(.day_row) .month_day.no-nightly {
+  background-color: #FF563082;
+}
+
+.month_row:not(.day_row) .month_day.has-releases.no-nightly:hover {
+  background-color: #FF5630CC;
+}
+
+.month_day.future {
+  opacity: 0.45;
+}
