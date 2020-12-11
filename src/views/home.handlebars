@@ -1,4 +1,12 @@
 <div class="releases">
+  {{#if currentlyReleasing.length}}
+    <h4>Currently Releasing</h4>
+    <div class="active-releases">
+    {{#each currentlyReleasing}}
+      {{> releaseSquare this}}
+    {{/each}}
+    </div>
+  {{/if}}
   <h4>Nightly</h4>
   {{> releaseBar lastNightly}}
   <h4>Beta</h4>
