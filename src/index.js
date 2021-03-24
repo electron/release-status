@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.get('/releases.json', a(async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.json(await getReleasesOrUpdate());
 }));
 
