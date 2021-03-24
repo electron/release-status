@@ -1,0 +1,26 @@
+<div class="tree">
+  <canvas id="connectors"></canvas>
+  <div class="primary">
+    <div class="primary-cell">
+      <h4>Source PR</h4>
+      <span>#{{ primary.pr.number }}</span>
+    </div>
+  </div>
+  <div class="backports">
+    {{#each backports}}
+      <div class="backport backport-{{ state }}">
+        <div class="backport-cell">
+          <h4>{{ targetBranch }}</h4>
+
+          {{#if pr}}
+          <span>Backport PR: #{{ pr.number }}</span>
+          {{/if}}
+
+          {{#if availableIn}}
+          <span>Released: {{availableIn.version}}</span>
+          {{/if}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
