@@ -21,7 +21,7 @@ async function getPRReleaseStatus(prNumber) {
     return null;
   }
 
-  if (prInfo.base.ref === 'master') {
+  if (prInfo.base.ref === prInfo.base.repo.default_branch) {
     const backports = [];
     let availableIn = null;
 
