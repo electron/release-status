@@ -135,7 +135,7 @@ async function main() {
           hasStable: onDate.some(
             (r) => !r.version.includes('-beta.') && !r.version.includes('-nightly.'),
           ),
-          hasNightly: onDate.some((r) => r.version.includes('-nightly.')),
+          hasNightly: releases.some(r => r.version.endsWith(`-nightly.${dateString.replace(/-/g, '')}`)),
         };
       }),
     );
