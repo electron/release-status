@@ -14,7 +14,6 @@ module.exports = (fn, ttl, getKey = null) => {
 
     const inner = async () => {
       if (Date.now() - (lastFetch[key] || 0) > ttl) {
-        console.log('fetching:', key);
         data[key] = await fn(...args);
         lastFetch[key] = Date.now();
       }

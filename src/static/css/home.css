@@ -2,6 +2,22 @@
   width: 100%;
 }
 
+.release-row {
+  display: flex;
+}
+
+.release-row > div {
+  flex: 1;
+}
+
+.release-row > div:not(:first-child) {
+  padding-left: 8px;
+}
+
+.release-row > div:not(:last-child) {
+  padding-right: 8px;
+}
+
 .active-releases {
   width: 100%;
   display: flex;
