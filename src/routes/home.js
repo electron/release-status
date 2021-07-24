@@ -31,9 +31,7 @@ const minutesSince = (str) => {
 }
 
 Handlebars.registerPartial('releaseBar', function (version) {
-  return `<a class="release" href="https://github.com/electron/electron/releases/tag/v${
-    version.version
-  }" target="_blank">
+  return `<a class="release" href="/release/v${version.version}">
   <div class="version">
     <span>${version.version}</span>
     <span>${timeSince(version.date)}</span>

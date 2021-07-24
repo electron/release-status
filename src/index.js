@@ -31,6 +31,7 @@ app.get('/active.json', a(async (req, res) => {
 }));
 
 app.use('/', require('./routes/home'));
+app.use('/release', require('./routes/release'));
 app.use('/history', require('./routes/history'));
 if (process.env.NODE_ENV !== 'production') {
   app.use('/pr', require('./routes/pr'));

@@ -1,5 +1,5 @@
 body {
-  font-family: 'CircularPro', 'appleLogo', sans-serif;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
   color: #1d1d1d;
   font-size: 16px;
   line-height: 1.5rem;
@@ -96,6 +96,10 @@ main > div {
   flex-direction: row;
 }
 
+main a {
+  color: #4078c0;
+}
+
 footer {
   background: white;
   border-top: 1px solid #e8e8e8;
@@ -120,4 +124,12 @@ footer > div > :last-child a {
   text-decoration: none !important;
   color: #414141;
   margin-right: 16px;
+}
+
+code {
+  color: #0d4a59;
+  padding: 0.2em;
+  margin: 0;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 3px;
 }

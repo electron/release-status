@@ -19,6 +19,18 @@ const getActiveReleasesOrUpdate = timeMemoize(async () => {
   return response.json();
 }, 30 * 1000, () => 'active_releases');
 
+const getGitHubRelease = timeMemoize(async (version) => {
+  try {
+    return (await octokit.repos.getReleaseByTag({
+      owner: 'electron',
+      repo: version.includes('nightly') ? 'nightlies' : 'electron',
+      tag: version,
+    })).data;
+  } catch {
+    return null;
+  }
+}, 10 * 60 * 1000, (version) => `release/${version}`);
+
 const getPR = timeMemoize(async (prNumber) => {
   try {
     return (await octokit.pulls.get({
@@ -55,6 +67,7 @@ const compareTagToCommit = timeMemoize(async (tag, commitSha) => {
 }, 60 * 60 * 24 * 1000, (tag, commitSha) => `compare/${tag}/${commitSha}`);
 
 module.exports = {
+  getGitHubRelease,
   getReleasesOrUpdate,
   getActiveReleasesOrUpdate,
   getPR,
