@@ -1,0 +1,93 @@
+header h1 {
+  display: flex;
+  align-items: center;
+}
+
+header h1 > span {
+  display: block;
+  margin-top: -4px;
+}
+
+header .latest {
+  margin-left: 8px;
+  flex-grow: 0;
+  font-size: 14px;
+  border-radius: 3px;
+  border: 1px solid red;
+  padding: 4px 8px;
+  user-select: none;
+  color: red;
+}
+
+header .latest-stable {
+  border-color: #00875a;
+  color: #00875a;
+}
+
+header .latest-beta {
+  border-color: #6554c0;
+  color: #6554c0;
+}
+
+.release-banner {
+  border: 2px solid #403294;
+  background-color: #998DD9;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 3px;
+  padding: 8px 16px;
+}
+
+.install-commands {
+  display: flex;
+}
+
+.install-commands .command {
+  flex: 1;
+  background: #2B2F3B;
+  color: #9feaf9;
+  padding: 8px 32px;
+  min-width: 420px;
+  text-align: center;
+}
+
+.install-commands .command:not(:first-child) {
+  margin-left: 16px;
+}
+
+.release-versions {
+  display: flex;
+  background: white;
+  padding: 16px;
+  border: 1px solid #e8e8e8;
+  text-decoration: none !important;
+  color: inherit !important;
+  justify-content: center;
+}
+
+.release-versions > a:not(:last-child) {
+  margin-right: 16px;
+}
+
+.release-versions > a {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  color: #1d1d1d;
+  text-decoration: none;
+}
+
+.release-versions > a[href]:hover {
+  background: #F5F5F5;
+}
+
+.release-versions svg {
+  height: 18px;
+  margin-right: 4px;
+}
+
+.release-versions i {
+  margin-right: 6px;
+}
