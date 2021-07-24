@@ -77,6 +77,7 @@ Handlebars.registerPartial('releaseSquare', function (release) {
 router.get('/', a(async (req, res) => {
   const [releases, activeReleases] = await Promise.all([getReleasesOrUpdate(), getActiveReleasesOrUpdate()]);
   const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
+  const lastAlpha = releases.find((r) => semver.parse(r.version).prerelease[0] === 'alpha');
   const lastBeta = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta');
   const betaMajor = semver.parse(lastBeta.version).major;
   const latestSupported = [betaMajor - 1, betaMajor - 2, betaMajor - 3].map((major) =>
@@ -85,6 +86,7 @@ router.get('/', a(async (req, res) => {
   res.render('home', {
     releases,
     lastNightly,
+    lastAlpha,
     lastBeta,
     latestSupported,
     currentlyReleasing: activeReleases.currentlyRunning,

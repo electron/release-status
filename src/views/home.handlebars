@@ -9,8 +9,21 @@
   {{/if}}
   <h4>Nightly</h4>
   {{> releaseBar lastNightly}}
+  {{#if lastAlpha}}
+  <div class="release-row">
+    <div>
+      <h4>Alpha</h4>
+      {{> releaseBar lastAlpha}}
+    </div>
+    <div>
+      <h4>Beta</h4>
+      {{> releaseBar lastBeta}}
+    </div>
+  </div>
+  {{else}}
   <h4>Beta</h4>
   {{> releaseBar lastBeta}}
+  {{/if}}
   <h4>Supported</h4>
   {{#each latestSupported}}
     {{> releaseBar this}}
