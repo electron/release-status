@@ -56,6 +56,10 @@ header .latest-beta {
   margin-left: 16px;
 }
 
+.release-banner + .release-versions {
+  margin-top: 16px;
+}
+
 .release-versions {
   display: flex;
   background: white;
