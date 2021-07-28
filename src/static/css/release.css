@@ -6,6 +6,7 @@ header h1 {
 header h1 > span {
   display: block;
   margin-top: -4px;
+  white-space: nowrap;
 }
 
 header .latest {
@@ -29,6 +30,23 @@ header .latest-beta {
   color: #6554c0;
 }
 
+@media screen and (max-width: 767px) {
+  header h1 {
+    font-size: 1.5em;
+    flex-direction: column;
+    margin-block-end: 0;
+  }
+
+  header h1 > span {
+    margin-top: 8px;
+  }
+
+  header > div {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
 .release-banner {
   border: 2px solid #403294;
   background-color: #998DD9;
@@ -48,12 +66,22 @@ header .latest-beta {
   background: #2B2F3B;
   color: #9feaf9;
   padding: 8px 32px;
-  min-width: 420px;
   text-align: center;
 }
 
 .install-commands .command:not(:first-child) {
   margin-left: 16px;
+}
+
+@media screen and (max-width: 767px) {
+  .install-commands {
+    flex-direction: column;
+  }
+
+  .install-commands .command {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+  }
 }
 
 .release-banner + .release-versions {
@@ -94,4 +122,10 @@ header .latest-beta {
 
 .release-versions i {
   margin-right: 6px;
+}
+
+@media screen and (max-width: 576px) {
+  .release-versions {
+    flex-direction: column;
+  }
 }
