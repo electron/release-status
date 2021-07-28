@@ -18,6 +18,17 @@
   padding-right: 8px;
 }
 
+@media screen and (max-width: 767px) {
+  .release-row {
+    display: block;
+  }
+
+  .release-row > div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
 .active-releases {
   width: 100%;
   display: flex;
@@ -76,4 +87,34 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.release-row .dependency-info {
+  width: 100%;
+}
+
+@media screen and (max-width: 576px) {
+  .release {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .version {
+    align-items: center;
+    width: 100%;
+  }
+
+  .version > span:first-child {
+    font-weight: bold;
+  }
+
+  .dependency-info {
+    margin-left: -6px;
+    width: auto;
+    width: 100%;
+  }
+
+  .dependency-info > span:not(:last-child) {
+    margin-right: 16px;
+  }
 }
