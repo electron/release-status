@@ -68,6 +68,23 @@ nav a {
   margin-right: 25px;
 }
 
+@media screen and (max-width: 576px) {
+  nav > div {
+    flex-direction: column;
+  }
+
+  nav a {
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  nav > div > div {
+    justify-content: center;
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+}
+
 header {
   background: white;
   border-bottom: 1px solid #e8e8e8;
@@ -78,6 +95,13 @@ header > div {
   padding-bottom: 32px;
   padding-left: 56px;
   padding-right: 56px;
+}
+
+@media screen and (max-width: 576px) {
+  header > div {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
 }
 
 main {
@@ -94,6 +118,13 @@ main > div {
   padding-top: 32px;
   padding-bottom: 90px;
   flex-direction: row;
+}
+
+@media screen and (max-width: 767px) {
+  main > div {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
 main a {
