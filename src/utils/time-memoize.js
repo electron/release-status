@@ -4,7 +4,7 @@ module.exports = (fn, ttl, getKey = null) => {
   };
   const data = {
     __default__: null,
-  }
+  };
   const currentlyRunning = {
     __default__: null,
   };

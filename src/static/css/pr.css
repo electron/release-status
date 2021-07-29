@@ -24,7 +24,7 @@
   flex-direction: column;
   padding: 16px;
   border-radius: 4px;
-  border: 1px solid #00C7E6;
+  border: 1px solid #00c7e6;
   background: white;
   min-width: 300px;
   box-shadow: 0 2px 6px rgb(9 30 66 / 25%), 0 0 1px 0 rgb(9 30 66 / 31%);
@@ -75,20 +75,21 @@
   box-shadow: 0 8px 16px -4px rgb(9 30 66 / 25%), 0 0 1px rgb(9 30 66 / 31%);
 }
 
-.backport-pending .backport-cell, .backport-in-flight .backport-cell {
-  border-color: #00B8D9;
+.backport-pending .backport-cell,
+.backport-in-flight .backport-cell {
+  border-color: #00b8d9;
 }
 
 .backport-needs-manual .backport-cell {
-  border-color: #FFAB00;
+  border-color: #ffab00;
 }
 
 .backport-merged .backport-cell {
-  border-color: #6554C0;
+  border-color: #6554c0;
 }
 
 .backport-released .backport-cell {
-  border-color: #36B37E;
+  border-color: #36b37e;
 }
 
 .backport-cell h4 {
