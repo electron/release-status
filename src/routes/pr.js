@@ -138,7 +138,7 @@ async function getPRReleaseStatus(prNumber) {
   // This is a backport PR, we should scan from here for the primary PR and then re-call getPRReleaseStatus with that primary PR
 
   // c.f. https://github.com/electron/trop/blob/master/src/utils/branch-util.ts#L62
-  const backportPattern =  /(?:^|\n)(?:manual |manually )?backport (?:of )?(?:#(\d+)|https:\/\/github.com\/.*\/pull\/(\d+))/gim;
+  const backportPattern = /(?:^|\n)(?:manual |manually )?backport (?:of )?(?:#(\d+)|https:\/\/github.com\/.*\/pull\/(\d+))/gim;
   const match = backportPattern.exec(prInfo.body);
   if (!match) return null;
   const parentPRNumber = match[1] ? parseInt(match[1], 10) : parseInt(match[2], 10);

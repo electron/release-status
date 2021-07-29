@@ -21,14 +21,20 @@ if (process.env.NODE_ENV === 'production') {
   app.enable('view cache');
 }
 
-app.get('/releases.json', a(async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.json(await getReleasesOrUpdate());
-}));
+app.get(
+  '/releases.json',
+  a(async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(await getReleasesOrUpdate());
+  }),
+);
 
-app.get('/active.json', a(async (req, res) => {
-  res.json(await getActiveReleasesOrUpdate());
-}));
+app.get(
+  '/active.json',
+  a(async (req, res) => {
+    res.json(await getActiveReleasesOrUpdate());
+  }),
+);
 
 app.use('/', require('./routes/home'));
 app.use('/release', require('./routes/release'));

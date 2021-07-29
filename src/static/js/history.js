@@ -98,7 +98,9 @@ function generateMonth(year, month, getDateInfo) {
 
         if (hasBeta || hasNightly || hasStable) {
           cell.classList.add('has-releases');
-          cell.href = `/history/${year}-${month < 10 ? `0${month}` : month}-${n < 10 ? `0${n}` : n}`;
+          cell.href = `/history/${year}-${month < 10 ? `0${month}` : month}-${
+            n < 10 ? `0${n}` : n
+          }`;
         }
       }
 
@@ -135,7 +137,9 @@ async function main() {
           hasStable: onDate.some(
             (r) => !r.version.includes('-beta.') && !r.version.includes('-nightly.'),
           ),
-          hasNightly: releases.some(r => r.version.endsWith(`-nightly.${dateString.replace(/-/g, '')}`)),
+          hasNightly: releases.some((r) =>
+            r.version.endsWith(`-nightly.${dateString.replace(/-/g, '')}`),
+          ),
         };
       }),
     );

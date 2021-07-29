@@ -27,8 +27,10 @@ const minutesSince = (str) => {
   const hours = Math.floor(minutes / 60);
   minutes = minutes % 60;
   if (minutes === 0) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-  return `${hours} hour${hours !== 1 ? 's' : ''} and ${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-}
+  return `${hours} hour${hours !== 1 ? 's' : ''} and ${minutes} minute${
+    minutes !== 1 ? 's' : ''
+  } ago`;
+};
 
 Handlebars.registerPartial('releaseBar', function (version) {
   return `<a class="release" href="/release/v${version.version}">
@@ -55,11 +57,11 @@ Handlebars.registerPartial('releaseSquare', function (release) {
     case 'minor': {
       channelIcon = '<i class="fas fa-feather"></i>';
       break;
-    };
+    }
     case 'beta': {
       channelIcon = '<i class="fas fa-flask"></i>';
       break;
-    };
+    }
     case 'nightly': {
       channelIcon = '<i class="fas fa-moon"></i>';
       break;
@@ -72,25 +74,31 @@ Handlebars.registerPartial('releaseSquare', function (release) {
 </div>`;
 });
 
-router.get('/', a(async (req, res) => {
-  const [releases, activeReleases] = await Promise.all([getReleasesOrUpdate(), getActiveReleasesOrUpdate()]);
-  const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
-  const lastAlpha = releases.find((r) => semver.parse(r.version).prerelease[0] === 'alpha');
-  const lastBeta = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta');
-  const betaMajor = semver.parse(lastBeta.version).major;
-  const latestSupported = [betaMajor - 1, betaMajor - 2, betaMajor - 3].map((major) =>
-    releases.find((r) => semver.parse(r.version).major === major),
-  );
-  res.render('home', {
-    releases,
-    lastNightly,
-    lastAlpha,
-    lastBeta,
-    latestSupported,
-    currentlyReleasing: activeReleases.currentlyRunning,
-    queuedReleases: activeReleases.queued,
-    css: 'home',
-  });
-}));
+router.get(
+  '/',
+  a(async (req, res) => {
+    const [releases, activeReleases] = await Promise.all([
+      getReleasesOrUpdate(),
+      getActiveReleasesOrUpdate(),
+    ]);
+    const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
+    const lastAlpha = releases.find((r) => semver.parse(r.version).prerelease[0] === 'alpha');
+    const lastBeta = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta');
+    const betaMajor = semver.parse(lastBeta.version).major;
+    const latestSupported = [betaMajor - 1, betaMajor - 2, betaMajor - 3].map((major) =>
+      releases.find((r) => semver.parse(r.version).major === major),
+    );
+    res.render('home', {
+      releases,
+      lastNightly,
+      lastAlpha,
+      lastBeta,
+      latestSupported,
+      currentlyReleasing: activeReleases.currentlyRunning,
+      queuedReleases: activeReleases.queued,
+      css: 'home',
+    });
+  }),
+);
 
 module.exports = router;
