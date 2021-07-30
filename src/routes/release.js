@@ -125,7 +125,7 @@ router.get(
 router.get(
   '/compare/:comparisonRange',
   a(async (req, res) => {
-    const [startVersion, endVersion] = req.params.comparisonRange.split('..');
+    const [startVersion, endVersion] = req.params.comparisonRange.split('...');
     return await handleComparisonRequest(startVersion, endVersion, res);
   }),
 );
