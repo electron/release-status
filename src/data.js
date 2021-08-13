@@ -20,11 +20,20 @@ const getReleasesOrUpdate = timeMemoize(
 
 const getActiveReleasesOrUpdate = timeMemoize(
   async () => {
-    const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/active');
+    const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/release/active');
     return response.json();
   },
   30 * 1000,
   () => 'active_releases',
+);
+
+const getAllSudowoodoReleasesOrUpdate = timeMemoize(
+  async () => {
+    const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/release/history');
+    return response.json();
+  },
+  30 * 1000,
+  () => 'all_releases',
 );
 
 const getGitHubRelease = timeMemoize(
@@ -100,6 +109,7 @@ module.exports = {
   getGitHubRelease,
   getReleasesOrUpdate,
   getActiveReleasesOrUpdate,
+  getAllSudowoodoReleasesOrUpdate,
   getPR,
   getPRComments,
   compareTagToCommit,

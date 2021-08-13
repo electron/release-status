@@ -48,6 +48,10 @@
   text-align: center;
 }
 
+.active-release:hover {
+  background-color: #f8f8f8;
+}
+
 .active-release i {
   margin-right: 4px;
 }

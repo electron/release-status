@@ -2,7 +2,7 @@
   {{#if startReleaseMeta}}
     {{#if endReleaseMeta}}
       <div class="release-versions">
-        <a href="https://chromium.googlesource.com/chromium/src/+log/{{startReleaseMeta.chrome}}..{{endReleaseMeta.chrome}}?pretty=full&n=10000" target="_blank">
+        <a href="https://chromium.googlesource.com/chromium/src/+log/{{startReleaseMeta.chrome}}..{{endReleaseMeta.chrome}}?pretty=full&n=10000" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-chrome"></i>
           {{#ifEquals startReleaseMeta.chrome endReleaseMeta.chrome}}
             {{startReleaseMeta.chrome}}
@@ -10,7 +10,7 @@
             {{startReleaseMeta.chrome}} - {{endReleaseMeta.chrome}}
           {{/ifEquals}}
         </a>
-        <a href="https://github.com/nodejs/node/releases/tag/v{{endReleaseMeta.node}}" target="_blank">
+        <a href="https://github.com/nodejs/node/releases/tag/v{{endReleaseMeta.node}}" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-node-js"></i>
           {{#ifEquals startReleaseMeta.node endReleaseMeta.node}}
             {{startReleaseMeta.node}}

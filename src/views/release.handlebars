@@ -28,11 +28,11 @@
   {{/ifEquals}}
   {{#if releaseMeta}}
     <div class="release-versions">
-      <a href="https://source.chromium.org/chromium/chromium/src/+/refs/tags/{{releaseMeta.chrome}}:" target="_blank">
+      <a href="https://source.chromium.org/chromium/chromium/src/+/refs/tags/{{releaseMeta.chrome}}:" target="_blank" rel="noopener noreferrer">
         <i class="fab fa-chrome"></i>
         {{releaseMeta.chrome}}
       </a>
-      <a href="https://github.com/nodejs/node/releases/tag/v{{releaseMeta.node}}" target="_blank">
+      <a href="https://github.com/nodejs/node/releases/tag/v{{releaseMeta.node}}" target="_blank" rel="noopener noreferrer">
         <i class="fab fa-node-js"></i>
         {{releaseMeta.node}}
       </a>

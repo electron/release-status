@@ -67,11 +67,11 @@ Handlebars.registerPartial('releaseSquare', function (release) {
       break;
     }
   }
-  return `<div class="active-release">
+  return `<a href="/release-build/${release.id}" class="active-release">
   <span><i class="fas fa-code-branch"></i>${release.branch}</span>
   <span>${channelIcon}${release.channel.substr(0, 1).toUpperCase()}${release.channel.substr(1)} Release</span>
   <span>Started ${minutesSince(release.started)}</span>
-</div>`;
+</a>`;
 });
 
 router.get(

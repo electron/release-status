@@ -1,0 +1,95 @@
+.build-container {
+  width: 980px;
+}
+
+@media screen and (max-width: 980px) {
+  .build-container {
+    width: 100%;
+  }
+}
+
+.release-info {
+  display: flex;
+  background: white;
+  padding: 16px;
+  border: 1px solid #e8e8e8;
+  text-decoration: none !important;
+  color: inherit !important;
+  justify-content: center;
+}
+
+.release-info > a:not(:last-child) {
+  margin-right: 16px;
+}
+
+.release-info > a {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  color: #1d1d1d;
+  text-decoration: none;
+}
+
+.release-info > a[href]:hover {
+  background: #f5f5f5;
+}
+
+.release-info svg {
+  height: 18px;
+  margin-right: 4px;
+}
+
+.release-info i {
+  margin-right: 6px;
+}
+
+@media screen and (max-width: 576px) {
+  .release-info {
+    flex-direction: column;
+  }
+}
+
+.ci-build {
+  background: white;
+  display: flex;
+  flex-direction: row;
+  padding: 16px;
+  border: 1px solid #e8e8e8;
+  text-decoration: none !important;
+  color: inherit !important;
+  align-items: center;
+}
+
+.ci-build + .ci-build {
+  border-top: none;
+}
+
+.ci-build:hover {
+  background-color: #f8f8f8;
+}
+
+.ci-build > i {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 12px;
+}
+
+.ci-build > span {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.ci-build img {
+  height: 28px;
+  margin-left: 8px;
+  margin-right: 4px;
+}
+
+.ci-build .status {
+  width: 80px;
+  text-transform: capitalize;
+}
