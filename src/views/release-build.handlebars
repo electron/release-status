@@ -1,0 +1,67 @@
+<div class="build-container">
+  <div class="release-info">
+    {{#if build.generatedElectronVersion}}
+      <a href="https://github.com/electron/electron/releases/tag/{{build.generatedElectronVersion}}" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-tags"></i>
+        {{build.generatedElectronVersion}}
+      </a>
+    {{/if}}
+    <a href="https://github.com/electron/electron/tree/{{build.branch}}" rel="noopener noreferrer">
+      <i class="fas fa-code-branch"></i>
+      {{build.branch}}
+    </a>
+    <a>
+      <i class="fas fa-signal"></i>
+      {{build.channel}}
+    </a>
+  </div>
+  {{#ifEquals build.status "running"}}
+  <p>
+    This release build started {{timeAgo build.started}}.  The average runtime for a release build is 2 hours.
+  </p>
+  {{/ifEquals}}
+  {{#ifEquals build.status "queued"}}
+  <p>
+    This release build was queued {{timeAgo build.started}}.  It should kick off shortly.
+  </p>
+  {{/ifEquals}}
+  {{#ifEquals build.status "cancelled"}}
+  <p>
+    This release build started {{timeAgo build.started}} but was cancelled.  This normally means
+    a maintainer manually intervened to stop the build.  A re-run should kick off shortly once
+    whatever issue caused the cancellation has been resolved.
+  </p>
+  {{/ifEquals}}
+  {{#ifEquals build.status "failed"}}
+  <p>
+    This release build started {{timeAgo build.started}} but failed during the {{build.stage}} stage.
+    A maintainer has been notified and someone should be working on it, normally this is just a CI
+    flake and things can just be re-run, keep an eye on this page as the build might resume.
+  </p>
+  {{/ifEquals}}
+  {{#ifEquals build.status "completed"}}
+  <p>
+    This release build started {{timeAgo build.started}} and has since completed successfully.  The
+    version should be available on NPM and GitHub.
+  </p>
+  {{/ifEquals}}
+  {{#each ciBuilds}}
+  <a class="ci-build" href="{{url}}" target="_blank" rel="noopener noreferrer">
+    <i class="fab fa-{{icon}} fa-2x"></i>
+    {{name}}
+    <span>
+      <b>Status:</b>
+      <img src="/img/{{status}}{{#ifEquals status "pending"}}.gif{{else}}.png{{/ifEquals}}" />
+      <span class="status">{{status}}</span>
+    </span>
+  </a>
+  {{/each}}
+</div>
+
+{{#ifEquals build.status "running"}}
+<script>
+setTimeout(function () {
+  window.location.reload();
+}, 60 * 1000);
+</script>
+{{/ifEquals}}
