@@ -1,7 +1,13 @@
 <div>
   <div class="install-commands">
-    <pre class="command">npm install electron@{{ version }}</pre>
-    <pre class="command">yarn add electron@{{ version }}</pre>
+
+    {{#ifEquals prerelease "nightly"}}
+      <pre class="command">npm install electron-nightly@{{ version }}</pre>
+      <pre class="command">yarn add electron-nightly@{{ version }}</pre>
+    {{else}}
+      <pre class="command">npm install electron@{{ version }}</pre>
+      <pre class="command">yarn add electron@{{ version }}</pre>
+    {{/ifEquals}}
   </div>
   {{#ifEquals prerelease "nightly"}}
     <div class="release-banner">
