@@ -149,20 +149,16 @@ router.get(
     }
     releaseNotes = releaseNotes.replace(`Release Notes for ${version}`, 'Release Notes');
 
-    const lastAlpha = allReleases.find((r) => semver.parse(r.version).prerelease[0] === 'alpha');
-    const lastBeta = allReleases.find((r) => semver.parse(r.version).prerelease[0] === 'beta');
-    const betaMajor = semver.parse(lastBeta.version).major;
-    const lastSupported = allReleases.find((r) => semver.parse(r.version).major === betaMajor - 1);
+    const lastPreRelease = allReleases.find((r) => semver.parse(r.version).prerelease[0] === 'beta' || semver.parse(r.version).prerelease[0] === 'alpha');
+    const preReleaseMajor = semver.parse(lastPreRelease.version).major;
+    const lastSupported = allReleases.find((r) => semver.parse(r.version).major === preReleaseMajor - 1);
     const isLatestStable = lastSupported.version === version.substr(1);
-    const isLatestBeta = lastBeta.version === version.substr(1);
-    const isLatestAlpha = lastAlpha.version === version.substr(1);
+    const isLatestPreRelease = lastPreRelease.version === version.substr(1);
     let tag = '';
     if (isLatestStable) {
       tag = ' <span><span class="latest latest-stable">Latest Stable</span></span>';
-    } else if (isLatestBeta) {
-      tag = ' <span><span class="latest latest-beta">Latest Beta</span></span>';
-    } else if (isLatestAlpha) {
-      tag = ' <span><span class="latest latest-alpha">Latest Alpha</span></span>';
+    } else if (isLatestPreRelease) {
+      tag = ' <span><span class="latest latest-beta">Latest Pre Release</span></span>';
     }
 
     const releaseMeta = allReleases.find((r) => r.version === version.substr(1));
@@ -173,8 +169,7 @@ router.get(
       releaseNotes,
       version,
       isLatestStable,
-      isLatestBeta,
-      isLatestAlpha,
+      isLatestPreRelease,
       releaseMeta,
       prerelease: parsed.prerelease[0] || '',
       css: 'release',

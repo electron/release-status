@@ -58,6 +58,7 @@ Handlebars.registerPartial('releaseSquare', function (release) {
       channelIcon = '<i class="fas fa-feather"></i>';
       break;
     }
+    case 'alpha':
     case 'beta': {
       channelIcon = '<i class="fas fa-flask"></i>';
       break;
@@ -82,17 +83,15 @@ router.get(
       getActiveReleasesOrUpdate(),
     ]);
     const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
-    const lastAlpha = releases.find((r) => semver.parse(r.version).prerelease[0] === 'alpha');
-    const lastBeta = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta');
-    const betaMajor = semver.parse(lastBeta.version).major;
+    const lastPreRelease = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta' || semver.parse(r.version).prerelease[0] === 'alpha');
+    const betaMajor = semver.parse(lastPreRelease.version).major;
     const latestSupported = [betaMajor - 1, betaMajor - 2, betaMajor - 3].map((major) =>
       releases.find((r) => semver.parse(r.version).major === major),
     );
     res.render('home', {
       releases,
       lastNightly,
-      lastAlpha,
-      lastBeta,
+      lastPreRelease,
       latestSupported,
       currentlyReleasing: activeReleases.currentlyRunning,
       queuedReleases: activeReleases.queued,
