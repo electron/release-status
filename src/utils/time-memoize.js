@@ -23,6 +23,9 @@ module.exports = (fn, ttl, getKey = null) => {
       currentlyRunning[key] = inner().then((result) => {
         currentlyRunning[key] = null;
         return result;
+      }).catch((err) => {
+        currentlyRunning[key] = null;
+        throw err;
       });
     }
     return await currentlyRunning[key];
