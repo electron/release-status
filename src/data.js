@@ -1,12 +1,23 @@
+const { getTokenForRepo, appCredentialsFromString } = require('@electron/github-app-auth');
 const fetch = require('node-fetch');
 const { Octokit } = require('@octokit/rest');
 const semver = require('semver');
 
 const timeMemoize = require('./utils/time-memoize');
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
+let octokit = null;
+const getOctokit = async () => {
+  if (octokit) return octokit;
+
+  const token = await getTokenForRepo({
+    owner: 'electron',
+    name: 'electron'
+  }, appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS));
+  octokit = new Octokit({
+    auth: token,
+  });
+  return octokit;
+};
 
 const getReleasesOrUpdate = timeMemoize(
   async () => {
@@ -40,7 +51,7 @@ const getGitHubRelease = timeMemoize(
   async (version) => {
     try {
       return (
-        await octokit.repos.getReleaseByTag({
+        await (await getOctokit()).repos.getReleaseByTag({
           owner: 'electron',
           repo: version.includes('nightly') ? 'nightlies' : 'electron',
           tag: version,
@@ -58,7 +69,7 @@ const getPR = timeMemoize(
   async (prNumber) => {
     try {
       return (
-        await octokit.pulls.get({
+        await (await getOctokit()).pulls.get({
           owner: 'electron',
           repo: 'electron',
           pull_number: prNumber,
@@ -74,9 +85,10 @@ const getPR = timeMemoize(
 
 const getPRComments = timeMemoize(
   async (prNumber) => {
+    const octo = await getOctokit();
     try {
-      return await octokit.paginate(
-        octokit.issues.listComments.endpoint.merge({
+      return await octo.paginate(
+        octo.issues.listComments.endpoint.merge({
           owner: 'electron',
           repo: 'electron',
           issue_number: prNumber,
@@ -93,7 +105,7 @@ const getPRComments = timeMemoize(
 
 const compareTagToCommit = timeMemoize(
   async (tag, commitSha) => {
-    const compare = await octokit.repos.compareCommits({
+    const compare = await (await getOctokit()).repos.compareCommits({
       owner: 'electron',
       repo: 'electron',
       base: tag,
