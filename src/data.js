@@ -1,4 +1,4 @@
-const { getTokenForRepo, appCredentialsFromString } = require('@electron/github-app-auth');
+const { getAuthOptionsForRepo, appCredentialsFromString } = require('@electron/github-app-auth');
 const fetch = require('node-fetch');
 const { Octokit } = require('@octokit/rest');
 const semver = require('semver');
@@ -9,12 +9,12 @@ let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
 
-  const token = await getTokenForRepo({
+  const authOpts = await getAuthOptionsForRepo({
     owner: 'electron',
     name: 'electron'
   }, appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS));
   octokit = new Octokit({
-    auth: token,
+    ...authOpts,
   });
   return octokit;
 };
