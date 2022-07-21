@@ -21,7 +21,7 @@
     "prettier": "^2.1.2"
   },
   "scripts": {
-    "watch": "nodemon --watch src --exec \"npm run start\"",
+    "watch": "nodemon --watch src --ext js,css,handlebars --exec \"npm run start\"",
     "start": "node src/index.js",
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\""
   }
