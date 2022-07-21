@@ -28,12 +28,13 @@ footer > div {
 }
 
 nav {
-  min-height: 72px;
+  min-height: 86px;
   justify-content: space-between;
   display: flex;
+  font-size: 16px;
   flex-direction: row;
   align-items: center;
-  border-bottom: 1px solid #e8e8e8;
+  background: #2b2e3b;
 }
 
 nav > div {
@@ -51,20 +52,17 @@ nav > div > a {
 }
 
 nav img {
-  height: 42px;
-  padding-right: 12px;
-  border-right: 1px solid #e8e8e8;
+  height: 2rem;
+  margin-right: 0.5rem;
 }
 
 nav .title {
-  color: #414141;
-  font-size: 22px;
-  padding-left: 10px;
-  font-weight: 200;
+  color: #9feaf9;
+  font-weight: 600;
 }
 
 nav a {
-  color: #414141;
+  color: #9feaf9;
   text-decoration: none !important;
   margin-right: 25px;
 }
@@ -164,4 +162,13 @@ code {
   margin: 0;
   background-color: rgba(0, 0, 0, 0.04);
   border-radius: 3px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #0d4a59;
 }
