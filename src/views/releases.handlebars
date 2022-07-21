@@ -1,0 +1,7 @@
+<h1>Hello World</h1>
+<div class="releases">
+  {{#each releases}}
+    {{> releaseBar this}}
+    {{{markdown this.body}}}
+  {{/each}}
+</div>

@@ -9,12 +9,9 @@ let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
 
-  const authOpts = await getAuthOptionsForRepo({
-    owner: 'electron',
-    name: 'electron'
-  }, appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS));
   octokit = new Octokit({
-    ...authOpts,
+    owner: 'electron',
+    repo: 'electron'
   });
   return octokit;
 };
@@ -57,7 +54,8 @@ const getGitHubRelease = timeMemoize(
           tag: version,
         })
       ).data;
-    } catch {
+    } catch(e) {
+      console.log(e)
       return null;
     }
   },
