@@ -11,7 +11,7 @@ body {
   box-sizing: border-box;
 }
 
-nav > div,
+.navbar > div,
 header > div,
 main > div,
 footer > div {
@@ -27,7 +27,7 @@ footer > div {
   width: 100%;
 }
 
-nav {
+.navbar {
   min-height: 86px;
   justify-content: space-between;
   display: flex;
@@ -37,47 +37,47 @@ nav {
   background: #2b2e3b;
 }
 
-nav > div {
+.navbar > div {
   flex-direction: row;
 }
 
-nav > div > :first-child {
+.navbar > div > :first-child {
   flex: 1;
 }
 
-nav > div > div,
-nav > div > a {
+.navbar > div > div,
+.navbar > div > a {
   display: flex;
   align-items: center;
 }
 
-nav img {
+.navbar img {
   height: 2rem;
   margin-right: 0.5rem;
 }
 
-nav .title {
+.navbar .title {
   color: #9feaf9;
   font-weight: 600;
 }
 
-nav a {
+.navbar a {
   color: #9feaf9;
   text-decoration: none !important;
   margin-right: 25px;
 }
 
 @media screen and (max-width: 576px) {
-  nav > div {
+  .navbar > div {
     flex-direction: column;
   }
 
-  nav a {
+  .navbar a {
     margin-top: 8px;
     justify-content: center;
   }
 
-  nav > div > div {
+  .navbar > div > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;

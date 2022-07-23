@@ -1,0 +1,20 @@
+.pagination li {
+  list-style: none;
+  padding: 5px 10px;
+  margin: 4px;
+  border: 1px solid #2b2e3b;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.pagination li.selected {
+  background: #2b2e3b;
+}
+
+.pagination li a {
+  text-decoration: none;
+}
+
+.pagination li.selected a {
+  color: white;
+}

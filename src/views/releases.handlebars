@@ -2,6 +2,7 @@
 <div class="releases">
   {{#each releases}}
     {{> releaseBar this}}
-    {{{markdown this.body}}}
+    {{!-- {{{markdown this.body}}} --}}
   {{/each}}
+    {{{erick this.pages this.page}}}
 </div>
