@@ -1,8 +1,13 @@
-<h1>Hello World</h1>
 <div class="releases">
+  <span>Channel:</span>
+  <a href="/releases/stable">Stable</a>
+  <a href="/releases/prerelease">Prerelease</a>
+  <a href="/releases/nightly">Nightly</a>
   {{#each releases}}
-    {{> releaseBar this}}
-    {{!-- {{{markdown this.body}}} --}}
+    <article class="card">
+      {{> metadata this}}
+      {{!-- {{{markdown this.body}}} --}}
+    </article>
   {{/each}}
-    {{{erick this.pages this.page}}}
+    {{{paginate this.pages this.page this.prev this.next}}}
 </div>

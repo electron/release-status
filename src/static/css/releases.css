@@ -1,14 +1,31 @@
+.pagination {
+  text-align: center;
+}
+
+.pagination ul {
+  padding-left: 0;
+}
+
 .pagination li {
   list-style: none;
   padding: 5px 10px;
   margin: 4px;
-  border: 1px solid #2b2e3b;
+  border: 1px solid #2b2e3b00;
   border-radius: 4px;
   display: inline-block;
+  cursor: pointer;
+  min-width: 36px;
+  text-align: center;
 }
 
 .pagination li.selected {
   background: #2b2e3b;
+  color: white;
+}
+
+.pagination li:hover {
+  border: 1px solid grey;
+
 }
 
 .pagination li a {
@@ -17,4 +34,12 @@
 
 .pagination li.selected a {
   color: white;
+}
+
+.card {
+  background: white;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 10px;
 }

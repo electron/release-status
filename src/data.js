@@ -9,9 +9,12 @@ let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
 
-  octokit = new Octokit({
+  const authOpts = await getAuthOptionsForRepo({
     owner: 'electron',
-    repo: 'electron'
+    name: 'electron'
+  }, appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS));
+  octokit = new Octokit({
+    ...authOpts,
   });
   return octokit;
 };
