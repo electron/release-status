@@ -3,6 +3,7 @@ const paginate = require('express-paginate');
 const Handlebars = require('handlebars');
 const a = require('../utils/a');
 const { getGitHubRelease, getReleasesOrUpdate } = require('../data');
+const semver = require('semver');
 
 const router = new Router();
 
@@ -20,6 +21,9 @@ const timeSince = (str) => {
 Handlebars.registerPartial('metadata', function (version) {
   return `
   <div>
+    <a href="https://github.com/electron/electron/releases/tag/v${
+      version.version
+    }"><div class="tag"><i class="fab fa-github"></i>&nbsp;v${version.version}</div></a>
     <div class="dependency-info">
       <span><i class="fa fa-calendar"></i>&nbsp;${timeSince(version.date)}</span>
       <span>
@@ -53,7 +57,7 @@ Handlebars.registerHelper('paginate', function (pages, page, prev, next) {
   `;
 });
 
-router.use(paginate.middleware(10, 50));
+router.use(paginate.middleware(6, 50));
 router.get(
   '/:channel',
   a(async (req, res) => {
@@ -74,18 +78,34 @@ router.get(
     }
 
     const releases = await getReleasesOrUpdate();
-    const filteredReleases = releases.filter(filter);
-    const { page, limit } = req.query;
+    const { page, limit, version } = req.query;
+    const releasesFromChannel = releases.filter(filter);
+    const major = Number(version);
+    const majors = releasesFromChannel.reduce((acc, val) => {
+      acc.add(semver.major(val.version));
+      return acc;
+    }, new Set());
+    const releasesFromMajor = releasesFromChannel.filter((release) => {
+      if (Number.isInteger(major) && major >= 0) {
+        return semver.major(release.version) === major;
+      } else {
+        return true;
+      }
+    });
     const firstToDisplay = (page - 1) * limit;
-    const releasesToDisplay = filteredReleases.slice(firstToDisplay, firstToDisplay + limit);
+    const releasesToDisplay = releasesFromMajor.slice(firstToDisplay, firstToDisplay + limit);
 
     for (const r of releasesToDisplay) {
       r.body = (await getGitHubRelease(`v${r.version}`)).body;
     }
-    const itemCount = filteredReleases.length;
+
+    const itemCount = releasesFromMajor.length;
     const pageCount = Math.ceil(itemCount / req.query.limit);
     return res.render('releases', {
       css: 'releases',
+      channel: channel,
+      major: major,
+      majors: Array.from(majors),
       releases: releasesToDisplay,
       page: page,
       prev: paginate.href(req)(true),

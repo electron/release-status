@@ -1,12 +1,41 @@
 <div class="releases">
-  <span>Channel:</span>
-  <a href="/releases/stable">Stable</a>
-  <a href="/releases/prerelease">Prerelease</a>
-  <a href="/releases/nightly">Nightly</a>
+  <div class="release-filter">
+    <strong>Release Channels</strong>
+    <div class="release-channel-selector-container">
+      <a href="/releases/stable" {{#ifEquals channel "stable"}}class="selected-release-channel"{{/ifEquals}}>      
+        <div class="release-channel-selector">
+          <strong><i class="fas fa-clock"></i>&nbsp;Stable</strong>
+          <p>Regular, supported releases</p>
+        </div>
+      </a>
+      <a href="/releases/prerelease" {{#ifEquals channel "prerelease"}}class="selected-release-channel"{{/ifEquals}}>
+        <div class="release-channel-selector">
+          <strong><i class="fas fa-flask"></i>&nbsp;Prerelease</strong>
+          <p>Test upcoming changes</p>
+        </div>
+      </a>
+      <a href="/releases/nightly" {{#ifEquals channel "nightly"}}class="selected-release-channel"{{/ifEquals}}>
+        <div class="release-channel-selector">
+          <strong><i class="fas fa-calendar"></i>&nbsp;Nightly</strong>
+          <p>Experiment with the latest features</p>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="release-filter">
+    <strong>Major Releases</strong>
+    <div>
+    <a href="?">All</a>
+      {{#each majors}}
+        <a href="?version={{this}}" {{#ifEquals this ../major}}class="selected-release-filter"{{/ifEquals}}>{{this}}.x</a>
+      {{/each}}
+    </div>
+  <hr/>
+  </div>
   {{#each releases}}
     <article class="card">
       {{> metadata this}}
-      {{!-- {{{markdown this.body}}} --}}
+      {{{markdown this.body}}}
     </article>
   {{/each}}
     {{{paginate this.pages this.page this.prev this.next}}}

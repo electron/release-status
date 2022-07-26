@@ -25,7 +25,6 @@
 
 .pagination li:hover {
   border: 1px solid grey;
-
 }
 
 .pagination li a {
@@ -36,10 +35,76 @@
   color: white;
 }
 
+.releases {
+  max-width: 100%;
+}
+
 .card {
   background: white;
   border: 1px solid lightgray;
   border-radius: 5px;
   padding: 20px;
   margin-bottom: 10px;
+  max-width: 100%;
+  overflow-x: scroll;
+}
+
+.tag {
+  font-family: monospace;
+  padding: 2px 4px;
+  border: 1px lightgray solid;
+  background: ghostwhite;
+  display: inline-block;
+  color: #e3112d;
+  font-size: 14px;
+}
+
+.release-filter a {
+  padding: 0 2px;
+  text-decoration: none;
+}
+
+.selected-release-channel > div {
+  border: 1px solid deepskyblue;
+  border-left: 4px solid deepskyblue;
+  background: azure;
+}
+
+.selected-release-filter {
+  font-weight: bold;
+}
+
+.release-channel-selector {
+  flex: 1;
+  background: aliceblue;
+  border: 1px solid aliceblue;
+  padding: 16px;
+  height: 100%;
+}
+
+.release-channel-selector > strong {
+  font-size: 18px;
+}
+
+.release-channel-selector > p {
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.release-channel-selector-container {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr; /*fraction*/
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .release-channel-selector-container {
+    grid-template-columns: none;
+  }
+
+  .release-channel-selector-container > a {
+    margin-bottom: 10px;
+  }
 }
