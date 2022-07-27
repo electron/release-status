@@ -16,7 +16,7 @@ Handlebars.registerPartial('metadata', function (version) {
       version.version
     }"><div class="tag"><i class="fab fa-github"></i>&nbsp;v${version.version}</div></a>
     <div class="dependency-info">
-      <span><i class="fa fa-calendar"></i>&nbsp;${timeSince(version.date)}</span>
+      <span><i class="fa fa-calendar"></i>&nbsp;${version.date} (${timeSince(version.date)})</span>
       <span>
         <i class="fab fa-chrome"></i>
         ${version.chrome}
