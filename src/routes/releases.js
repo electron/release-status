@@ -7,16 +7,7 @@ const semver = require('semver');
 
 const router = new Router();
 
-const timeSince = (str) => {
-  const d = new Date();
-  const today = new Date(d.getFullYear(), d.getMonth() + 1, d.getDate());
-  const parts = str.split('-').map((n) => parseInt(n, 10));
-  const releaseDate = new Date(parts[0], parts[1], parts[2]);
-  const daysAgo = Math.floor((today.getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24));
-  if (daysAgo === 0) return 'Today';
-  if (daysAgo === 1) return 'Yesterday';
-  return `${daysAgo} days ago`;
-};
+const { timeSince } = require('../utils/format-time');
 
 Handlebars.registerPartial('metadata', function (version) {
   return `
