@@ -33,6 +33,14 @@ const minutesSince = (str) => {
 };
 
 Handlebars.registerPartial('releaseBar', function (version) {
+  if (!version) {
+    return `<a class="release" href="#">
+  <div class="version">
+    <span>There is no active release line, watch this space...</span>
+  </div>
+</a>`;
+  }
+
   return `<a class="release" href="/release/v${version.version}">
   <div class="version">
     <span>${version.version}</span>
@@ -83,11 +91,16 @@ router.get(
       getActiveReleasesOrUpdate(),
     ]);
     const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
-    const lastPreRelease = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta' || semver.parse(r.version).prerelease[0] === 'alpha');
-    const betaMajor = semver.parse(lastPreRelease.version).major;
-    const latestSupported = [betaMajor - 1, betaMajor - 2, betaMajor - 3].map((major) =>
+    let lastPreRelease = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta' || semver.parse(r.version).prerelease[0] === 'alpha');
+    const lastStable = releases.find((r) => semver.parse(r.version).prerelease.length === 0);
+    const stableMajor = semver.parse(lastStable.version).major;
+    const latestSupported = [stableMajor, stableMajor - 1, stableMajor - 2].map((major) =>
       releases.find((r) => semver.parse(r.version).major === major),
     );
+    if (semver.parse(lastPreRelease.version).major <= stableMajor) {
+      lastPreRelease = null;
+    }
+
     res.render('home', {
       releases,
       lastNightly,
