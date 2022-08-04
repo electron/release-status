@@ -11,10 +11,10 @@ const { timeSince } = require('../utils/format-time');
 
 Handlebars.registerPartial('metadata', function (version) {
   return `
-  <div>
+  <div class="release-card__metadata">
     <a href="https://github.com/electron/electron/releases/tag/v${
       version.version
-    }"><div class="tag"><i class="fab fa-github"></i>&nbsp;v${version.version}</div></a>
+    }"><div><i class="fab fa-github"></i>&nbsp;v${version.version} on GitHub</div></a>
     <div class="dependency-info">
       <span><i class="fa fa-calendar"></i>&nbsp;${version.date} (${timeSince(version.date)})</span>
       <span>
@@ -32,23 +32,23 @@ Handlebars.registerPartial('metadata', function (version) {
 Handlebars.registerHelper('paginate', function (pages, page, prev, next) {
   return `
     <nav class="pagination" role="navigation" aria-label="Pagination Navigation">
-      <ul>
-        <a href=${prev}><li>Prev</li></a>
+      <ul class="pagination__list">
+        <a href=${prev} class="pagination__list-item"><li>Prev</li></a>
         ${pages
           .map(
             (p) =>
-              `<a href="${p.url}"><li class="${p.number === page ? 'selected' : ''}">${
+              `<a href="${p.url}"><li class="pagination__list-item ${p.number === page ? 'pagination__list-item--selected' : ''}">${
                 p.number
               }</li></a>`,
           )
           .join('')}
-          <a href=${next}><li>Next</li></a>
+          <a href=${next} class="pagination__list-item"><li>Next</li></a>
       </ul>
     </nav>
   `;
 });
 
-router.use(paginate.middleware(6, 50));
+router.use(paginate.middleware(2, 50));
 router.get(
   '/:channel',
   a(async (req, res) => {

@@ -1,42 +1,46 @@
 <div class="releases">
-  <div class="release-filter">
-    <strong>Release Channels</strong>
+  <div>
+  <div class="releases__filter-container">
+    <strong>Filter by channel</strong>
     <div class="release-channel-selector-container">
-      <a href="/releases/stable" {{#ifEquals channel "stable"}}class="selected-release-channel"{{/ifEquals}}>      
-        <div class="release-channel-selector">
-          <strong><i class="fas fa-clock"></i>&nbsp;Stable</strong>
-          <p>Regular, supported releases</p>
+      <a class="releases__filter-link" href="/releases/stable">      
+        <div class="releases__filter {{#ifEquals channel "stable"}} releases__filter--selected{{/ifEquals}}">
+          <span class="releases__filter-name"><i class="fas fa-clock"></i>&nbsp;Stable</span>
+          <p class="releases__filter-description">Regular, supported releases</p>
         </div>
       </a>
-      <a href="/releases/prerelease" {{#ifEquals channel "prerelease"}}class="selected-release-channel"{{/ifEquals}}>
-        <div class="release-channel-selector">
-          <strong><i class="fas fa-flask"></i>&nbsp;Prerelease</strong>
-          <p>Test upcoming changes</p>
+      <a  class="releases__filter-link" href="/releases/prerelease">
+        <div class="releases__filter {{#ifEquals channel "prerelease"}} releases__filter--selected{{/ifEquals}}">
+          <span class="releases__filter-name"><i class="fas fa-flask"></i>&nbsp;Prerelease</span>
+          <p class="releases__filter-description">Test upcoming changes</p>
         </div>
       </a>
-      <a href="/releases/nightly" {{#ifEquals channel "nightly"}}class="selected-release-channel"{{/ifEquals}}>
-        <div class="release-channel-selector">
-          <strong><i class="fas fa-calendar"></i>&nbsp;Nightly</strong>
-          <p>Experiment with the latest features</p>
+      <a class="releases__filter-link" href="/releases/nightly">
+        <div class="releases__filter {{#ifEquals channel "nightly"}} releases__filter--selected{{/ifEquals}}">
+          <span class="releases__filter-name"><i class="fas fa-calendar"></i>&nbsp;Nightly</span>
+          <p class="releases__filter-description">Experiment with the latest features</p>
         </div>
       </a>
     </div>
   </div>
   <div class="release-filter">
-    <strong>Major Releases</strong>
+    <strong>Filter by major release</strong>
     <div>
     <a href="?">All</a>
       {{#each majors}}
         <a href="?version={{this}}" {{#ifEquals this ../major}}class="selected-release-filter"{{/ifEquals}}>{{this}}.x</a>
       {{/each}}
     </div>
-  <hr/>
   </div>
-  {{#each releases}}
-    <article class="card">
-      {{> metadata this}}
-      {{{markdown this.body}}}
-    </article>
-  {{/each}}
-    {{{paginate this.pages this.page this.prev this.next}}}
+  </div>
+  <div class="releases__list">
+    {{#each releases}}
+      <article class="release-card">
+        {{{markdown this.body}}}
+        {{> metadata this}}
+      </article>
+    {{/each}}
+  </div>
+
 </div>
+{{{paginate this.pages this.page this.prev this.next}}}
