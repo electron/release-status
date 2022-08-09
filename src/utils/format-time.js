@@ -23,4 +23,4 @@ const minutesSince = (str) => {
   } ago`;
 };
 
-module.exports = { timeSince, minutesSince }
+module.exports = { timeSince, minutesSince };

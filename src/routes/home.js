@@ -67,7 +67,11 @@ router.get(
       getActiveReleasesOrUpdate(),
     ]);
     const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
-    let lastPreRelease = releases.find((r) => semver.parse(r.version).prerelease[0] === 'beta' || semver.parse(r.version).prerelease[0] === 'alpha');
+    let lastPreRelease = releases.find(
+      (r) =>
+        semver.parse(r.version).prerelease[0] === 'beta' ||
+        semver.parse(r.version).prerelease[0] === 'alpha',
+    );
     const lastStable = releases.find((r) => semver.parse(r.version).prerelease.length === 0);
     const stableMajor = semver.parse(lastStable.version).major;
     const latestSupported = [stableMajor, stableMajor - 1, stableMajor - 2].map((major) =>

@@ -37,9 +37,9 @@ Handlebars.registerHelper('paginate', function (pages, page, prev, next) {
         ${pages
           .map(
             (p) =>
-              `<a href="${p.url}"><li class="pagination__list-item ${p.number === page ? 'pagination__list-item--selected' : ''}">${
-                p.number
-              }</li></a>`,
+              `<a href="${p.url}"><li class="pagination__list-item ${
+                p.number === page ? 'pagination__list-item--selected' : ''
+              }">${p.number}</li></a>`,
           )
           .join('')}
           <a href=${next} class="pagination__list-item"><li>Next</li></a>

@@ -20,13 +20,15 @@ module.exports = (fn, ttl, getKey = null) => {
       return data[key];
     };
     if (!currentlyRunning[key]) {
-      currentlyRunning[key] = inner().then((result) => {
-        currentlyRunning[key] = null;
-        return result;
-      }).catch((err) => {
-        currentlyRunning[key] = null;
-        throw err;
-      });
+      currentlyRunning[key] = inner()
+        .then((result) => {
+          currentlyRunning[key] = null;
+          return result;
+        })
+        .catch((err) => {
+          currentlyRunning[key] = null;
+          throw err;
+        });
     }
     return await currentlyRunning[key];
   };

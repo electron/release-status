@@ -149,9 +149,15 @@ router.get(
     }
     releaseNotes = releaseNotes.replace(`Release Notes for ${version}`, 'Release Notes');
 
-    const lastPreRelease = allReleases.find((r) => semver.parse(r.version).prerelease[0] === 'beta' || semver.parse(r.version).prerelease[0] === 'alpha');
+    const lastPreRelease = allReleases.find(
+      (r) =>
+        semver.parse(r.version).prerelease[0] === 'beta' ||
+        semver.parse(r.version).prerelease[0] === 'alpha',
+    );
     const preReleaseMajor = semver.parse(lastPreRelease.version).major;
-    const lastSupported = allReleases.find((r) => semver.parse(r.version).major === preReleaseMajor - 1);
+    const lastSupported = allReleases.find(
+      (r) => semver.parse(r.version).major === preReleaseMajor - 1,
+    );
     const isLatestStable = lastSupported.version === version.substr(1);
     const isLatestPreRelease = lastPreRelease.version === version.substr(1);
     let tag = '';
