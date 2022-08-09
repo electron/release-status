@@ -7,12 +7,12 @@
     {{/each}}
     </div>
   {{/if}}
-  <h4>Nightly</h4>
-  {{> releaseBar lastNightly}}
-  <h4>Pre Release</h4>
-  {{> releaseBar lastPreRelease}}
-  <h4>Supported</h4>
+  <h4><i class="fas fa-clock"></i>&nbsp;Stable</h4>
   {{#each latestSupported}}
     {{> releaseBar this}}
   {{/each}}
+  <h4><i class="fas fa-flask"></i>&nbsp;Pre Release</h4>
+  {{> releaseBar lastPreRelease}}
+  <h4><i class="fas fa-calendar"></i>&nbsp;Nightly</h4>
+  {{> releaseBar lastNightly}}
 </div>
