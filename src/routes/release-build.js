@@ -41,7 +41,7 @@ router.get(
   '/:buildId',
   a(async (req, res) => {
     const allBuilds = await getAllSudowoodoReleasesOrUpdate();
-    const build = allBuilds.find(b => b.id === req.params.buildId);
+    const build = allBuilds.find((b) => b.id === req.params.buildId);
     if (!build) {
       return res.redirect('/');
     }
@@ -73,7 +73,7 @@ router.get(
       ciBuilds,
       ghRelease,
       css: 'release-build',
-      title: `Release Build - ${build.id}`
+      title: `Release Build - ${build.id}`,
     });
   }),
 );

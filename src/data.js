@@ -9,10 +9,13 @@ let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
 
-  const authOpts = await getAuthOptionsForRepo({
-    owner: 'electron',
-    name: 'electron'
-  }, appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS));
+  const authOpts = await getAuthOptionsForRepo(
+    {
+      owner: 'electron',
+      name: 'electron',
+    },
+    appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS),
+  );
   octokit = new Octokit({
     ...authOpts,
   });
@@ -40,7 +43,9 @@ const getActiveReleasesOrUpdate = timeMemoize(
 
 const getAllSudowoodoReleasesOrUpdate = timeMemoize(
   async () => {
-    const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/release/history');
+    const response = await fetch.default(
+      'https://electron-sudowoodo.herokuapp.com/release/history',
+    );
     return response.json();
   },
   30 * 1000,
@@ -57,8 +62,8 @@ const getGitHubRelease = timeMemoize(
           tag: version,
         })
       ).data;
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
       return null;
     }
   },
