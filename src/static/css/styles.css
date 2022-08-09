@@ -1,3 +1,28 @@
+:root {
+  --electron-color-light: #9feaf9;
+  --electron-color-mid: #0d4a59;
+  --electron-color-dark: #2b2e3b;
+  --electron-color-secondary-light: #ff6e6e;
+  --electron-color-secondary-mid: #e3112d;
+
+  --shadow-color: 0deg 0% 0%;
+  --shadow-elevation-low: 0.3px 0.5px 0.5px hsl(var(--shadow-color) / 0.09),
+    0.3px 0.6px 0.6px -2.2px hsl(var(--shadow-color) / 0.06),
+    0.8px 1.5px 1.4px -4.4px hsl(var(--shadow-color) / 0.04);
+  --shadow-elevation-medium: 0.3px 0.5px 0.5px hsl(var(--shadow-color) / 0.09),
+    0.4px 0.9px 0.8px -1.5px hsl(var(--shadow-color) / 0.07),
+    1.4px 2.7px 2.5px -3px hsl(var(--shadow-color) / 0.05),
+    3.8px 7.5px 7px -4.4px hsl(var(--shadow-color) / 0.03);
+  --shadow-elevation-high: 0.3px 0.5px 0.5px hsl(var(--shadow-color) / 0.09),
+    0.4px 0.8px 0.7px -0.6px hsl(var(--shadow-color) / 0.08),
+    0.7px 1.5px 1.4px -1.3px hsl(var(--shadow-color) / 0.07),
+    1.5px 2.9px 2.7px -1.9px hsl(var(--shadow-color) / 0.06),
+    2.8px 5.6px 5.2px -2.5px hsl(var(--shadow-color) / 0.05),
+    4.9px 9.8px 9.1px -3.2px hsl(var(--shadow-color) / 0.04),
+    8.1px 16.2px 15.1px -3.8px hsl(var(--shadow-color) / 0.03),
+    12.5px 25px 23.3px -4.4px hsl(var(--shadow-color) / 0.02);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Fira Sans,
     Droid Sans, Helvetica Neue, sans-serif;
@@ -11,7 +36,7 @@ body {
   box-sizing: border-box;
 }
 
-nav > div,
+.navbar > div,
 header > div,
 main > div,
 footer > div {
@@ -27,7 +52,7 @@ footer > div {
   width: 100%;
 }
 
-nav {
+.navbar {
   min-height: 86px;
   justify-content: space-between;
   display: flex;
@@ -37,47 +62,47 @@ nav {
   background: #2b2e3b;
 }
 
-nav > div {
+.navbar > div {
   flex-direction: row;
 }
 
-nav > div > :first-child {
+.navbar > div > :first-child {
   flex: 1;
 }
 
-nav > div > div,
-nav > div > a {
+.navbar > div > div,
+.navbar > div > a {
   display: flex;
   align-items: center;
 }
 
-nav img {
+.navbar img {
   height: 2rem;
   margin-right: 0.5rem;
 }
 
-nav .title {
+.navbar .title {
   color: #9feaf9;
   font-weight: 600;
 }
 
-nav a {
+.navbar a {
   color: #9feaf9;
   text-decoration: none !important;
   margin-right: 25px;
 }
 
 @media screen and (max-width: 576px) {
-  nav > div {
+  .navbar > div {
     flex-direction: column;
   }
 
-  nav a {
+  .navbar a {
     margin-top: 8px;
     justify-content: center;
   }
 
-  nav > div > div {
+  .navbar > div > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;

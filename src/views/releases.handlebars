@@ -1,0 +1,46 @@
+<div class="releases">
+  <div>
+  <div class="releases__filter-container">
+    <strong>Filter by channel</strong>
+    <div class="release-channel-selector-container">
+      <a class="releases__filter-link" href="/releases/stable">      
+        <div class="releases__filter {{#ifEquals channel "stable"}} releases__filter--selected{{/ifEquals}}">
+          <span class="releases__filter-name"><i class="fas fa-clock"></i>&nbsp;Stable</span>
+          <p class="releases__filter-description">Regular, supported releases</p>
+        </div>
+      </a>
+      <a  class="releases__filter-link" href="/releases/prerelease">
+        <div class="releases__filter {{#ifEquals channel "prerelease"}} releases__filter--selected{{/ifEquals}}">
+          <span class="releases__filter-name"><i class="fas fa-flask"></i>&nbsp;Prerelease</span>
+          <p class="releases__filter-description">Test upcoming changes</p>
+        </div>
+      </a>
+      <a class="releases__filter-link" href="/releases/nightly">
+        <div class="releases__filter {{#ifEquals channel "nightly"}} releases__filter--selected{{/ifEquals}}">
+          <span class="releases__filter-name"><i class="fas fa-calendar"></i>&nbsp;Nightly</span>
+          <p class="releases__filter-description">Experiment with the latest features</p>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="release-filter">
+    <strong>Filter by major release</strong>
+    <div>
+    <a href="?">All</a>
+      {{#each majors}}
+        <a href="?version={{this}}" {{#ifEquals this ../major}}class="selected-release-filter"{{/ifEquals}}>{{this}}.x</a>
+      {{/each}}
+    </div>
+  </div>
+  </div>
+  <div class="releases__list">
+    {{#each releases}}
+      <article class="release-card">
+        {{{markdown this.body}}}
+        {{> metadata this}}
+      </article>
+    {{/each}}
+  </div>
+
+</div>
+{{{paginate this.pages this.page this.prev this.next}}}

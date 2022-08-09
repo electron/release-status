@@ -57,7 +57,8 @@ const getGitHubRelease = timeMemoize(
           tag: version,
         })
       ).data;
-    } catch {
+    } catch(e) {
+      console.error(e)
       return null;
     }
   },
