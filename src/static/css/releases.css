@@ -1,0 +1,114 @@
+.releases {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .releases {
+    grid-template-columns: none;
+  }
+}
+
+.release-card {
+  background: white;
+  border: 1px solid whitesmoke;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  max-width: 100%;
+  overflow-x: auto;
+  box-shadow: var(--shadow-elevation-medium);
+}
+
+.release-card h1 {
+  margin-top: -20px;
+  margin-left: -20px;
+  margin-right: -20px;
+  background: var(--electron-color-dark);
+  color: var(--electron-color-light);
+  padding: 20px;
+}
+
+.release-card h2 {
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid lightgray;
+}
+
+.release-card__metadata {
+  color: grey;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  border-top: 1px solid lightgray;
+  padding: 20px 20px 0;
+  margin-top: 40px;
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.releases__filter-link {
+  text-decoration: none;
+}
+
+.releases__filter {
+  flex: 1;
+  border-radius: 5px;
+  padding: 16px;
+  height: 100%;
+  color: var(--electron-color-dark);
+  margin: 10px;
+  background: white;
+
+  box-shadow: var(--shadow-elevation-medium);
+}
+
+.releases__filter--selected {
+  border: 1px solid whitesmoke;
+  border-left: 6px solid var(--electron-color-light);
+}
+
+.releases__filter-name {
+  font-size: 20px;
+  font-weight: bolder;
+  margin-bottom: 1rem;
+}
+
+.releases__filter-description {
+  font-style: italic;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.pagination {
+  text-align: center;
+}
+
+.pagination__list {
+  padding-left: 0;
+}
+
+.pagination__list-item {
+  list-style: none;
+  padding: 5px 10px;
+  margin: 4px;
+  border: 1px solid #2b2e3b00;
+  border-radius: 4px;
+  display: inline-block;
+  cursor: pointer;
+  min-width: 36px;
+  text-align: center;
+}
+
+.pagination__list-item--selected {
+  background: #2b2e3b;
+  color: white;
+}
+
+.pagination__list-item:hover {
+  border: 1px solid grey;
+}
+
+.pagination__list-link {
+  text-decoration: none;
+}
