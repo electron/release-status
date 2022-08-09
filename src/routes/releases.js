@@ -49,6 +49,15 @@ Handlebars.registerHelper('paginate', function (pages, page, prev, next) {
 });
 
 router.use(paginate.middleware(2, 50));
+
+function stripPreReleasePreamble(body) {
+  const RELEASE_NOTES_START = '# Release Notes for';
+  return `${RELEASE_NOTES_START}${body
+    .split(RELEASE_NOTES_START)
+    .slice(1)
+    .join(RELEASE_NOTES_START)}`;
+}
+
 router.get(
   '/:channel',
   a(async (req, res) => {
@@ -87,7 +96,12 @@ router.get(
     const releasesToDisplay = releasesFromMajor.slice(firstToDisplay, firstToDisplay + limit);
 
     for (const r of releasesToDisplay) {
-      r.body = (await getGitHubRelease(`v${r.version}`)).body;
+      const prereleaseInfo = semver.prerelease(r.version);
+      if (prereleaseInfo && prereleaseInfo[0] === 'nightly') {
+        r.body = `# Release Notes for v${r.version}\nThis release is published to npm under the electron-nightly package and can be installed via:\n\n\`npm install electron-nightly@${r.version}\`.\n\nNightlies do not get release notes, please compare tags for info.`;
+      } else {
+        r.body = stripPreReleasePreamble((await getGitHubRelease(`v${r.version}`)).body);
+      }
     }
 
     const itemCount = releasesFromMajor.length;
