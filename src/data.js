@@ -1,9 +1,10 @@
 const { getAuthOptionsForRepo, appCredentialsFromString } = require('@electron/github-app-auth');
 const fetch = require('node-fetch');
 const { Octokit } = require('@octokit/rest');
+const ExpiryMap = require('expiry-map');
+const pMemoize = require('p-memoize');
 const semver = require('semver');
 
-const timeMemoize = require('./utils/time-memoize');
 
 let octokit = null;
 const getOctokit = async () => {
@@ -22,37 +23,43 @@ const getOctokit = async () => {
   return octokit;
 };
 
-const getReleasesOrUpdate = timeMemoize(
+const getReleasesOrUpdate = pMemoize(
   async () => {
     const response = await fetch.default('https://electronjs.org/headers/index.json');
     const releases = await response.json();
     return releases.sort((a, b) => semver.compare(b.version, a.version));
   },
-  60 * 1000,
-  () => 'releases',
+  {
+    cache: new ExpiryMap(60 * 1000),
+    cacheKey: () => 'releases',
+  },
 );
 
-const getActiveReleasesOrUpdate = timeMemoize(
+const getActiveReleasesOrUpdate = pMemoize(
   async () => {
     const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/release/active');
     return response.json();
   },
-  30 * 1000,
-  () => 'active_releases',
+  {
+    cache: new ExpiryMap(30 * 1000),
+    cacheKey: () => 'active_releases',
+  },
 );
 
-const getAllSudowoodoReleasesOrUpdate = timeMemoize(
+const getAllSudowoodoReleasesOrUpdate = pMemoize(
   async () => {
     const response = await fetch.default(
       'https://electron-sudowoodo.herokuapp.com/release/history',
     );
     return response.json();
   },
-  30 * 1000,
-  () => 'all_releases',
+  {
+    cache: new ExpiryMap(30 * 1000),
+    cacheKey: () => 'all_releases',
+  },
 );
 
-const getGitHubRelease = timeMemoize(
+const getGitHubRelease = pMemoize(
   async (version) => {
     try {
       return (
@@ -67,11 +74,13 @@ const getGitHubRelease = timeMemoize(
       return null;
     }
   },
-  10 * 60 * 1000,
-  (version) => `release/${version}`,
+  {
+    cache: new ExpiryMap(10 * 60 * 1000),
+    cacheKey: (version) => `release/${version}`,
+  },
 );
 
-const getPR = timeMemoize(
+const getPR = pMemoize(
   async (prNumber) => {
     try {
       return (
@@ -85,11 +94,13 @@ const getPR = timeMemoize(
       return null;
     }
   },
-  30 * 1000,
-  (prNumber) => `pr/${prNumber}`,
+  {
+    cache: new ExpiryMap(30 * 1000),
+    cacheKey: (prNumber) => `pr/${prNumber}`,
+  },
 );
 
-const getPRComments = timeMemoize(
+const getPRComments = pMemoize(
   async (prNumber) => {
     const octo = await getOctokit();
     try {
@@ -105,11 +116,13 @@ const getPRComments = timeMemoize(
       return [];
     }
   },
-  60 * 1000,
-  (prNumber) => `pr-comments/${prNumber}`,
+  {
+    cache: new ExpiryMap(60 * 1000),
+    cacheKey: (prNumber) => `pr-comments/${prNumber}`,
+  },
 );
 
-const compareTagToCommit = timeMemoize(
+const compareTagToCommit = pMemoize(
   async (tag, commitSha) => {
     const compare = await (await getOctokit()).repos.compareCommits({
       owner: 'electron',
@@ -119,8 +132,10 @@ const compareTagToCommit = timeMemoize(
     });
     return compare.data;
   },
-  60 * 60 * 24 * 1000,
-  (tag, commitSha) => `compare/${tag}/${commitSha}`,
+  {
+    cache: new ExpiryMap(60 * 60 * 24 * 1000),
+    cacheKey: (tag, commitSha) => `compare/${tag}/${commitSha}`,
+  },
 );
 
 module.exports = {
