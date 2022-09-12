@@ -30,6 +30,11 @@
   padding: 20px;
 }
 
+.release-card h1 a {
+  color: var(--electron-color-light);
+  text-decoration: none;
+}
+
 .release-card h2 {
   padding-bottom: 0.6rem;
   border-bottom: 1px solid lightgray;

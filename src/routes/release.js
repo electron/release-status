@@ -42,9 +42,8 @@ Handlebars.registerHelper('markdownMergeHeaders', function (contentArr) {
       const groupName = headers[i];
       const groupContent = headers[i + 1];
       groups[groupName] = groups[groupName] || '';
-      groups[groupName] += `<div class="notes-version-group ${
-        hasPrerelease ? 'maybe-prerelease' : ''
-      }"><div>${version}</div>\n\n${groupContent.trim()}\n\n</div>\n`;
+      groups[groupName] += `<div class="notes-version-group ${hasPrerelease ? 'maybe-prerelease' : ''
+        }"><div>${version}</div>\n\n${groupContent.trim()}\n\n</div>\n`;
     }
   }
   let generatedNotes = '# Combined Release Notes\n\n';
@@ -61,7 +60,7 @@ async function handleComparisonRequest(startVersion, endVersion, res) {
 
   const parsedStart = semver.parse(startVersion);
   const parsedEnd = semver.parse(endVersion);
-  if (parsedStart.major !== parsedEnd.major) {
+  if (!parsedStart || !parsedEnd || parsedStart.major !== parsedEnd.major) {
     return res.end(
       'Sorry you can only compare Electron versions in the same major line at the moment',
     );
@@ -179,6 +178,8 @@ router.get(
       releaseMeta,
       prerelease: parsed.prerelease[0] || '',
       css: 'release',
+      compareTarget: version,
+      compareList: allReleases.filter(r => semver.parse(r.version).prerelease[0] !== 'nightly' && parsed.major === semver.parse(r.version).major).map(r => r.version),
     });
   }),
 );

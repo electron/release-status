@@ -58,6 +58,10 @@ function stripPreReleasePreamble(body) {
     .join(RELEASE_NOTES_START)}`;
 }
 
+function linkifyReleaseHeader(body) {
+  return body.replace(/# Release Notes for ([^\n]+)\n/, '# [Release Notes for $1](/release/$1)\n')
+}
+
 router.get(
   '/:channel',
   a(async (req, res) => {
@@ -102,6 +106,7 @@ router.get(
       } else {
         r.body = stripPreReleasePreamble((await getGitHubRelease(`v${r.version}`)).body);
       }
+      r.body = linkifyReleaseHeader(r.body);
     }
 
     const itemCount = releasesFromMajor.length;
