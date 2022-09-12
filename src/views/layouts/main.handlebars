@@ -32,7 +32,22 @@
       </div>
     </nav>
     <header>
-      <div><h1>Electron Releases{{#if title}} - {{{title}}}{{/if}}</h1></div>
+      <div>
+        <h1>
+          Electron Releases
+          {{#if title}} - {{{title}}}{{/if}}
+          {{#if compareList}}
+          <div class="version-select-wrapper">
+            <select class="version-select" onchange="goToCompare()">
+              <option disabled selected>Compare To:</option>
+              {{#each compareList}}
+              <option>v{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+          {{/if}}
+        </h1>
+      </div>
     </header>
     <main>
       <div>
@@ -50,5 +65,11 @@
           </div>
       </div>
     </footer>
+    <script>
+      function goToCompare() {
+        const elem = document.querySelector('.version-select');
+        window.location.href = `/release/compare/{{ compareTarget }}/${elem.value}`;
+      }
+    </script>
   </body>
 </html>

@@ -20,6 +20,17 @@ header .latest {
   color: red;
 }
 
+.version-select-wrapper {
+  flex: 1;
+}
+
+.version-select {
+  border: 1px solid #6554c0;
+  border-radius: 3px;
+  padding: 4px 8px;
+  float: right;
+}
+
 header .latest-stable {
   border-color: #00875a;
   color: #00875a;
