@@ -129,7 +129,8 @@ header > div {
 }
 
 main {
-  background: #f5f5f5;
+  /* background: #f5f5f5; */
+  background: #ebedf0;
 }
 
 main > div {
