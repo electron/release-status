@@ -1,12 +1,14 @@
+const Diff = require('diff');
 const { Router } = require('express');
 const Handlebars = require('handlebars');
 const MarkdownIt = require('markdown-it');
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
+const Prism = require('prismjs');
 const semver = require('semver');
 
 const a = require('../utils/a');
-const { getGitHubRelease, getReleasesOrUpdate } = require('../data');
+const { getGitHubRelease, getReleasesOrUpdate, getTSDefs } = require('../data');
 
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
@@ -55,36 +57,52 @@ Handlebars.registerHelper('markdownMergeHeaders', function (contentArr) {
   return DOMPurify.sanitize(md.render(generatedNotes));
 });
 
-async function handleComparisonRequest(startVersion, endVersion, res) {
+async function getValidVersionRange(startVersion, endVersion, res) {
   const allReleases = await getReleasesOrUpdate();
 
   const parsedStart = semver.parse(startVersion);
   const parsedEnd = semver.parse(endVersion);
   if (!parsedStart || !parsedEnd || parsedStart.major !== parsedEnd.major) {
-    return res.end(
+    res.end(
       'Sorry you can only compare Electron versions in the same major line at the moment',
     );
+    return [allReleases, null];
   }
 
   if (semver.gt(startVersion, endVersion)) {
     res.redirect(`/release/compare/${endVersion}/${startVersion}`);
+    return [allReleases, null];
   }
 
   // Bad start === give up
   if (!allReleases.find((r) => r.version === startVersion.substr(1))) {
-    return res.redirect('/');
+    res.redirect('/');
+    return [allReleases, null];
   }
 
   // Bad end === give up
   if (!allReleases.find((r) => r.version === endVersion.substr(1))) {
-    return res.redirect('/');
+    res.redirect('/');
+    return [allReleases, null];
   }
 
-  const versionRange = allReleases.filter(
+  // Start === End - give up
+  if (parsedStart.compare(parsedEnd) === 0) {
+    res.redirect(`/release/${startVersion}`);
+    return [allReleases, null];
+  }
+
+  return [allReleases, allReleases.filter(
     (r) =>
       semver.parse(r.version).compare(startVersion) > 0 &&
       semver.parse(r.version).compare(endVersion) <= 0,
-  );
+  )];
+}
+
+async function handleComparisonRequest(startVersion, endVersion, res) {
+  const [allReleases, versionRange] = await getValidVersionRange(startVersion, endVersion, res);
+  if (!versionRange) return;
+
   const allGitHubReleases = await Promise.all(
     versionRange.map((r) => getGitHubRelease(`v${r.version}`)),
   );
@@ -112,6 +130,30 @@ async function handleComparisonRequest(startVersion, endVersion, res) {
   });
 }
 
+async function handleTypescriptComparisonRequest(startVersion, endVersion, res) {
+  const [_, versionRange] = await getValidVersionRange(startVersion, endVersion, res);
+  if (!versionRange) return;
+
+  const [startTypes, endTypes] = await Promise.all([
+    getTSDefs(startVersion),
+    getTSDefs(endVersion)
+  ]);
+  const tsDiff = Diff.createPatch(
+    'electron.d.ts',
+    startTypes,
+    endTypes,
+    startVersion,
+    endVersion,
+  );
+  const diff = Prism.highlight(tsDiff, Prism.languages.javascript, 'typescript');
+
+  res.render('ts-diff', {
+    title: `${startVersion} .. ${endVersion} (API Changes)`,
+    diff,
+    css: 'prismjs/prism.min',
+  });
+}
+
 router.get(
   '/compare/:startVersion/:endVersion',
   a(async (req, res) => {
@@ -122,11 +164,20 @@ router.get(
 );
 
 router.get(
-  '/compare/:comparisonRange',
+  '/compare/:startVersion/:endVersion/ts',
   a(async (req, res) => {
-    const [startVersion, endVersion] = req.params.comparisonRange.split('...');
-    return await handleComparisonRequest(startVersion, endVersion, res);
+    const startVersion = req.params.startVersion;
+    const endVersion = req.params.endVersion;
+    return await handleTypescriptComparisonRequest(startVersion, endVersion, res);
   }),
+);
+
+router.get(
+  '/compare/:comparisonRange',
+  (req, res) => {
+    const [startVersion, endVersion] = req.params.comparisonRange.split('...');
+    res.redirect(`/release/compare/${startVersion}/${endVersion}`);
+  },
 );
 
 router.get(
@@ -179,7 +230,7 @@ router.get(
       prerelease: parsed.prerelease[0] || '',
       css: 'release',
       compareTarget: version,
-      compareList: allReleases.filter(r => semver.parse(r.version).prerelease[0] !== 'nightly' && parsed.major === semver.parse(r.version).major).map(r => r.version),
+      compareList: allReleases.filter(r => r.version !== version.substr(1) && semver.parse(r.version).prerelease[0] !== 'nightly' && parsed.major === semver.parse(r.version).major).map(r => r.version),
     });
   }),
 );

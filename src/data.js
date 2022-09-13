@@ -138,6 +138,17 @@ const compareTagToCommit = pMemoize(
   },
 );
 
+const getTSDefs = pMemoize(
+  async (version) => {
+    const file = await fetch(`https://unpkg.com/electron@${version}/electron.d.ts`);
+    return await file.text();
+  },
+  {
+    cache: new ExpiryMap(60 * 60 * 24 * 1000),
+    cacheKey: (version) => `ts/${version}`,
+  }
+)
+
 module.exports = {
   getGitHubRelease,
   getReleasesOrUpdate,
@@ -146,4 +157,5 @@ module.exports = {
   getPR,
   getPRComments,
   compareTagToCommit,
+  getTSDefs,
 };
