@@ -195,7 +195,7 @@ router.get(
     let releaseNotes = release.body;
     const parsed = semver.parse(version);
     if (parsed.prerelease.length) {
-      releaseNotes = releaseNotes.split(`@${version.substr(1)}\`.`)[1];
+      releaseNotes = releaseNotes.split(`@${version.substr(1)}\`?.`)[1];
     }
     releaseNotes = releaseNotes.replace(`Release Notes for ${version}`, 'Release Notes');
 
