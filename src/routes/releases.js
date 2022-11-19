@@ -69,7 +69,7 @@ router.get(
     let filter;
 
     if (!['stable', 'prerelease', 'nightly'].includes(channel)) {
-      res.redirect('/releases/stable');
+      return res.redirect('/releases/stable');
     }
 
     if (channel === 'stable') {
