@@ -180,6 +180,10 @@ router.get(
   },
 );
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 router.get(
   '/:version',
   a(async (req, res) => {
@@ -195,7 +199,7 @@ router.get(
     let releaseNotes = release.body;
     const parsed = semver.parse(version);
     if (parsed.prerelease.length) {
-      releaseNotes = releaseNotes.split(`@${version.substr(1)}\`?.`)[1];
+      releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
     releaseNotes = releaseNotes.replace(`Release Notes for ${version}`, 'Release Notes');
 
