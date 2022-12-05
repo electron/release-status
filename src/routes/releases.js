@@ -59,7 +59,7 @@ function stripPreReleasePreamble(body) {
 }
 
 function linkifyReleaseHeader(body) {
-  return body.replace(/# Release Notes for ([^\n]+)\n/, '# [Release Notes for $1](/release/$1)\n')
+  return body.replace(/# Release Notes for ([^\r\n]+)(?:(?:\n)|(?:\r\n))/, '# [Release Notes for $1](/release/$1)\n')
 }
 
 router.get(
