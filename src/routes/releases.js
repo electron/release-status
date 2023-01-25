@@ -29,10 +29,11 @@ Handlebars.registerPartial('metadata', function (version) {
   </div>`;
 });
 
-Handlebars.registerHelper('paginate', function (pages, page, prev, next) {
+Handlebars.registerHelper('paginate', function (pages, page, prev, next, first, last) {
   return `
     <nav class="pagination" role="navigation" aria-label="Pagination Navigation">
       <ul class="pagination__list">
+      <a href=${first} class="pagination__list-item"><li>First</li></a>
         <a href=${prev} class="pagination__list-item"><li>Prev</li></a>
         ${pages
           .map(
@@ -43,6 +44,7 @@ Handlebars.registerHelper('paginate', function (pages, page, prev, next) {
           )
           .join('')}
           <a href=${next} class="pagination__list-item"><li>Next</li></a>
+          <a href=${last} class="pagination__list-item"><li>Last</li></a>
       </ul>
     </nav>
   `;
@@ -59,7 +61,10 @@ function stripPreReleasePreamble(body) {
 }
 
 function linkifyReleaseHeader(body) {
-  return body.replace(/# Release Notes for ([^\r\n]+)(?:(?:\n)|(?:\r\n))/, '# [Release Notes for $1](/release/$1)\n')
+  return body.replace(
+    /# Release Notes for ([^\r\n]+)(?:(?:\n)|(?:\r\n))/,
+    '# [Release Notes for $1](/release/$1)\n',
+  );
 }
 
 router.get(
@@ -121,6 +126,8 @@ router.get(
       prev: paginate.href(req)(true),
       next: paginate.href(req)(false),
       pages: paginate.getArrayPages(req)(5, pageCount, req.query.page),
+      first: paginate.href(req)(false, {page: 1}),
+      last: paginate.href(req)(false, {page: pageCount}),
     });
   }),
 );
