@@ -20,7 +20,7 @@ Handlebars.registerPartial('releaseBar', function (version) {
   return `<a class="release" href="/release/v${version.version}">
   <div class="version">
     <span>${version.version}</span>
-    <span>${timeSince(version.date)}</span>
+    <span title="${version.date}">${timeSince(version.date)}</span>
   </div>
   <div class="dependency-info">
     <span>
