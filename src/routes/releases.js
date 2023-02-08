@@ -53,18 +53,7 @@ Handlebars.registerHelper('paginate', function (pages, page, prev, next, first, 
 router.use(paginate.middleware(2, 50));
 
 function stripPreReleasePreamble(body) {
-  const RELEASE_NOTES_START = '# Release Notes for';
-  return `${RELEASE_NOTES_START}${body
-    .split(RELEASE_NOTES_START)
-    .slice(1)
-    .join(RELEASE_NOTES_START)}`;
-}
-
-function linkifyReleaseHeader(body) {
-  return body.replace(
-    /# Release Notes for ([^\r\n]+)(?:(?:\n)|(?:\r\n))/,
-    '# [Release Notes for $1](/release/$1)\n',
-  );
+  return body.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
 }
 
 router.get(
@@ -106,12 +95,12 @@ router.get(
 
     for (const r of releasesToDisplay) {
       const prereleaseInfo = semver.prerelease(r.version);
+      r.body = `# [Release Notes for v${r.version}](/release/v${r.version})\n`;
       if (prereleaseInfo && prereleaseInfo[0] === 'nightly') {
-        r.body = `# Release Notes for v${r.version}\nThis release is published to npm under the electron-nightly package and can be installed via:\n\n\`npm install electron-nightly@${r.version}\`.\n\nNightlies do not get release notes, please compare tags for info.`;
+        r.body += `This release is published to npm under the electron-nightly package and can be installed via:\n\n\`npm install electron-nightly@${r.version}\`.\n\nNightlies do not get release notes, please compare tags for info.`;
       } else {
-        r.body = stripPreReleasePreamble((await getGitHubRelease(`v${r.version}`)).body);
+        r.body += stripPreReleasePreamble((await getGitHubRelease(`v${r.version}`)).body);
       }
-      r.body = linkifyReleaseHeader(r.body);
     }
 
     const itemCount = releasesFromMajor.length;
