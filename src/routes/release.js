@@ -112,7 +112,8 @@ async function handleComparisonRequest(startVersion, endVersion, res) {
     if (parsed.prerelease.length) {
       notes = notes.split(`@${r.tag_name.substr(1)}\`.`)[1];
     }
-    notes = notes.replace(`Release Notes for ${r.tag_name}`, 'Release Notes');
+    notes = notes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    notes = '# Release Notes\n' + notes;
     return [notes, r.tag_name];
   });
 
@@ -201,7 +202,8 @@ router.get(
     if (parsed.prerelease.length) {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
-    releaseNotes = releaseNotes.replace(`Release Notes for ${version}`, 'Release Notes');
+    releaseNotes = releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    releaseNotes = '# Release Notes\n' + releaseNotes;
 
     const lastPreRelease = allReleases.find(
       (r) =>
