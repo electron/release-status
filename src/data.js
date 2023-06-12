@@ -5,7 +5,6 @@ const ExpiryMap = require('expiry-map');
 const pMemoize = require('p-memoize');
 const semver = require('semver');
 
-
 let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
@@ -146,8 +145,8 @@ const getTSDefs = pMemoize(
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
     cacheKey: (version) => `ts/${version}`,
-  }
-)
+  },
+);
 
 module.exports = {
   getGitHubRelease,
