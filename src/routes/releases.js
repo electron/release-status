@@ -115,8 +115,8 @@ router.get(
       prev: paginate.href(req)(true),
       next: paginate.href(req)(false),
       pages: paginate.getArrayPages(req)(5, pageCount, req.query.page),
-      first: paginate.href(req)(false, {page: 1}),
-      last: paginate.href(req)(false, {page: pageCount}),
+      first: paginate.href(req)(false, { page: 1 }),
+      last: paginate.href(req)(false, { page: pageCount }),
     });
   }),
 );

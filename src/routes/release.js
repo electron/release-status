@@ -44,8 +44,9 @@ Handlebars.registerHelper('markdownMergeHeaders', function (contentArr) {
       const groupName = headers[i];
       const groupContent = headers[i + 1];
       groups[groupName] = groups[groupName] || '';
-      groups[groupName] += `<div class="notes-version-group ${hasPrerelease ? 'maybe-prerelease' : ''
-        }"><div>${version}</div>\n\n${groupContent.trim()}\n\n</div>\n`;
+      groups[groupName] += `<div class="notes-version-group ${
+        hasPrerelease ? 'maybe-prerelease' : ''
+      }"><div>${version}</div>\n\n${groupContent.trim()}\n\n</div>\n`;
     }
   }
   let generatedNotes = '# Combined Release Notes\n\n';
@@ -63,9 +64,7 @@ async function getValidVersionRange(startVersion, endVersion, res) {
   const parsedStart = semver.parse(startVersion);
   const parsedEnd = semver.parse(endVersion);
   if (!parsedStart || !parsedEnd || parsedStart.major !== parsedEnd.major) {
-    res.end(
-      'Sorry you can only compare Electron versions in the same major line at the moment',
-    );
+    res.end('Sorry you can only compare Electron versions in the same major line at the moment');
     return [allReleases, null];
   }
 
@@ -92,11 +91,14 @@ async function getValidVersionRange(startVersion, endVersion, res) {
     return [allReleases, null];
   }
 
-  return [allReleases, allReleases.filter(
-    (r) =>
-      semver.parse(r.version).compare(startVersion) > 0 &&
-      semver.parse(r.version).compare(endVersion) <= 0,
-  )];
+  return [
+    allReleases,
+    allReleases.filter(
+      (r) =>
+        semver.parse(r.version).compare(startVersion) > 0 &&
+        semver.parse(r.version).compare(endVersion) <= 0,
+    ),
+  ];
 }
 
 async function handleComparisonRequest(startVersion, endVersion, res) {
@@ -112,7 +114,8 @@ async function handleComparisonRequest(startVersion, endVersion, res) {
     if (parsed.prerelease.length) {
       notes = notes.split(`@${r.tag_name.substr(1)}\`.`)[1];
     }
-    notes = '# Release Notes\n' + notes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    notes =
+      '# Release Notes\n' + notes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
     return [notes, r.tag_name];
   });
 
@@ -136,15 +139,9 @@ async function handleTypescriptComparisonRequest(startVersion, endVersion, res) 
 
   const [startTypes, endTypes] = await Promise.all([
     getTSDefs(startVersion),
-    getTSDefs(endVersion)
+    getTSDefs(endVersion),
   ]);
-  const tsDiff = Diff.createPatch(
-    'electron.d.ts',
-    startTypes,
-    endTypes,
-    startVersion,
-    endVersion,
-  );
+  const tsDiff = Diff.createPatch('electron.d.ts', startTypes, endTypes, startVersion, endVersion);
   const diff = Prism.highlight(tsDiff, Prism.languages.javascript, 'typescript');
 
   res.render('ts-diff', {
@@ -172,13 +169,10 @@ router.get(
   }),
 );
 
-router.get(
-  '/compare/:comparisonRange',
-  (req, res) => {
-    const [startVersion, endVersion] = req.params.comparisonRange.split('...');
-    res.redirect(`/release/compare/${startVersion}/${endVersion}`);
-  },
-);
+router.get('/compare/:comparisonRange', (req, res) => {
+  const [startVersion, endVersion] = req.params.comparisonRange.split('...');
+  res.redirect(`/release/compare/${startVersion}/${endVersion}`);
+});
 
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
@@ -201,7 +195,9 @@ router.get(
     if (parsed.prerelease.length) {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
-    releaseNotes = '# Release Notes\n' + releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    releaseNotes =
+      '# Release Notes\n' +
+      releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
 
     const lastPreRelease = allReleases.find(
       (r) =>
@@ -234,7 +230,14 @@ router.get(
       prerelease: parsed.prerelease[0] || '',
       css: 'release',
       compareTarget: version,
-      compareList: allReleases.filter(r => r.version !== version.substr(1) && semver.parse(r.version).prerelease[0] !== 'nightly' && parsed.major === semver.parse(r.version).major).map(r => r.version),
+      compareList: allReleases
+        .filter(
+          (r) =>
+            r.version !== version.substr(1) &&
+            semver.parse(r.version).prerelease[0] !== 'nightly' &&
+            parsed.major === semver.parse(r.version).major,
+        )
+        .map((r) => r.version),
     });
   }),
 );
