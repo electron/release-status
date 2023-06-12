@@ -1,0 +1,177 @@
+[
+  {
+    "major": 26,
+    "alpha": "2023-06-01",
+    "beta": "2023-06-27",
+    "stable": "2023-08-08",
+    "endOfLife": null
+  },
+  {
+    "major": 25,
+    "alpha": "2023-04-10",
+    "beta": "2023-05-02",
+    "stable": "2023-05-30",
+    "endOfLife": "2023-12-05"
+  },
+  {
+    "major": 24,
+    "alpha": "2023-02-09",
+    "beta": "2023-03-07",
+    "stable": "2023-04-04",
+    "endOfLife": "2023-10-03"
+  },
+  {
+    "major": 23,
+    "alpha": "2022-12-01",
+    "beta": "2023-01-10",
+    "stable": "2023-02-07",
+    "endOfLife": "2023-08-08"
+  },
+  {
+    "major": 22,
+    "alpha": "2022-09-29",
+    "beta": "2022-10-25",
+    "stable": "2022-11-29",
+    "endOfLife": "2023-10-10"
+  },
+  {
+    "major": 21,
+    "alpha": "2022-08-04",
+    "beta": "2022-08-30",
+    "stable": "2022-09-27",
+    "endOfLife": "2023-04-04"
+  },
+  {
+    "major": 20,
+    "alpha": "2022-05-26",
+    "beta": "2022-06-21",
+    "stable": "2022-08-02",
+    "endOfLife": "2023-02-07"
+  },
+  {
+    "major": 19,
+    "alpha": "2022-03-31",
+    "beta": "2022-04-26",
+    "stable": "2022-05-24",
+    "endOfLife": "2022-11-29"
+  },
+  {
+    "major": 18,
+    "alpha": "2022-02-03",
+    "beta": "2022-03-03",
+    "stable": "2022-03-29",
+    "endOfLife": "2022-09-27"
+  },
+  {
+    "major": 17,
+    "alpha": "2021-11-18",
+    "beta": "2022-01-06",
+    "stable": "2022-02-01",
+    "endOfLife": "2022-08-02"
+  },
+  {
+    "major": 16,
+    "alpha": "2021-09-23",
+    "beta": "2021-10-20",
+    "stable": "2021-11-16",
+    "endOfLife": "2022-05-24"
+  },
+  {
+    "major": 15,
+    "alpha": "2021-07-20",
+    "beta": "2021-09-01",
+    "stable": "2021-09-21",
+    "endOfLife": "2022-05-24"
+  },
+  {
+    "major": 14,
+    "alpha": null,
+    "beta": "2021-05-27",
+    "stable": "2021-08-31",
+    "endOfLife": "2022-03-29"
+  },
+  {
+    "major": 13,
+    "alpha": null,
+    "beta": "2021-03-04",
+    "stable": "2021-05-25",
+    "endOfLife": "2022-02-01"
+  },
+  {
+    "major": 12,
+    "alpha": null,
+    "beta": "2020-11-19",
+    "stable": "2021-03-02",
+    "endOfLife": "2021-11-16"
+  },
+  {
+    "major": 11,
+    "alpha": null,
+    "beta": "2020-08-27",
+    "stable": "2020-11-17",
+    "endOfLife": "2021-08-31"
+  },
+  {
+    "major": 10,
+    "alpha": null,
+    "beta": "2020-05-21",
+    "stable": "2020-08-25",
+    "endOfLife": "2021-05-25"
+  },
+  {
+    "major": 9,
+    "alpha": null,
+    "beta": "2020-02-06",
+    "stable": "2020-05-19",
+    "endOfLife": "2021-03-02"
+  },
+  {
+    "major": 8,
+    "alpha": null,
+    "beta": "2019-10-24",
+    "stable": "2020-02-04",
+    "endOfLife": "2020-11-17"
+  },
+  {
+    "major": 7,
+    "alpha": null,
+    "beta": "2019-08-01",
+    "stable": "2019-10-22",
+    "endOfLife": "2020-08-25"
+  },
+  {
+    "major": 6,
+    "alpha": null,
+    "beta": "2019-04-25",
+    "stable": "2019-07-30",
+    "endOfLife": "2020-05-19"
+  },
+  {
+    "major": 5,
+    "alpha": null,
+    "beta": "2019-01-22",
+    "stable": "2019-04-23",
+    "endOfLife": "2020-02-04"
+  },
+  {
+    "major": 4,
+    "alpha": null,
+    "beta": "2018-10-11",
+    "stable": "2018-12-20",
+    "endOfLife": "2019-10-22"
+  },
+  {
+    "major": 3,
+    "alpha": null,
+    "beta": "2018-06-21",
+    "stable": "2018-09-18",
+    "endOfLife": "2019-07-30"
+  },
+  {
+    "major": 2,
+    "alpha": null,
+    "beta": "2018-02-21",
+    "stable": "2018-05-01",
+    "endOfLife": "2019-04-23"
+  }
+]
