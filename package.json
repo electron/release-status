@@ -28,6 +28,7 @@
   "scripts": {
     "watch": "nodemon --watch src --ext js,css,handlebars --exec \"npm run start\"",
     "start": "node src/index.js",
+    "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
     "postinstall": "cp node_modules/prismjs/themes/*.css src/static/css/prismjs"
   }
