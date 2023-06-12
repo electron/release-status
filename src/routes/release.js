@@ -8,7 +8,7 @@ const Prism = require('prismjs');
 const semver = require('semver');
 
 const a = require('../utils/a');
-const { getGitHubRelease, getReleasesOrUpdate, getTSDefs } = require('../data');
+const { getGitHubRelease, getVersionsOrUpdate, getTSDefs } = require('../data');
 
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
@@ -66,7 +66,7 @@ Handlebars.registerHelper('markdownMergeHeaders', function (contentArr) {
 });
 
 async function getValidVersionRange(startVersion, endVersion, res) {
-  const allReleases = await getReleasesOrUpdate();
+  const { releases: allReleases } = await getVersionsOrUpdate();
 
   const parsedStart = semver.parse(startVersion);
   const parsedEnd = semver.parse(endVersion);
@@ -189,9 +189,9 @@ router.get(
   '/:version',
   a(async (req, res) => {
     const version = req.params.version;
-    const [release, allReleases] = await Promise.all([
+    const [release, { releases: allReleases }] = await Promise.all([
       getGitHubRelease(version),
-      getReleasesOrUpdate(),
+      getVersionsOrUpdate(),
     ]);
     if (!release) {
       return res.redirect('/');
