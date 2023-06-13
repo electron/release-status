@@ -9,16 +9,24 @@ let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
 
-  const authOpts = await getAuthOptionsForRepo(
-    {
-      owner: 'electron',
-      name: 'electron',
-    },
-    appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS),
-  );
-  octokit = new Octokit({
-    ...authOpts,
-  });
+  if (process.env.RELEASE_STATUS_GITHUB_APP_CREDS) {
+    const authOpts = await getAuthOptionsForRepo(
+      {
+        owner: 'electron',
+        name: 'electron',
+      },
+      appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS),
+    );
+    octokit = new Octokit({
+      ...authOpts,
+    });
+  } else if (process.env.GITHUB_TOKEN) {
+    octokit = new Octokit({
+      auth: process.env.GITHUB_TOKEN,
+    });
+  } else {
+    octokit = new Octokit();
+  }
   return octokit;
 };
 
