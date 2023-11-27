@@ -74,9 +74,7 @@ router.get(
     );
     const lastStable = releases.find((r) => semver.parse(r.version).prerelease.length === 0);
     const stableMajor = semver.parse(lastStable.version).major;
-    // TODO: We're supporting Electron 22 until Oct. 10, 2023.
-    // Remove this hardcoded value at that time.
-    const latestSupported = [stableMajor, stableMajor - 1, stableMajor - 2, 22].map((major) =>
+    const latestSupported = [stableMajor, stableMajor - 1, stableMajor - 2].map((major) =>
       releases.find((r) => semver.parse(r.version).major === major),
     );
     if (semver.parse(lastPreRelease.version).major <= stableMajor) {
