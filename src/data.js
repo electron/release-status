@@ -70,7 +70,9 @@ const getGitHubRelease = pMemoize(
   async (version) => {
     try {
       return (
-        await (await getOctokit()).repos.getReleaseByTag({
+        await (
+          await getOctokit()
+        ).repos.getReleaseByTag({
           owner: 'electron',
           repo: version.includes('nightly') ? 'nightlies' : 'electron',
           tag: version,
@@ -91,7 +93,9 @@ const getPR = pMemoize(
   async (prNumber) => {
     try {
       return (
-        await (await getOctokit()).pulls.get({
+        await (
+          await getOctokit()
+        ).pulls.get({
           owner: 'electron',
           repo: 'electron',
           pull_number: prNumber,
@@ -131,7 +135,9 @@ const getPRComments = pMemoize(
 
 const compareTagToCommit = pMemoize(
   async (tag, commitSha) => {
-    const compare = await (await getOctokit()).repos.compareCommits({
+    const compare = await (
+      await getOctokit()
+    ).repos.compareCommits({
       owner: 'electron',
       repo: 'electron',
       base: tag,
