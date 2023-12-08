@@ -27,14 +27,18 @@
   border: 1px solid #00c7e6;
   background: white;
   min-width: 300px;
-  box-shadow: 0 2px 6px rgb(9 30 66 / 25%), 0 0 1px 0 rgb(9 30 66 / 31%);
+  box-shadow:
+    0 2px 6px rgb(9 30 66 / 25%),
+    0 0 1px 0 rgb(9 30 66 / 31%);
   cursor: pointer;
   user-select: none;
   transition: box-shadow 0.1s ease-in-out;
 }
 
 .primary-cell:hover {
-  box-shadow: 0 8px 16px -4px rgb(9 30 66 / 25%), 0 0 1px rgb(9 30 66 / 31%);
+  box-shadow:
+    0 8px 16px -4px rgb(9 30 66 / 25%),
+    0 0 1px rgb(9 30 66 / 31%);
 }
 
 .primary-cell h4 {
@@ -65,14 +69,18 @@
   border-radius: 4px;
   min-width: 220px;
   background: white;
-  box-shadow: 0 2px 6px rgb(9 30 66 / 25%), 0 0 1px 0 rgb(9 30 66 / 31%);
+  box-shadow:
+    0 2px 6px rgb(9 30 66 / 25%),
+    0 0 1px 0 rgb(9 30 66 / 31%);
   cursor: pointer;
   user-select: none;
   transition: box-shadow 0.1s ease-in-out;
 }
 
 .backport-cell:hover {
-  box-shadow: 0 8px 16px -4px rgb(9 30 66 / 25%), 0 0 1px rgb(9 30 66 / 31%);
+  box-shadow:
+    0 8px 16px -4px rgb(9 30 66 / 25%),
+    0 0 1px rgb(9 30 66 / 31%);
 }
 
 .backport-pending .backport-cell,
