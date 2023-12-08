@@ -2,7 +2,7 @@ const { Router } = require('express');
 const paginate = require('express-paginate');
 const Handlebars = require('handlebars');
 const a = require('../utils/a');
-const { getGitHubRelease, getVersionsOrUpdate } = require('../data');
+const { getGitHubRelease, getReleasesOrUpdate } = require('../data');
 const semver = require('semver');
 
 const router = new Router();
@@ -75,7 +75,7 @@ router.get(
       filter = ({ version }) => version.includes('nightly');
     }
 
-    const { releases } = await getVersionsOrUpdate();
+    const releases = await getReleasesOrUpdate();
     const { page, limit, version } = req.query;
     const releasesFromChannel = releases.filter(filter);
     const major = Number(version);

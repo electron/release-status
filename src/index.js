@@ -3,9 +3,10 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 
 const a = require('./utils/a');
-const { getVersionsOrUpdate, getActiveReleasesOrUpdate } = require('./data');
+const { getReleasesOrUpdate, getVersionsOrUpdate, getActiveReleasesOrUpdate } = require('./data');
 
 const app = express();
+app.set('json spaces', 4); // TODO - Remove debugging
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -25,7 +26,7 @@ app.get(
   '/releases.json',
   a(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json((await getVersionsOrUpdate()).releases);
+    res.json(await getReleasesOrUpdate());
   }),
 );
 
@@ -38,10 +39,10 @@ app.get(
 );
 
 app.get(
-  '/support.json',
+  '/majors.json',
   a(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json((await getVersionsOrUpdate()).support);
+    res.json((await getVersionsOrUpdate()).majors);
   }),
 );
 
