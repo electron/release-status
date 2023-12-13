@@ -23,7 +23,9 @@
   },
   "devDependencies": {
     "husky": "^8.0.0",
+    "jest": "^29.4.3",
     "lint-staged": "^15.2.0",
+    "nock": "^13.4.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.1.0"
   },
@@ -38,9 +40,10 @@
   "scripts": {
     "watch": "nodemon --watch src --ext js,css,handlebars --exec \"npm run start\"",
     "start": "node src/index.js",
-    "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
-    "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
+    "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\" \"test/**/*.js\"",
+    "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\" \"test/**/*.js\"",
     "postinstall": "cp node_modules/prismjs/themes/*.css src/static/css/prismjs",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest"
   }
 }
