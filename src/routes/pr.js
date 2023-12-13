@@ -1,3 +1,4 @@
+const Handlebars = require('handlebars');
 const { Router } = require('express');
 const semver = require('semver');
 
@@ -5,6 +6,8 @@ const a = require('../utils/a');
 const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments } = require('../data');
 
 const router = new Router();
+
+Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString());
 
 async function getPRReleaseStatus(prNumber) {
   const releases = [...(await getReleasesOrUpdate())].reverse();

@@ -9,20 +9,22 @@ let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
 
-  if (process.env.RELEASE_STATUS_GITHUB_APP_CREDS) {
+  const { RELEASE_STATUS_GITHUB_APP_CREDS, GITHUB_TOKEN } = process.env;
+
+  if (RELEASE_STATUS_GITHUB_APP_CREDS) {
     const authOpts = await getAuthOptionsForRepo(
       {
         owner: 'electron',
         name: 'electron',
       },
-      appCredentialsFromString(process.env.RELEASE_STATUS_GITHUB_APP_CREDS),
+      appCredentialsFromString(RELEASE_STATUS_GITHUB_APP_CREDS),
     );
     octokit = new Octokit({
       ...authOpts,
     });
-  } else if (process.env.GITHUB_TOKEN) {
+  } else if (GITHUB_TOKEN) {
     octokit = new Octokit({
-      auth: process.env.GITHUB_TOKEN,
+      auth: GITHUB_TOKEN,
     });
   } else {
     octokit = new Octokit();

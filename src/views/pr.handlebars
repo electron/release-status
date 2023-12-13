@@ -2,8 +2,14 @@
   <canvas id="connectors"></canvas>
   <div class="primary">
     <div class="primary-cell">
-      <h4>Source PR</h4>
-      <span>#{{ primary.pr.number }}</span>
+      <span>Title: {{ primary.pr.title }}</span>
+      <span>Original PR: <a href="{{ primary.pr.html_url }}">#{{ primary.pr.number }}</a></span>
+      <span>Author: <a href="https://github.com/{{ primary.pr.user.login }}">{{ primary.pr.user.login }}</a></span>
+      <span>Merged On: {{ formattedDate primary.pr.merged_at }}</span>
+
+      {{#if primary.availableIn}}
+      <span>Released: <a href="/release/{{primary.availableIn.version}}">{{primary.availableIn.version}}</a></span>
+      {{/if}}
     </div>
   </div>
   <div class="backports">
@@ -13,11 +19,11 @@
           <h4>{{ targetBranch }}</h4>
 
           {{#if pr}}
-          <span>Backport PR: #{{ pr.number }}</span>
+          <span>Backport PR: <a href="{{ pr.html_url }}">#{{ pr.number }}</a></span>
           {{/if}}
 
           {{#if availableIn}}
-          <span>Released: {{availableIn.version}}</span>
+          <span>Released: <a href="/release/{{availableIn.version}}" >{{availableIn.version}}</a></span>
           {{/if}}
         </div>
       </div>
