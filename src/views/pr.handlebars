@@ -1,32 +1,43 @@
-<div class="tree">
-  <canvas id="connectors"></canvas>
-  <div class="primary">
-    <div class="primary-cell">
-      <span>Title: {{ primary.pr.title }}</span>
-      <span>Original PR: <a href="{{ primary.pr.html_url }}">#{{ primary.pr.number }}</a></span>
-      <span>Author: <a href="https://github.com/{{ primary.pr.user.login }}">{{ primary.pr.user.login }}</a></span>
-      <span>Merged On: {{ formattedDate primary.pr.merged_at }}</span>
-
-      {{#if primary.availableIn}}
-      <span>Released: <a href="/release/{{primary.availableIn.version}}">{{primary.availableIn.version}}</a></span>
-      {{/if}}
-    </div>
+<div class="grid-container">
+  <div class="grid-item">
+    <h2 class="grid-header">PR Title</h2>
+    <p class="grid-contents">{{ primary.pr.title }}</p>
   </div>
-  <div class="backports">
-    {{#each backports}}
-      <div class="backport backport-{{ state }}">
-        <div class="backport-cell">
-          <h4>{{ targetBranch }}</h4>
-
-          {{#if pr}}
-          <span>Backport PR: <a href="{{ pr.html_url }}">#{{ pr.number }}</a></span>
-          {{/if}}
-
+  <div class="grid-item">
+    <h2 class="grid-header">Details</h2>
+    <p class="grid-contents"><b>Author:</b> <a target="_blank" href="https://github.com/{{ primary.pr.user.login }}">@{{ primary.pr.user.login
+        }}</a> <b>Time:</b> {{ formattedDate primary.pr.merged_at }} <b>Commit: </b> <a target="_blank" href="https://github.com/electron/electron/{{sha primary.pr.base.sha}}">{{sha primary.pr.base.sha}}</a></p>
+  </div>
+  <div class="grid-item">
+    <h2 class="grid-header">PR Information</h2>
+    <p class="grid-contents">{{primary.pr.body}}</p>
+  </div>
+  <div class="grid-item">
+    <h2 class="grid-header">Release</h2>
+    <p class="grid-contents">
+      {{#if availableIn}}
+        <a href="/release/{{primary.availableIn.version}}">{{primary.availableIn.version}}</a>
+      {{else}}
+        This PR has not been released.
+      {{/if}}
+    </p>
+  </div>
+  <div class="grid-item">
+    <h2 class="grid-header">Backports</h2>
+    <div style="display: grid; grid-template-columns: repeat({{backports.length}}, 1fr); grid-gap: 20px;">
+      {{#each backports}}
+      <div class="grid-sub-item">
+        <h3>{{ targetBranch }}</h3>
+        <p class="grid-contents"><a href="{{ pr.html_url }}">#{{ pr.number }}</a></p>
+        <p class="grid-contents">
           {{#if availableIn}}
-          <span>Released: <a href="/release/{{availableIn.version}}" >{{availableIn.version}}</a></span>
+            <a href="/release/{{availableIn.version}}">v{{availableIn.version}}</a>
+          {{else}}
+            Not Yet Released
           {{/if}}
-        </div>
+        </p>
       </div>
-    {{/each}}
+      {{/each}}
+    </div>
   </div>
 </div>

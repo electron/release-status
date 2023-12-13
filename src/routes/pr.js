@@ -9,6 +9,8 @@ const router = new Router();
 
 Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString());
 
+Handlebars.registerHelper('sha', (commitSha) => commitSha.substr(0, 7));
+
 async function getPRReleaseStatus(prNumber) {
   const releases = [...(await getReleasesOrUpdate())].reverse();
   const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]);
