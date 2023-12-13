@@ -1,6 +1,15 @@
 const Handlebars = require('handlebars');
 const { Router } = require('express');
 const semver = require('semver');
+const MarkdownIt = require('markdown-it');
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
+const md = new MarkdownIt({
+  html: true,
+});
 
 const a = require('../utils/a');
 const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments } = require('../data');
@@ -10,6 +19,10 @@ const router = new Router();
 Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString());
 
 Handlebars.registerHelper('sha', (commitSha) => commitSha.substr(0, 7));
+
+Handlebars.registerHelper('markdown', function (content) {
+  return DOMPurify.sanitize(md.render(content));
+});
 
 async function getPRReleaseStatus(prNumber) {
   const releases = [...(await getReleasesOrUpdate())].reverse();
