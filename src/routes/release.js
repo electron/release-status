@@ -50,11 +50,18 @@ Handlebars.registerHelper('markdownMergeHeaders', function (contentArr) {
     }
   }
   let generatedNotes = '# Combined Release Notes\n\n';
-  for (const knownSection of knownSections.concat(Object.keys(groups))) {
-    if (!groups[knownSection]) continue;
-    generatedNotes += `## ${knownSection}\n\n${groups[knownSection]}\n`;
-    delete groups[knownSection];
+
+  const hasReleaseNotes = Object.values(groups).some((v) => v !== '');
+  if (hasReleaseNotes) {
+    for (const knownSection of knownSections.concat(Object.keys(groups))) {
+      if (!groups[knownSection]) continue;
+      generatedNotes += `## ${knownSection}\n\n${groups[knownSection]}\n`;
+      delete groups[knownSection];
+    }
+  } else {
+    generatedNotes += 'There were no release notes for this version comparison.';
   }
+
   return DOMPurify.sanitize(md.render(generatedNotes));
 });
 
