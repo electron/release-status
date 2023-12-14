@@ -31,7 +31,7 @@
         <p class="grid-contents"><a href="{{ pr.html_url }}">#{{ pr.number }}</a></p>
         <p class="grid-contents">
           {{#if availableIn}}
-            <a href="/release/{{availableIn.version}}">v{{availableIn.version}}</a>
+            <a href="/release/v{{availableIn.version}}">v{{availableIn.version}}</a>
           {{else}}
             Not Yet Released
           {{/if}}

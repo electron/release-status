@@ -26,4 +26,5 @@
 
 #grid-pr-body {
   padding: 0 15px 0px 15px;
+  word-break: break-word;
 }

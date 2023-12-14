@@ -8,7 +8,7 @@ const { JSDOM } = require('jsdom');
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 const md = new MarkdownIt({
-  html: true,
+  linkify: true,
 });
 
 const a = require('../utils/a');
