@@ -18,8 +18,6 @@ const router = new Router();
 
 Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString());
 
-Handlebars.registerHelper('sha', (commitSha) => commitSha.substr(0, 7));
-
 Handlebars.registerHelper('markdown', function (content) {
   return DOMPurify.sanitize(md.render(content));
 });

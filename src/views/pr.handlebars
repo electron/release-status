@@ -6,7 +6,8 @@
   <div class="grid-item">
     <h2 class="grid-header">Details</h2>
     <p class="grid-contents"><b>Author:</b> <a target="_blank" href="https://github.com/{{ primary.pr.user.login }}">@{{ primary.pr.user.login
-        }}</a> <b>Time:</b> {{ formattedDate primary.pr.merged_at }} <b>Commit: </b> <a target="_blank" href="https://github.com/electron/electron/{{sha primary.pr.base.sha}}">{{sha primary.pr.base.sha}}</a></p>
+        }}</a> <b>Time:</b> {{ formattedDate primary.pr.merged_at }} <b>PR: </b> <a target="_blank" href="{{primary.pr.html_url}}">#{{
+          primary.pr.number}}</a></p>
   </div>
   <div class="grid-item">
     <h2 class="grid-header">PR Information</h2>
