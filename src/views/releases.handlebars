@@ -24,7 +24,7 @@
     </div>
     <strong>Filter by major release</strong>
     <div class="release-version-selector-container">
-      <select id="version-select" onchange="showSelectedVersion('{{this.channel}}')">
+      <select id="version-select" onchange="showSelectedVersion()">
         <option value="All">All</option>
         {{#each majors}}
         <option value="{{this}}" {{#ifEquals this ../major}}selected{{/ifEquals}}>{{this}}.x</option>
@@ -44,9 +44,9 @@
 </div>
 
 <script>
-  function showSelectedVersion(channel) {
+  function showSelectedVersion() {
     const { value: version } = document.getElementById("version-select");
-    window.location.href = version === 'All' ?`/releases/${channel}` : `/releases/${channel}?version=${version}`;
+    window.location.search = version === 'All' ? '' : `version=${version}`;
   }
 </script>
 
