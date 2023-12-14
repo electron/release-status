@@ -68,6 +68,16 @@
   box-shadow: var(--shadow-elevation-medium);
 }
 
+#version-select {
+  border: 1px solid whitesmoke;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 10px;
+  font-size: 20px;
+  font-weight: bolder;
+  color: var(--electron-color-dark);
+}
+
 .releases__filter--selected {
   border: 1px solid whitesmoke;
   border-left: 6px solid var(--electron-color-light);

@@ -22,14 +22,14 @@
         </div>
       </a>
     </div>
-  </div>
-  <div class="release-filter">
     <strong>Filter by major release</strong>
-    <div>
-    <a href="?">All</a>
-      {{#each majors}}
-        <a href="?version={{this}}" {{#ifEquals this ../major}}class="selected-release-filter"{{/ifEquals}}>{{this}}.x</a>
-      {{/each}}
+    <div class="release-version-selector-container">
+      <select id="version-select" onchange="showSelectedVersion()">
+        <option value="All">All</option>
+        {{#each majors}}
+        <option value="{{this}}" {{#ifEquals this ../major}}selected{{/ifEquals}}>{{this}}.x</option>
+        {{/each}}
+      </select>
     </div>
   </div>
   </div>
@@ -41,6 +41,13 @@
       </article>
     {{/each}}
   </div>
-
 </div>
+
+<script>
+  function showSelectedVersion() {
+    const { value: version } = document.getElementById("version-select");
+    window.location.search = version === 'All' ? '' : `version=${version}`;
+  }
+</script>
+
 {{{paginate this.pages this.page this.prev this.next this.first this.last}}}
