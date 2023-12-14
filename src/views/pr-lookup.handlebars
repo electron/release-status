@@ -1,0 +1,11 @@
+<div class="lookup-container">
+  <input id="lookupInput" type="text" placeholder="Look Up a PR...">
+  <button onclick="lookup()">Search</button>
+</div>
+
+<script>
+  function lookup() {
+    const { value } = document.getElementById('lookupInput');
+    window.location = '/pr/' + encodeURIComponent(value);
+  }
+</script>

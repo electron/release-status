@@ -1,0 +1,27 @@
+.lookup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+}
+
+#lookupInput {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  flex-grow: 1;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #2b2e3b;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0d4a59;
+}

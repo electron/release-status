@@ -1,10 +1,21 @@
+const Handlebars = require('handlebars');
 const { Router } = require('express');
 const semver = require('semver');
+const MarkdownIt = require('markdown-it');
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 const a = require('../utils/a');
 const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments } = require('../data');
 
 const router = new Router();
+
+Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString());
+
+Handlebars.registerHelper('html', (content) => DOMPurify.sanitize(content));
 
 async function getPRReleaseStatus(prNumber) {
   const releases = [...(await getReleasesOrUpdate())].reverse();
@@ -27,10 +38,10 @@ async function getPRReleaseStatus(prNumber) {
 
     // We've been merged, let's find out if this is available in a nightly
     if (prInfo.merged) {
-      const allNighlies = releases.filter(
+      const allNightlies = releases.filter(
         (r) => semver.parse(r.version).prerelease[0] === 'nightly',
       );
-      for (const nightly of allNighlies) {
+      for (const nightly of allNightlies) {
         const dateParts = nightly.date.split('-').map((n) => parseInt(n, 10));
         const releaseDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2] + 1);
         if (releaseDate > new Date(prInfo.merged_at)) {
