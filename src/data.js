@@ -101,6 +101,9 @@ const getPR = pMemoize(
           owner: 'electron',
           repo: 'electron',
           pull_number: prNumber,
+          mediaType: {
+            format: 'html',
+          },
         })
       ).data;
     } catch {
