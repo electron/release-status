@@ -3,7 +3,7 @@ const Handlebars = require('handlebars');
 const semver = require('semver');
 
 const a = require('../utils/a');
-const { getReleasesOrUpdate, getActiveReleasesOrUpdate } = require('../data');
+const { getVersionsOrUpdate, getActiveReleasesOrUpdate } = require('../data');
 const { timeSince, minutesSince } = require('../utils/format-time');
 
 const router = new Router();
@@ -64,8 +64,8 @@ Handlebars.registerPartial('releaseSquare', function (release) {
 router.get(
   '/',
   a(async (req, res) => {
-    const [releases, activeReleases] = await Promise.all([
-      getReleasesOrUpdate(),
+    const [{ releases, majors }, activeReleases] = await Promise.all([
+      getVersionsOrUpdate(),
       getActiveReleasesOrUpdate(),
     ]);
     const lastNightly = releases.find((r) => semver.parse(r.version).prerelease[0] === 'nightly');
@@ -74,9 +74,12 @@ router.get(
         semver.parse(r.version).prerelease[0] === 'beta' ||
         semver.parse(r.version).prerelease[0] === 'alpha',
     );
-    const lastStable = releases.find((r) => semver.parse(r.version).prerelease.length === 0);
-    const stableMajor = semver.parse(lastStable.version).major;
-    const latestSupported = [stableMajor, stableMajor - 1, stableMajor - 2].map((major) =>
+    const supportedMajors = majors
+      .sort(({ major: a }, { major: b }) => b - a)
+      .filter(({ isStable, isSupported }) => isStable === true && isSupported === true)
+      .map(({ major }) => major);
+    const stableMajor = supportedMajors[0];
+    const latestSupported = supportedMajors.map((major) =>
       releases.find((r) => semver.parse(r.version).major === major),
     );
     if (semver.parse(lastPreRelease.version).major <= stableMajor) {
