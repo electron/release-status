@@ -161,6 +161,12 @@ async function getPRReleaseStatus(prNumber) {
   };
 }
 
+router.get('/is-valid/:number', async (req, res) => {
+  const prNumber = parseInt(req.params.number, 10);
+  const valid = prNumber > 0 && !!(await getPR(prNumber));
+  return res.json({ valid });
+});
+
 router.get(
   '/:number',
   a(async (req, res) => {
