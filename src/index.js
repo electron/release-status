@@ -41,9 +41,8 @@ app.use('/release', require('./routes/release'));
 app.use('/releases', require('./routes/releases'));
 app.use('/history', require('./routes/history'));
 app.use('/release-build', require('./routes/release-build'));
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/pr', require('./routes/pr'));
-}
+app.use('/pr', require('./routes/pr'));
+app.use('/pr-lookup', require('./routes/pr-lookup'));
 
 app.use(
   express.static(path.resolve(__dirname, 'static'), {
