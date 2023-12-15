@@ -4,6 +4,7 @@ const { Octokit } = require('@octokit/rest');
 const ExpiryMap = require('expiry-map');
 const pMemoize = require('p-memoize');
 const semver = require('semver');
+const log = require('debug')('data');
 
 let octokit = null;
 const getOctokit = async () => {
@@ -19,14 +20,17 @@ const getOctokit = async () => {
       },
       appCredentialsFromString(RELEASE_STATUS_GITHUB_APP_CREDS),
     );
+    log('Using Octokit with GitHub App auth');
     octokit = new Octokit({
       ...authOpts,
     });
   } else if (GITHUB_TOKEN) {
+    log('Using Octokit with GitHub token auth');
     octokit = new Octokit({
       auth: GITHUB_TOKEN,
     });
   } else {
+    log('Using Octokit with unauthenticated GitHub API');
     octokit = new Octokit();
   }
   return octokit;
@@ -34,9 +38,14 @@ const getOctokit = async () => {
 
 const getReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch.default('https://electronjs.org/headers/index.json');
-    const releases = await response.json();
-    return releases.sort((a, b) => semver.compare(b.version, a.version));
+    try {
+      const response = await fetch.default('https://electronjs.org/headers/index.json');
+      const releases = await response.json();
+      return releases.sort((a, b) => semver.compare(b.version, a.version));
+    } catch (e) {
+      log(e.message);
+      return {};
+    }
   },
   {
     cache: new ExpiryMap(60 * 1000),
@@ -46,8 +55,15 @@ const getReleasesOrUpdate = pMemoize(
 
 const getActiveReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/release/active');
-    return response.json();
+    try {
+      const response = await fetch.default(
+        'https://electron-sudowoodo.herokuapp.com/release/active',
+      );
+      return response.json();
+    } catch (e) {
+      log('Failed to fetch active releases: ', e.message);
+      return {};
+    }
   },
   {
     cache: new ExpiryMap(30 * 1000),
@@ -57,10 +73,15 @@ const getActiveReleasesOrUpdate = pMemoize(
 
 const getAllSudowoodoReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch.default(
-      'https://electron-sudowoodo.herokuapp.com/release/history',
-    );
-    return response.json();
+    try {
+      const response = await fetch.default(
+        'https://electron-sudowoodo.herokuapp.com/release/history',
+      );
+      return response.json();
+    } catch (e) {
+      log('Failed to fetch release history from Sudowoodo: ', e.message);
+      return {};
+    }
   },
   {
     cache: new ExpiryMap(30 * 1000),
@@ -71,17 +92,15 @@ const getAllSudowoodoReleasesOrUpdate = pMemoize(
 const getGitHubRelease = pMemoize(
   async (version) => {
     try {
-      return (
-        await (
-          await getOctokit()
-        ).repos.getReleaseByTag({
-          owner: 'electron',
-          repo: version.includes('nightly') ? 'nightlies' : 'electron',
-          tag: version,
-        })
-      ).data;
+      const octo = await getOctokit();
+      const { data } = await octo.repos.getReleaseByTag({
+        owner: 'electron',
+        repo: version.includes('nightly') ? 'nightlies' : 'electron',
+        tag: version,
+      });
+      return data;
     } catch (e) {
-      console.error(e);
+      log(`Failed to fetch GitHub release for version ${version}: `, e.message);
       return null;
     }
   },
@@ -94,19 +113,18 @@ const getGitHubRelease = pMemoize(
 const getPR = pMemoize(
   async (prNumber) => {
     try {
-      return (
-        await (
-          await getOctokit()
-        ).pulls.get({
-          owner: 'electron',
-          repo: 'electron',
-          pull_number: prNumber,
-          mediaType: {
-            format: 'html',
-          },
-        })
-      ).data;
-    } catch {
+      const octo = await getOctokit();
+      const { data } = await octo.pulls.get({
+        owner: 'electron',
+        repo: 'electron',
+        pull_number: prNumber,
+        mediaType: {
+          format: 'html',
+        },
+      });
+      return data;
+    } catch (e) {
+      log(`Failed to fetch PR ${prNumber}: `, e.message);
       return null;
     }
   },
@@ -128,7 +146,8 @@ const getPRComments = pMemoize(
           per_page: 100,
         }),
       );
-    } catch {
+    } catch (e) {
+      log(`Failed to fetch comments for PR ${prNumber}: `, e.message);
       return [];
     }
   },
@@ -140,15 +159,19 @@ const getPRComments = pMemoize(
 
 const compareTagToCommit = pMemoize(
   async (tag, commitSha) => {
-    const compare = await (
-      await getOctokit()
-    ).repos.compareCommits({
-      owner: 'electron',
-      repo: 'electron',
-      base: tag,
-      head: commitSha,
-    });
-    return compare.data;
+    try {
+      const octo = await getOctokit();
+      const { data } = await octo.repos.compareCommits({
+        owner: 'electron',
+        repo: 'electron',
+        base: tag,
+        head: commitSha,
+      });
+      return data;
+    } catch (e) {
+      log(`Failed to compare tag ${tag} to commit ${commitSha}: `, e.message);
+      return [];
+    }
   },
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
@@ -158,8 +181,13 @@ const compareTagToCommit = pMemoize(
 
 const getTSDefs = pMemoize(
   async (version) => {
-    const file = await fetch(`https://unpkg.com/electron@${version}/electron.d.ts`);
-    return await file.text();
+    try {
+      const file = await fetch(`https://unpkg.com/electron@${version}/electron.d.ts`);
+      return await file.text();
+    } catch (e) {
+      log(`Failed to fetch TS defs for version ${version}: `, e.message);
+      return '';
+    }
   },
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
