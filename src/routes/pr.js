@@ -1,7 +1,6 @@
 const Handlebars = require('handlebars');
 const { Router } = require('express');
 const semver = require('semver');
-const MarkdownIt = require('markdown-it');
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 
@@ -20,35 +19,35 @@ Handlebars.registerHelper('html', (content) => DOMPurify.sanitize(content));
 async function getPRReleaseStatus(prNumber) {
   const releases = [...(await getReleasesOrUpdate())].reverse();
   const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]);
+
   if (!prInfo) return null;
 
-  // PR is somehow targetting a repo that isn't in the electron org??
-  if (prInfo.base.user.login !== 'electron') {
+  const { base, merged, merged_at, merge_commit_sha } = prInfo;
+
+  // PR is somehow targeting a repo that isn't in the electron org
+  // or that isn't electron/electron.
+  if (base.user.login !== 'electron' || base.repo.name !== 'electron') {
     return null;
   }
 
-  // PR is somehow targetting a repo that isn't the primary repo??
-  if (prInfo.base.repo.name !== 'electron') {
-    return null;
-  }
-
-  if (prInfo.base.ref === prInfo.base.repo.default_branch) {
+  // PRs merged before we renamed the default branch to main from master
+  // will have a base.ref of master and a base.repo.default_branch of main.
+  const primaryPRBeforeRename =
+    base.ref === 'master' && new Date(merged_at) < new Date('June 1 2021');
+  if (primaryPRBeforeRename || base.ref === base.repo.default_branch) {
     const backports = [];
     let availableIn = null;
 
     // We've been merged, let's find out if this is available in a nightly
-    if (prInfo.merged) {
+    if (merged) {
       const allNightlies = releases.filter(
         (r) => semver.parse(r.version).prerelease[0] === 'nightly',
       );
       for (const nightly of allNightlies) {
         const dateParts = nightly.date.split('-').map((n) => parseInt(n, 10));
         const releaseDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2] + 1);
-        if (releaseDate > new Date(prInfo.merged_at)) {
-          const comparison = await compareTagToCommit(
-            `v${nightly.version}`,
-            prInfo.merge_commit_sha,
-          );
+        if (releaseDate > new Date(merged_at)) {
+          const comparison = await compareTagToCommit(`v${nightly.version}`, merge_commit_sha);
           if (comparison.status === 'behind') {
             availableIn = nightly;
             break;
@@ -132,7 +131,6 @@ async function getPRReleaseStatus(prNumber) {
 
     // This is the primary PR, we can scan from here for backports
     return {
-      highlightPR: prNumber,
       primary: {
         pr: prInfo,
         availableIn,
@@ -152,13 +150,11 @@ async function getPRReleaseStatus(prNumber) {
   const backportPattern =
     /(?:^|\n)(?:manual |manually )?backport (?:of )?(?:#(\d+)|https:\/\/github.com\/.*\/pull\/(\d+))/gim;
   const match = backportPattern.exec(prInfo.body);
+
   if (!match) return null;
   const parentPRNumber = match[1] ? parseInt(match[1], 10) : parseInt(match[2], 10);
 
-  return {
-    ...(await getPRReleaseStatus(parentPRNumber)),
-    highlightPR: prNumber,
-  };
+  return { ...(await getPRReleaseStatus(parentPRNumber)) };
 }
 
 router.get('/is-valid/:number', async (req, res) => {
