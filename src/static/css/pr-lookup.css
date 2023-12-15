@@ -1,4 +1,4 @@
-.lookup-container {
+.lookup-input {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,7 +6,7 @@
   padding: 20px;
 }
 
-#lookupInput {
+#input {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -24,4 +24,14 @@ button {
 
 button:hover {
   background-color: #0d4a59;
+}
+
+.error {
+  color: red;
+  justify-content: center;
+  display: flex;
+}
+
+.error:empty {
+  display: none;
 }
