@@ -44,7 +44,7 @@ const getReleasesOrUpdate = pMemoize(
       return releases.sort((a, b) => semver.compare(b.version, a.version));
     } catch (e) {
       log(e.message);
-      return {};
+      throw e;
     }
   },
   {
