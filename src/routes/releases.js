@@ -78,13 +78,16 @@ router.get(
     const releases = await getReleasesOrUpdate();
     const { page, limit, version } = req.query;
     const releasesFromChannel = releases.filter(filter);
-    const major = Number(version);
+    let major = parseInt(version, 10);
+    if (isNaN(major) || major < 0) {
+      major = null;
+    }
     const majors = releasesFromChannel.reduce((acc, val) => {
       acc.add(semver.major(val.version));
       return acc;
     }, new Set());
     const releasesFromMajor = releasesFromChannel.filter((release) => {
-      if (Number.isInteger(major) && major >= 0) {
+      if (major) {
         return semver.major(release.version) === major;
       } else {
         return true;
