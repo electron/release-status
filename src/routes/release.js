@@ -202,9 +202,7 @@ router.get(
     if (parsed.prerelease.length) {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
-    releaseNotes =
-      '# Release Notes\n' +
-      releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    releaseNotes = releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
 
     const lastPreRelease = allReleases.find(
       (r) =>
