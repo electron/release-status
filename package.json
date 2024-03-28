@@ -10,7 +10,7 @@
     "diff": "^5.1.0",
     "dompurify": "^3.0.6",
     "expiry-map": "^2.0.0",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "express-handlebars": "^5.2.0",
     "express-paginate": "^1.0.2",
     "jsdom": "^23.0.1",
