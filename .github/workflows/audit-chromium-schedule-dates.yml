@@ -1,0 +1,121 @@
+name: Audit Chromium Schedule Dates
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 18 * * *'
+
+permissions:
+  actions: read
+
+jobs:
+  audit_chromium_schdule_dates:
+    name: Audit Chromium Schedule Dates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore previous run data
+        uses: dawidd6/action-download-artifact@71072fbb1229e1317f1a8de6b04206afb461bd67 # v3.1.2
+        with:
+          name: data
+          if_no_artifact_found: ignore
+          workflow_conclusion: 'completed'
+          search_artifacts: true
+      - run: npm install @electron/fiddle-core
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('node:fs/promises');
+
+            const { ElectronVersions } = require('@electron/fiddle-core');
+
+            const PRETTY_NAMES = {
+              'earliest_beta': 'Earliest Beta',
+              'latest_beta': 'Latest Beta',
+              'final_beta': 'Final Beta',
+              'stable_date': 'Stable Date',
+            };
+
+            const filename = 'milestone-data.json';
+            let prevData = null;
+
+            try {
+              prevData = JSON.parse(await fs.readFile(filename));
+            } catch (err) {
+              if (err.code !== 'ENOENT') {
+                throw err;
+              } else {
+                core.debug('Previous data not found');
+              }
+            }
+
+            const checkMilestone = async (milestone) => {
+              let changesFound = false;
+
+              const res = await fetch(`https://chromiumdash.appspot.com/fetch_milestone_schedule?mstone=${milestone}`);
+              const keys = ['earliest_beta', 'latest_beta', 'final_beta', 'stable_date'];
+              const { earliest_beta, latest_beta, final_beta, stable_date } = (await res.json()).mstones[0];
+              const data = { earliest_beta, latest_beta, final_beta, stable_date };
+
+              core.summary.addHeading(`M${milestone}`, 2);
+
+              const headers = [{ data: 'Name', header: true }];
+
+              if (prevData !== null && milestone in prevData && keys.some((key) => data[key] !== prevData[milestone][key])) {
+                process.exitCode = 1;
+
+                core.summary.addEOL();
+                core.summary.addRaw('> [!WARNING]\n> Changes to milestone dates detected', true);
+
+                headers.push({ data: 'Old Date', header: true }),
+                headers.push({ data: 'New Date', header: true }),
+                core.summary.addTable([
+                  headers,
+                  ...keys.map((key) => {
+                    const oldDate = prevData[milestone][key].split('T')[0];
+                    const newDate = data[key].split('T')[0];
+                    return [PRETTY_NAMES[key], oldDate, newDate !== oldDate ? newDate : ''];
+                  }),
+                ]);
+              } else {
+                headers.push({ data: 'Date', header: true }),
+                core.summary.addTable([
+                  headers,
+                  ...keys.map((key) => [PRETTY_NAMES[key], data[key].split('T')[0]]),
+                ]);
+              }
+
+              return data;
+            };
+
+            const versions = await ElectronVersions.create(undefined, { ignoreCache: true });
+            const release = versions.getReleaseInfo(versions.latest);
+
+            const milestone = parseInt(release.chrome.match(/(\d+)\.\d+\.\d+\.\d+/)[1]);
+
+            core.summary.addHeading('📅 Chromium Milestone Dates');
+
+            // Run these in order rather than parallel so that the output is in order
+            const milestoneData = {};
+            milestoneData[milestone] = await checkMilestone(milestone);
+            milestoneData[milestone +1] = await checkMilestone(milestone + 1);
+
+            // Write to file to upload as artifact
+            await fs.writeFile(filename, JSON.stringify(milestoneData));
+
+            await core.summary.write();
+      - name: Send Slack message if dates changed
+        if: failure()
+        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
+        with:
+          payload: |
+            {
+              "link": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.CHROMIUM_DATES_SLACK_WEBHOOK_URL }}
+      - name: Persist data
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3  # v4.3.1
+        if: ${{ !cancelled() }}
+        with:
+          name: data
+          path: milestone-data.json
