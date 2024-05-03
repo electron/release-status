@@ -198,13 +198,20 @@ router.get(
     }
 
     let releaseNotes = release.body;
-    const parsed = semver.parse(version);
-    if (parsed.prerelease.length) {
-      releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
+
+    // Check if releaseNotes is defined before further processing
+    if (releaseNotes) {
+      const parsed = semver.parse(version);
+      if (parsed.prerelease.length) {
+        releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
+      }
+      releaseNotes =
+        '# Release Notes\n' +
+        releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    } else {
+      // Handle the case where release.body is undefined
+      console.error('Release notes are undefined.');
     }
-    releaseNotes =
-      '# Release Notes\n' +
-      releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
 
     const lastPreRelease = allReleases.find(
       (r) =>
