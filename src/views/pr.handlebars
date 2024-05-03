@@ -16,7 +16,7 @@
   <div class="grid-item">
     <h2 class="grid-header">Release</h2>
     <p class="grid-contents">
-      {{#if availableIn}}
+      {{#if primary.availableIn}}
         <a href="/release/{{primary.availableIn.version}}">{{primary.availableIn.version}}</a>
       {{else}}
         This PR has not been released.
