@@ -87,7 +87,7 @@ const getGitHubRelease = pMemoize(
   },
   {
     cache: new ExpiryMap(10 * 60 * 1000),
-    cacheKey: (version) => `release/${version}`,
+    cacheKey: ([version]) => `release/${version}`,
   },
 );
 
@@ -112,7 +112,7 @@ const getPR = pMemoize(
   },
   {
     cache: new ExpiryMap(30 * 1000),
-    cacheKey: (prNumber) => `pr/${prNumber}`,
+    cacheKey: ([prNumber]) => `pr/${prNumber}`,
   },
 );
 
@@ -134,7 +134,7 @@ const getPRComments = pMemoize(
   },
   {
     cache: new ExpiryMap(60 * 1000),
-    cacheKey: (prNumber) => `pr-comments/${prNumber}`,
+    cacheKey: ([prNumber]) => `pr-comments/${prNumber}`,
   },
 );
 
@@ -152,7 +152,7 @@ const compareTagToCommit = pMemoize(
   },
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
-    cacheKey: (tag, commitSha) => `compare/${tag}/${commitSha}`,
+    cacheKey: ([tag, commitSha]) => `compare/${tag}/${commitSha}`,
   },
 );
 
@@ -163,7 +163,7 @@ const getTSDefs = pMemoize(
   },
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
-    cacheKey: (version) => `ts/${version}`,
+    cacheKey: ([version]) => `ts/${version}`,
   },
 );
 
