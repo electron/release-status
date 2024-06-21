@@ -1,13 +1,17 @@
 <div>
 <div class="lookup-input">
-  <input id="input" type="text" placeholder="12345">
-  <button onclick="lookup()">Search</button>
+  <form onsubmit="lookup(event)">
+    <input id="input" type="text" placeholder="12345" required>
+    <button type="submit">Search</button>
+  </form>
 </div>
 <p class="error" id="error"></p>
 </div>
 
 <script>
-  async function lookup() {
+  async function lookup(event) {
+    event.preventDefault();
+
     const error = document.getElementById('error');
 
     const { value } = document.getElementById('input');
