@@ -24,6 +24,17 @@ const prettyCircleName = (workflow) => {
   }
 };
 
+const prettyGitHubActionsName = (workflow) => {
+  switch (workflow) {
+    case 'linux-publish':
+      return 'Linux';
+    case 'macos-publish':
+      return 'macOS';
+    default:
+      return workflow;
+  }
+};
+
 const prettyAppveyorName = (project) => {
   switch (project) {
     case 'electron-ia32-release':
@@ -50,7 +61,7 @@ router.get(
 
     const ciBuilds = [];
     if (build.ciBuilds) {
-      for (const circleBuild of build.ciBuilds.circle) {
+      for (const circleBuild of build.ciBuilds.circle ?? []) {
         ciBuilds.push({
           name: prettyCircleName(circleBuild.buildJob),
           url: `https://circleci.com/workflow-run/${circleBuild.buildId}`,
@@ -58,7 +69,15 @@ router.get(
           icon: circleBuild.buildJob.includes('linux') ? 'linux' : 'apple',
         });
       }
-      for (const appveyorBuild of build.ciBuilds.appveyor) {
+      for (const githubActionsBuild of build.ciBuilds.githubactions ?? []) {
+        ciBuilds.push({
+          name: prettyGitHubActionsName(githubActionsBuild.buildJob),
+          url: `https://github.com/electron/electron/actions/runs/${githubActionsBuild.buildId}`,
+          status: githubActionsBuild.status,
+          icon: githubActionsBuild.buildJob.includes('linux') ? 'linux' : 'apple',
+        });
+      }
+      for (const appveyorBuild of build.ciBuilds.appveyor ?? []) {
         ciBuilds.push({
           name: prettyAppveyorName(appveyorBuild.projectSlug),
           url: `https://${appveyorBuild.buildServer}/project/${appveyorBuild.accountName}/${appveyorBuild.projectSlug}/build/${appveyorBuild.buildVersion}`,
