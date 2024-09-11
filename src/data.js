@@ -1,5 +1,4 @@
 const { getAuthOptionsForRepo, appCredentialsFromString } = require('@electron/github-app-auth');
-const fetch = require('node-fetch');
 const { Octokit } = require('@octokit/rest');
 const ExpiryMap = require('expiry-map');
 const pMemoize = require('p-memoize');
@@ -34,7 +33,7 @@ const getOctokit = async () => {
 
 const getReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch.default('https://electronjs.org/headers/index.json');
+    const response = await fetch('https://electronjs.org/headers/index.json');
     const releases = await response.json();
     return releases.sort((a, b) => semver.compare(b.version, a.version));
   },
@@ -46,7 +45,7 @@ const getReleasesOrUpdate = pMemoize(
 
 const getActiveReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch.default('https://electron-sudowoodo.herokuapp.com/release/active');
+    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
     return response.json();
   },
   {
@@ -57,9 +56,7 @@ const getActiveReleasesOrUpdate = pMemoize(
 
 const getAllSudowoodoReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch.default(
-      'https://electron-sudowoodo.herokuapp.com/release/history',
-    );
+    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/history');
     return response.json();
   },
   {
