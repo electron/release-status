@@ -119,8 +119,8 @@ footer > div {
 }
 
 header {
-  background: white;
-  border-bottom: 1px solid #e8e8e8;
+  background: #2B2E3B;
+  border-bottom: 1px solid #2B2E3B;
 }
 
 header > div {
@@ -139,7 +139,8 @@ header > div {
 
 main {
   /* background: #f5f5f5; */
-  background: #ebedf0;
+  background: #2B2E3B ;
+
 }
 
 main > div {
@@ -166,10 +167,11 @@ main a {
 }
 
 footer {
-  background: white;
-  border-top: 1px solid #e8e8e8;
+  background: #2B2E3B;
+  border-top: 1px solid #2B2E3B;
   padding-top: 64px;
   padding-bottom: 32px;
+  color:#61dafb;
 }
 
 footer > div {
@@ -187,7 +189,7 @@ footer > div > :first-child > img {
 
 footer > div > :last-child a {
   text-decoration: none !important;
-  color: #414141;
+  color: #61dafb;
   margin-right: 16px;
 }
 
@@ -205,5 +207,5 @@ h3,
 h4,
 h5,
 h6 {
-  color: #0d4a59;
+  color:#9feaf9;
 }

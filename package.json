@@ -43,6 +43,7 @@
     "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
     "postinstall": "cp node_modules/prismjs/themes/*.css src/static/css/prismjs",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "dev": "nodemon index.js"
   }
 }

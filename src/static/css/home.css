@@ -38,14 +38,15 @@
 }
 
 .active-release {
-  background: white;
+  background-color: #9feaf9;
   flex-direction: column;
   display: flex;
   padding: 16px 32px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid;
   text-decoration: none !important;
   color: inherit !important;
   text-align: center;
+  border-radius: 2vw;
 }
 
 .active-release:hover {
@@ -57,13 +58,14 @@
 }
 
 .release {
-  background: white;
+  background: #9feaf9;
   display: flex;
   flex-direction: row;
   padding: 16px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid;
   text-decoration: none !important;
   color: inherit !important;
+  border-radius: 1.5vw;
 }
 
 .release + .release {
