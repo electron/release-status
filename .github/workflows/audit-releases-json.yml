@@ -1,0 +1,90 @@
+name: Audit Releases JSON
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 18 * * *'
+
+permissions: {}
+
+jobs:
+  audit_releases_json:
+    name: Audit Releases JSON
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - run: npm install @actions/core
+      - run: |
+          npx zx@~8.1.9 <<'EOF'
+          const core = require("@actions/core");
+
+          const LIMIT = 2000;
+
+          const missingReleases = [];
+
+          const response = await fetch("https://electronjs.org/headers/index.json");
+
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+
+          const indexReleases = await response.json().then((data) => {
+            return data.flatMap(({ version }) => `v${version}`);
+          });
+
+          const stableReleases = (
+            await $`gh release list --exclude-drafts --limit ${LIMIT} -R electron/electron --json tagName --jq '.[].tagName'`
+          ).stdout
+            .trim()
+            .split("\n");
+
+          const nightlyReleases = (
+            await $`gh release list --exclude-drafts --limit ${LIMIT} -R electron/nightlies --json tagName --jq '.[].tagName'`
+          ).stdout
+            .trim()
+            .split("\n");
+
+          for (const release of stableReleases.concat(nightlyReleases)) {
+            // Skip very old releases
+            if (release.startsWith("v0.") || release.startsWith("v1.")) {
+              continue;
+            }
+
+            if (!indexReleases.includes(release)) {
+              missingReleases.push(release);
+            }
+          }
+
+          if (missingReleases.length > 0) {
+            core.summary.addHeading('⚠️ Missing Releases');
+            core.summary.addTable([
+              [
+                { data: 'Release', header: true },
+                { data: 'Status', header: true },
+              ],
+              ...missingReleases
+                .map((release) => [
+                  release,
+                  '⚠️ Missing',
+                ]),
+            ]);
+
+            // Set this as failed so it's easy to scan runs to find failures
+            process.exitCode = 1;
+          } else {
+            core.summary.addRaw('🎉 No missing releases');
+          }
+
+          await core.summary.write();
+          EOF
+      - name: Send Slack message if releases are missing
+        if: failure()
+        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
+        with:
+          payload: |
+            {
+              "link": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.RELEASES_JSON_SLACK_WEBHOOK_URL }}
