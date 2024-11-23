@@ -24,10 +24,10 @@
     "time-ago": "^0.2.1"
   },
   "devDependencies": {
-    "husky": "^8.0.0",
+    "husky": "^9.1.7",
     "lint-staged": "^15.2.0",
-    "nodemon": "^3.0.1",
-    "prettier": "^3.1.0"
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3"
   },
   "lint-staged": {
     "src/**/*.js": [
@@ -43,6 +43,6 @@
     "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
     "postinstall": "cp node_modules/prismjs/themes/*.css src/static/css/prismjs",
-    "prepare": "husky install"
+    "prepare": "husky"
   }
 }
