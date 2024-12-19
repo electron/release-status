@@ -4,6 +4,11 @@ const ExpiryMap = require('expiry-map');
 const pMemoize = require('p-memoize');
 const semver = require('semver');
 
+const REPO_DATA = {
+  owner: 'electron',
+  repo: 'electron',
+};
+
 let octokit = null;
 const getOctokit = async () => {
   if (octokit) return octokit;
@@ -12,10 +17,7 @@ const getOctokit = async () => {
 
   if (RELEASE_STATUS_GITHUB_APP_CREDS) {
     const authOpts = await getAuthOptionsForRepo(
-      {
-        owner: 'electron',
-        name: 'electron',
-      },
+      REPO_DATA,
       appCredentialsFromString(RELEASE_STATUS_GITHUB_APP_CREDS),
     );
     octokit = new Octokit({
@@ -40,6 +42,21 @@ const getReleasesOrUpdate = pMemoize(
   {
     cache: new ExpiryMap(60 * 1000),
     cacheKey: () => 'releases',
+  },
+);
+
+const getDownloadStatsOrUpdate = pMemoize(
+  async () => {
+    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+    return response.json();
+    return {
+      electron: electronJSON,
+      nightly: nightlyJSON,
+    };
+  },
+  {
+    cache: new ExpiryMap(60 * 1000),
+    cacheKey: () => 'download_stats',
   },
 );
 
@@ -88,6 +105,31 @@ const getGitHubRelease = pMemoize(
   },
 );
 
+const getRecentPRs = pMemoize(
+  async () => {
+    try {
+      const { data } = await (
+        await getOctokit()
+      ).pulls.list({
+        ...REPO_DATA,
+        state: 'closed',
+        base: 'main',
+      });
+      return data
+        .filter((pr) => {
+          return !pr.user.type !== 'Bot' && pr.merged_at;
+        })
+        .slice(0, 10);
+    } catch {
+      return null;
+    }
+  },
+  {
+    cache: new ExpiryMap(10 * 60 * 1000),
+    cacheKey: () => 'recent_prs',
+  },
+);
+
 const getPR = pMemoize(
   async (prNumber) => {
     try {
@@ -95,8 +137,7 @@ const getPR = pMemoize(
         await (
           await getOctokit()
         ).pulls.get({
-          owner: 'electron',
-          repo: 'electron',
+          ...REPO_DATA,
           pull_number: prNumber,
           mediaType: {
             format: 'html',
@@ -119,8 +160,7 @@ const getPRComments = pMemoize(
     try {
       return await octo.paginate(
         octo.issues.listComments.endpoint.merge({
-          owner: 'electron',
-          repo: 'electron',
+          ...REPO_DATA,
           issue_number: prNumber,
           per_page: 100,
         }),
@@ -140,8 +180,7 @@ const compareTagToCommit = pMemoize(
     const compare = await (
       await getOctokit()
     ).repos.compareCommits({
-      owner: 'electron',
-      repo: 'electron',
+      ...REPO_DATA,
       base: tag,
       head: commitSha,
     });
@@ -171,6 +210,7 @@ module.exports = {
   getAllSudowoodoReleasesOrUpdate,
   getPR,
   getPRComments,
+  getRecentPRs,
   compareTagToCommit,
   getTSDefs,
 };

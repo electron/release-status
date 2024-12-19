@@ -1,11 +1,36 @@
 const { Router } = require('express');
+const Handlebars = require('handlebars');
+const { getRecentPRs } = require('../data');
+const a = require('../utils/a');
 
 const router = new Router();
 
-router.get('/', (req, res) =>
-  res.render('pr-lookup', {
-    title: 'PR Lookup',
-    css: 'pr-lookup',
+Handlebars.registerPartial('recentPR', function (pr) {
+  const mergedAt = new Date(pr.merged_at).toLocaleString();
+  const author = pr.user.login;
+  return `<tr onclick="window.location = '/pr/${encodeURIComponent(pr.number)}'">
+    <td><a target="_blank"
+      href="https://github.com/electron/electron/pulls/${pr.number}">
+      #${pr.number}
+    </a></td>
+    <td>${pr.title}</td>
+    <td><a target="_blank"
+      href="https://github.com/${author}">
+      ${author}
+    </a></td>
+    <td>${mergedAt}</td>
+  </tr>`;
+});
+
+router.get(
+  '/',
+  a(async (req, res) => {
+    const recentPRs = await getRecentPRs();
+    res.render('pr-lookup', {
+      recentPRs,
+      title: 'PR Lookup',
+      css: 'pr-lookup',
+    });
   }),
 );
 

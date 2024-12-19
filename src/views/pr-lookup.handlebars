@@ -6,6 +6,23 @@
   </form>
 </div>
 <p class="error" id="error"></p>
+<div class="recent-prs">
+  <table>
+    <thead>
+      <tr>
+        <th>PR Number</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      {{#each recentPRs}}
+      {{> recentPR this}}
+      {{/each}}
+    </tbody>
+  </table>
+</div>
 </div>
 
 <script>
@@ -13,7 +30,6 @@
     event.preventDefault();
 
     const error = document.getElementById('error');
-
     const { value } = document.getElementById('input');
     const prNumber = parseInt(value, 10);
 
