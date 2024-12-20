@@ -120,7 +120,7 @@ const getRecentPRs = pMemoize(
       });
       return data
         .filter((pr) => {
-          return !pr.user.type !== 'Bot' && pr.merged_at;
+          return pr.user.type !== 'Bot' && pr.merged_at;
         })
         .slice(0, 10);
     } catch {
