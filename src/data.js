@@ -17,7 +17,10 @@ const getOctokit = async () => {
 
   if (RELEASE_STATUS_GITHUB_APP_CREDS) {
     const authOpts = await getAuthOptionsForRepo(
-      REPO_DATA,
+      {
+        owner: 'electron',
+        name: 'electron',
+      },
       appCredentialsFromString(RELEASE_STATUS_GITHUB_APP_CREDS),
     );
     octokit = new Octokit({
