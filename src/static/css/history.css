@@ -48,12 +48,13 @@
   padding: 15px 15px 20px;
   display: flex;
   flex-direction: column;
+  box-shadow: 10px 10px 5px -8px rgba(115,90,115,0.56);
 }
 
 @media (min-width: 768px) {
   .month {
     width: 394px;
-    padding: 24px 24px 36px;
+    padding: 24px 24px 24px;
   }
 }
 

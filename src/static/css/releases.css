@@ -75,7 +75,8 @@
   margin: 10px;
   font-size: 20px;
   font-weight: bolder;
-  color: var(--electron-color-dark);
+  color: var(--electron-color-dark); 
+  padding-left: 250px;
 }
 
 .releases__filter--selected {

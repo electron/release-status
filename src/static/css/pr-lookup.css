@@ -8,11 +8,11 @@
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 200px;
+  width: 80%;
 }
 
 .lookup-input button {
-  padding: 8px 16px;
+  padding: 8px 32px;
   font-size: 16px;
   color: #fff;
   background-color: #3b4a6b;
@@ -42,7 +42,7 @@ h1 {
 
 .search-container {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 98%;
 }
 
 .search-container input[type='text'] {
@@ -54,7 +54,7 @@ h1 {
 }
 
 .search-container button {
-  padding: 8px 16px;
+  padding: 8px 32px;
   font-size: 16px;
   color: #fff;
   background-color: #3b4a6b;
