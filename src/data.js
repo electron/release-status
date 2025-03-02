@@ -98,7 +98,7 @@ const getGitHubRelease = pMemoize(
         })
       ).data;
     } catch (e) {
-      console.error(e);
+      console.error(`Failed to fetch release for version "${version}":`, e.message);
       return null;
     }
   },
