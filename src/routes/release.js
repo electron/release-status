@@ -20,7 +20,7 @@ const router = new Router();
 
 Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
   return arg1 == arg2 ? options.fn(this) : options.inverse(this);
-});
+});a
 
 Handlebars.registerHelper('markdown', function (content) {
   return DOMPurify.sanitize(md.render(content));
@@ -197,15 +197,14 @@ router.get(
       return res.redirect('/');
     }
 
-    let releaseNotes = release && release.body ? release.body : 'No release notes available.';
-
+ let releaseNotes = release?.body ?? 'No release notes available.';
 const parsed = semver.parse(version);
 if (parsed.prerelease.length) {
-  releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1] || releaseNotes;
+  releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
 }
 
 //  replace() now only runs if releaseNotes is valid
-releaseNotes = '# Release Notes\n' + (releaseNotes ? releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') : '');
+releaseNotes = '# Release Notes\n' +  releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
     const lastPreRelease = allReleases.find(
       (r) =>
         semver.parse(r.version).prerelease[0] === 'beta' ||
