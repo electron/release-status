@@ -1,0 +1,264 @@
+/* Light Theme */
+:root {
+    /* Background Colors */
+    --bg-color: #ffffff;
+    --navbar-bg: #2b2e3b;
+    --header-bg: #f5f5f5;
+    --main-bg: #ffffff;
+    --footer-bg: #f5f5f5;
+    --card-bg: #ffffff; /* New - Card background for light theme */
+
+    /* Text Colors */
+    --ui-text-color: #9feaf9;
+    --content-text-color: #1d1d1d;
+    --footer-text-color: #1d1d1d;
+
+    /* Button Colors */
+    --button-bg: #ffffff;
+    --button-text: #2b2e3b;
+
+    /* Borders & Shadows */
+    --card-border: 1px solid whitesmoke;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    /* Background Colors */
+    --bg-color: #1d1d1d;
+    --navbar-bg: #121212;
+    --header-bg: #252525;
+    --main-bg: #1a1a1a;
+    --footer-bg: #121212;
+    --card-bg: #2b2b2b; /* New - Dark mode card background */
+
+    /* Text Colors */
+    --ui-text-color: #9feaf9;
+    --content-text-color: #ffffff;
+    --footer-text-color: #ffffff;
+
+    /* Button Colors */
+    --button-bg: #333;
+    --button-text: #f5f5f5;
+
+    /* Borders & Shadows */
+    --card-border: 1px solid #444;
+}
+
+/* Global Styles */
+body {
+    background-color: var(--bg-color);
+    color: var(--content-text-color);
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--navbar-bg);
+    color: var(--ui-text-color);
+}
+
+/* Main */
+main {
+    background-color: var(--main-bg);
+}
+
+/* Footer */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text-color);
+}
+
+/* Releases Grid */
+
+
+@media (max-width: 900px) {
+    .releases {
+        grid-template-columns: none;
+    }
+}
+
+/* Release Card */
+.release-card {
+    background: var(--card-bg); /* Dynamic */
+    border: var(--card-border);
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Release Card Header */
+.release-card h1 {
+    margin-top: -20px;
+    margin-left: -20px;
+    margin-right: -20px;
+    background: var(--navbar-bg); /* To match navbar */
+    color: var(--ui-text-color);
+    padding: 20px;
+}
+
+/* Release Card Links */
+.release-card h1 a {
+    color: var(--ui-text-color);
+    text-decoration: none;
+}
+
+/* Release Card Section Title */
+.release-card h2 {
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid lightgray;
+    color: var(--content-text-color);
+}
+
+/* Release Card Metadata */
+.release-card__metadata {
+    color: grey;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    border-top: 1px solid lightgray;
+    padding: 20px 20px 0;
+    margin-top: 40px;
+    margin-left: -20px;
+    margin-right: -20px;
+}
+
+/* Filter Box */
+.releases__filter {
+    background: var(--card-bg); /* Dynamic */
+    border: var(--card-border);
+    padding: 16px;
+    border-radius: 5px;
+    height: 100%;
+    color: var(--content-text-color);
+    margin: 10px;
+}
+
+/* Filter Selection */
+.releases__filter--selected {
+    border-left: 6px solid var(--ui-text-color);
+}
+
+/* Filter Name */
+.releases__filter-name {
+    font-size: 20px;
+    font-weight: bolder;
+    margin-bottom: 1rem;
+}
+
+/* Filter Description */
+.releases__filter-description {
+    font-style: italic;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+/* Pagination */
+.pagination {
+    text-align: center;
+}
+
+.pagination__list {
+    padding-left: 0;
+}
+
+.pagination__list-item {
+    list-style: none;
+    padding: 5px 10px;
+    margin: 4px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: inline-block;
+    cursor: pointer;
+    min-width: 36px;
+    text-align: center;
+    color: var(--content-text-color);
+}
+
+.pagination__list-item--selected {
+    background: var(--navbar-bg);
+    color: var(--ui-text-color);
+}
+
+.pagination__list-item:hover {
+    border: 1px solid grey;
+}
+
+/* Version Select */
+#version-select {
+    border: var(--card-border);
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bolder;
+    color: var(--content-text-color);
+    background: var(--card-bg);
+}
+
+/* Release Links */
+.releases__filter-link {
+    text-decoration: none;
+    color: var(--content-text-color);
+}
+
+/* Buttons */
+button, .button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+button:hover, .button:hover {
+    background-color: var(--navbar-bg);
+    color: var(--ui-text-color);
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50px;
+    height: 26px;
+    background-color: var(--navbar-bg);
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+    padding: 3px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease; 
+    margin-right: 15px;
+}
+
+.theme-toggle::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: var(--ui-text-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s ease;
+}
+
+/* When dark mode is active, move circle to right */
+[data-theme="dark"] .theme-toggle::before {
+    transform: translateX(24px);
+}
+
+/* Optional: Add sun/moon icons inside */
+.theme-toggle::after {
+    content: '☀️';
+    position: absolute;
+    right: 5px;
+    font-size: 14px;
+}
+
+[data-theme="dark"] .theme-toggle::after {
+    content: '🌙';
+    left: 5px;
+}

@@ -5,7 +5,8 @@
 }
 
 .grid-header {
-  background-color: #9feaf9;
+  background-color: var(--ui-text-color); /* Theme color */
+  color: var(--navbar-bg); /* Text color to match theme */
   margin: 0;
   padding: 15px;
 }
@@ -15,16 +16,19 @@
 }
 
 .grid-item {
-  background-color: whitesmoke;
+  background-color: var(--card-bg); /* Theme background */
+  color: var(--content-text-color); /* Text color according to theme */
 }
 
 .grid-sub-item h3,
 .grid-sub-item p {
   display: flex;
   justify-content: center;
+  color: var(--content-text-color); /* Theme text color */
 }
 
 #grid-pr-body {
   padding: 0 15px 0px 15px;
   word-break: break-word;
+  color: var(--content-text-color); /* Theme text color */
 }

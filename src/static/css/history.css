@@ -2,6 +2,7 @@
   width: 100%;
 }
 
+/* Common Calendar Key Styling */
 .key {
   width: 100%;
   margin-bottom: 16px;
@@ -20,7 +21,7 @@
 }
 
 .key > span > i {
-  color: white;
+  color: var(--content-text-color);
   border-radius: 50%;
   font-size: 14px;
   padding: 8px;
@@ -33,6 +34,7 @@
   height: 30px;
 }
 
+/* Calendar Grid */
 .calendar {
   display: flex;
   flex-wrap: wrap;
@@ -41,47 +43,55 @@
   flex-direction: row;
 }
 
+/* Month Box */
 .month {
   width: 289px;
-  background-color: white;
+  background-color: var(--card-bg);
+  color: var(--content-text-color);
   margin: 8px;
   padding: 15px 15px 20px;
   display: flex;
   flex-direction: column;
+  border: var(--card-border);
 }
 
 @media (min-width: 768px) {
   .month {
-    width: 394px;
-    padding: 24px 24px 36px;
+      width: 394px;
+      padding: 24px 24px 36px;
   }
 }
 
+/* Month Header */
 .month_row.header {
   height: 60px;
   padding-left: 15px;
   padding-right: 15px;
   justify-content: space-between;
   align-items: center;
+  display: flex;
 }
 
 .month_row.header > h3 {
   font-weight: 700;
   font-family: 'Arimo', 'CircularPro', 'appleLogo', sans-serif;
+  color: var(--content-text-color);
 }
 
 .month_row.header > p {
   font-size: 16px;
   line-height: 1.5;
   font-weight: 700;
-  color: #414141;
+  color: var(--content-text-color);
 }
 
+/* Day Row */
 .month_row {
   display: flex;
   flex-direction: row;
 }
 
+/* Each Day Box */
 .month_day {
   flex: 1;
   position: relative;
@@ -94,9 +104,21 @@
   align-items: center;
   justify-content: center;
   text-decoration: none !important;
-  color: inherit !important;
+  background-color: var(--card-bg);  /* Background matches theme */
+  color: var(--content-text-color);  /* Text matches theme */
+  border: 1px solid var(--card-border);
+  cursor: pointer;
 }
 
+@media (min-width: 768px) {
+  .month_day {
+      height: 58px;
+      width: 58px;
+      line-height: 58px;
+  }
+}
+
+/* Day Info Icons */
 .month_day .info {
   position: absolute;
   bottom: 0;
@@ -110,55 +132,30 @@
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background-color: #6554c0;
-  color: white;
+  background-color: var(--ui-text-color);  /* Accent color */
+  color: white;  /* Icon text is now always white */
   font-size: 10px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
 }
 
-.month_day .info > i:not(:last-child) {
-  margin-right: 4px;
-}
-
-@media (min-width: 768px) {
-  .month_day {
-    height: 58px;
-    width: 58px;
-    line-height: 58px;
-  }
-
-  .month_day .info {
-    bottom: 3px;
-  }
-}
-
-.month_row.day_row .month_day {
-  color: #414141;
-  user-select: none;
-}
-
-.month_row:not(.day_row) .month_day.has-releases {
-  cursor: pointer;
-}
-
-.month_row:not(.day_row) .month_day:not(.has-releases) {
-  user-select: none;
-}
-
+/* Hover States */
 .month_row:not(.day_row) .month_day.has-releases:hover {
-  background-color: #f5f5f5;
+  background-color: rgba(159, 234, 249, 0.2);
 }
 
+/* Special States */
+.month_day.future {
+  opacity: 0.45;
+}
+
+/* No Nightly Release */
 .month_row:not(.day_row) .month_day.no-nightly {
-  background-color: #ff563082;
+  background-color: rgba(254, 71, 30, 0.5);
+  color: var(--content-text-color);
 }
 
 .month_row:not(.day_row) .month_day.has-releases.no-nightly:hover {
-  background-color: #ff5630cc;
-}
-
-.month_day.future {
-  opacity: 0.45;
+  background-color: rgba(255, 86, 48, 0.8);
 }

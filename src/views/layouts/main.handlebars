@@ -13,16 +13,19 @@
     {{#if css}}
     <link rel="stylesheet" href="/css/{{css}}.css" type="text/css" />
     {{/if}}
-    <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script> 
+    <link rel="stylesheet" href="/css/theme.css">
   </head>
-  <body>
+  <body> 
     <nav class="navbar">
       <div>
         <a href="/">
           <img src="https://www.electronjs.org/assets/img/logo.svg" />
           <span class="title">Electron Releases</span>
         </a>
-        <div>
+        <div> 
+          <div class="theme-toggle" onclick="toggleTheme()"></div>
+
           <a href="/releases">All Releases</a>
           <a href="/history">History</a>
           <a href="/pr-lookup">PR Lookup</a>
@@ -69,6 +72,7 @@
         const elem = document.querySelector('.version-select');
         window.location.href = `/release/compare/{{ compareTarget }}/${elem.value}`;
       }
-    </script>
+    </script> 
+    <script src="/js/themeToggle.js"></script>
   </body>
 </html>
