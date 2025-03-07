@@ -44,6 +44,8 @@ app.use('/release-build', require('./routes/release-build'));
 app.use('/pr', require('./routes/pr'));
 app.use('/pr-lookup', require('./routes/pr-lookup'));
 
+app.use('/schedule', require('./routes/schedule'));
+
 app.use(
   express.static(path.resolve(__dirname, 'static'), {
     fallthrough: true,
