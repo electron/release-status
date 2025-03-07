@@ -38,9 +38,18 @@ const getOctokit = async () => {
 
 const getReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electronjs.org/headers/index.json');
-    const releases = await response.json();
-    return releases.sort((a, b) => semver.compare(b.version, a.version));
+    try {
+      const response = await fetch('https://electronjs.org/headers/index.json');
+      if (!response.ok) {
+        console.error(`Failed to fetch releases: ${response.status} ${response.statusText}`);
+        return [];
+      }
+      const releases = await response.json();
+      return releases.sort((a, b) => semver.compare(b.version, a.version));
+    } catch (error) {
+      console.error('Error fetching releases:', error);
+      return [];
+    }
   },
   {
     cache: new ExpiryMap(60 * 1000),
@@ -50,12 +59,17 @@ const getReleasesOrUpdate = pMemoize(
 
 const getDownloadStatsOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
-    return response.json();
-    return {
-      electron: electronJSON,
-      nightly: nightlyJSON,
-    };
+    try {
+      const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+      if (!response.ok) {
+        console.error(`Failed to fetch download stats: ${response.status} ${response.statusText}`);
+        return {}; // Return empty object as fallback
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching download stats:', error);
+      return {}; // Return empty object as fallback
+    }
   },
   {
     cache: new ExpiryMap(60 * 1000),
@@ -65,8 +79,17 @@ const getDownloadStatsOrUpdate = pMemoize(
 
 const getActiveReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
-    return response.json();
+    try {
+      const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+      if (!response.ok) {
+        console.error(`Failed to fetch active releases: ${response.status} ${response.statusText}`);
+        return { currentlyRunning: [], queued: [] }; // Return structured fallback
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching active releases:', error);
+      return { currentlyRunning: [], queued: [] }; // Return structured fallback
+    }
   },
   {
     cache: new ExpiryMap(30 * 1000),
@@ -76,8 +99,17 @@ const getActiveReleasesOrUpdate = pMemoize(
 
 const getAllSudowoodoReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/history');
-    return response.json();
+    try {
+      const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/history');
+      if (!response.ok) {
+        console.error(`Failed to fetch release history: ${response.status} ${response.statusText}`);
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching release history:', error);
+      return [];
+    }
   },
   {
     cache: new ExpiryMap(30 * 1000),
@@ -88,17 +120,15 @@ const getAllSudowoodoReleasesOrUpdate = pMemoize(
 const getGitHubRelease = pMemoize(
   async (version) => {
     try {
-      return (
-        await (
-          await getOctokit()
-        ).repos.getReleaseByTag({
-          owner: 'electron',
-          repo: version.includes('nightly') ? 'nightlies' : 'electron',
-          tag: version,
-        })
-      ).data;
+      const octokit = await getOctokit();
+      const response = await octokit.repos.getReleaseByTag({
+        owner: 'electron',
+        repo: version.includes('nightly') ? 'nightlies' : 'electron',
+        tag: version,
+      });
+      return response.data;
     } catch (e) {
-      console.error(e);
+      console.error(`Error fetching GitHub release for ${version}:`, e);
       return null;
     }
   },
@@ -111,19 +141,19 @@ const getGitHubRelease = pMemoize(
 const getRecentPRs = pMemoize(
   async () => {
     try {
-      const { data } = await (
-        await getOctokit()
-      ).pulls.list({
+      const octokit = await getOctokit();
+      const response = await octokit.pulls.list({
         ...REPO_DATA,
         state: 'closed',
         base: 'main',
       });
-      return data
+      return response.data
         .filter((pr) => {
           return pr.user.type !== 'Bot' && pr.merged_at;
         })
         .slice(0, 10);
-    } catch {
+    } catch (error) {
+      console.error('Error fetching recent PRs:', error);
       return null;
     }
   },
@@ -136,18 +166,17 @@ const getRecentPRs = pMemoize(
 const getPR = pMemoize(
   async (prNumber) => {
     try {
-      return (
-        await (
-          await getOctokit()
-        ).pulls.get({
-          ...REPO_DATA,
-          pull_number: prNumber,
-          mediaType: {
-            format: 'html',
-          },
-        })
-      ).data;
-    } catch {
+      const octokit = await getOctokit();
+      const response = await octokit.pulls.get({
+        ...REPO_DATA,
+        pull_number: prNumber,
+        mediaType: {
+          format: 'html',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching PR ${prNumber}:`, error);
       return null;
     }
   },
@@ -159,8 +188,8 @@ const getPR = pMemoize(
 
 const getPRComments = pMemoize(
   async (prNumber) => {
-    const octo = await getOctokit();
     try {
+      const octo = await getOctokit();
       return await octo.paginate(
         octo.issues.listComments.endpoint.merge({
           ...REPO_DATA,
@@ -168,7 +197,8 @@ const getPRComments = pMemoize(
           per_page: 100,
         }),
       );
-    } catch {
+    } catch (error) {
+      console.error(`Error fetching PR comments for ${prNumber}:`, error);
       return [];
     }
   },
@@ -180,14 +210,18 @@ const getPRComments = pMemoize(
 
 const compareTagToCommit = pMemoize(
   async (tag, commitSha) => {
-    const compare = await (
-      await getOctokit()
-    ).repos.compareCommits({
-      ...REPO_DATA,
-      base: tag,
-      head: commitSha,
-    });
-    return compare.data;
+    try {
+      const octokit = await getOctokit();
+      const compare = await octokit.repos.compareCommits({
+        ...REPO_DATA,
+        base: tag,
+        head: commitSha,
+      });
+      return compare.data;
+    } catch (error) {
+      console.error(`Error comparing ${tag} to ${commitSha}:`, error);
+      return null;
+    }
   },
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
@@ -197,8 +231,19 @@ const compareTagToCommit = pMemoize(
 
 const getTSDefs = pMemoize(
   async (version) => {
-    const file = await fetch(`https://unpkg.com/electron@${version}/electron.d.ts`);
-    return await file.text();
+    try {
+      const file = await fetch(`https://unpkg.com/electron@${version}/electron.d.ts`);
+      if (!file.ok) {
+        console.error(
+          `Failed to fetch TypeScript definitions for ${version}: ${file.status} ${file.statusText}`,
+        );
+        return '// TypeScript definitions could not be loaded';
+      }
+      return await file.text();
+    } catch (error) {
+      console.error(`Error fetching TypeScript definitions for ${version}:`, error);
+      return '// TypeScript definitions could not be loaded';
+    }
   },
   {
     cache: new ExpiryMap(60 * 60 * 24 * 1000),
