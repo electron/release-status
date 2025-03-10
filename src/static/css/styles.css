@@ -101,6 +101,11 @@ footer > div {
   margin-right: 25px;
 }
 
+.navbar a:hover {
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
 @media screen and (max-width: 576px) {
   .navbar > div {
     flex-direction: column;
