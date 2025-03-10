@@ -24,14 +24,16 @@ const prettyCircleName = (workflow) => {
   }
 };
 
-const prettyGitHubActionsName = (workflow) => {
+const prettyGitHubActionsNameAndIcon = (workflow) => {
   switch (workflow) {
     case 'linux-publish':
-      return 'Linux';
+      return { name: 'Linux', icon: 'linux' };
     case 'macos-publish':
-      return 'macOS';
+      return { name: 'macOS', icon: 'apple' };
+    case 'windows-publish':
+      return { name: 'Windows', icon: 'windows' };
     default:
-      return workflow;
+      return { name: workflow, icon: 'github' };
   }
 };
 
@@ -70,11 +72,12 @@ router.get(
         });
       }
       for (const githubActionsBuild of build.ciBuilds.githubactions ?? []) {
+        const { name, icon } = prettyGitHubActionsNameAndIcon(githubActionsBuild.buildJob);
         ciBuilds.push({
-          name: prettyGitHubActionsName(githubActionsBuild.buildJob),
+          name,
+          icon,
           url: `https://github.com/electron/electron/actions/runs/${githubActionsBuild.buildId}`,
           status: githubActionsBuild.status,
-          icon: githubActionsBuild.buildJob.includes('linux') ? 'linux' : 'apple',
         });
       }
       for (const appveyorBuild of build.ciBuilds.appveyor ?? []) {
