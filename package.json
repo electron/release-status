@@ -19,7 +19,7 @@
     "jsdom": "^23.0.1",
     "markdown-it": "^12.1.0",
     "p-memoize": "^4.0.1",
-    "prismjs": "^1.29.0",
+    "prismjs": "^1.30.0",
     "semver": "^7.5.2",
     "time-ago": "^0.2.1"
   },
