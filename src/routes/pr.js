@@ -24,32 +24,34 @@ async function getPRReleaseStatus(prNumber) {
 
   const { base, merged, merged_at, merge_commit_sha } = prInfo;
 
-  // PR is somehow targeting a repo that isn't in the electron org
-  // or that isn't electron/electron.
+  
+  
   if (base.user.login !== 'electron' || base.repo.name !== 'electron') {
     return null;
   }
 
-  // PRs merged before we renamed the default branch to main from master
-  // will have a base.ref of master and a base.repo.default_branch of main.
   const primaryPRBeforeRename =
     base.ref === 'master' && new Date(merged_at) < new Date('June 1 2021');
   if (primaryPRBeforeRename || base.ref === base.repo.default_branch) {
     const backports = [];
     let availableIn = null;
 
-    // We've been merged, let's find out if this is available in a nightly
+    
     if (merged) {
-      const allNightlies = releases.filter(
-        (r) => semver.parse(r.version).prerelease[0] === 'nightly',
+      const allReleases = releases.filter(
+        (r) =>
+          semver.parse(r.version).prerelease[0] === 'nightly' ||
+          semver.parse(r.version).prerelease[0] === 'alpha' ||
+          semver.parse(r.version).prerelease[0] === 'beta'
       );
-      for (const nightly of allNightlies) {
-        const dateParts = nightly.date.split('-').map((n) => parseInt(n, 10));
+
+      for (const release of allReleases) {
+        const dateParts = release.date.split('-').map((n) => parseInt(n, 10));
         const releaseDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2] + 1);
         if (releaseDate > new Date(merged_at)) {
-          const comparison = await compareTagToCommit(`v${nightly.version}`, merge_commit_sha);
+          const comparison = await compareTagToCommit(`v${release.version}`, merge_commit_sha);
           if (comparison.status === 'behind') {
-            availableIn = nightly;
+            availableIn = release;
             break;
           }
         }
@@ -129,7 +131,7 @@ async function getPRReleaseStatus(prNumber) {
       }
     }
 
-    // This is the primary PR, we can scan from here for backports
+    
     return {
       primary: {
         pr: prInfo,
@@ -144,9 +146,7 @@ async function getPRReleaseStatus(prNumber) {
     };
   }
 
-  // This is a backport PR, we should scan from here for the primary PR and then re-call getPRReleaseStatus with that primary PR
-
-  // c.f. https://github.com/electron/trop/blob/master/src/utils/branch-util.ts#L62
+  
   const backportPattern =
     /(?:^|\n)(?:manual |manually )?backport (?:of )?(?:#(\d+)|https:\/\/github.com\/.*\/pull\/(\d+))/gim;
   const match = backportPattern.exec(prInfo.body);
@@ -156,7 +156,6 @@ async function getPRReleaseStatus(prNumber) {
 
   return { ...(await getPRReleaseStatus(parentPRNumber)) };
 }
-
 router.get('/is-valid/:number', async (req, res) => {
   const prNumber = parseInt(req.params.number, 10);
   const valid = prNumber > 0 && !!(await getPR(prNumber));
