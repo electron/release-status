@@ -197,15 +197,16 @@ router.get(
       return res.redirect('/');
     }
 
-    let releaseNotes = release.body;
+    let releaseNotes = release?.body ?? 'No release notes available.';
     const parsed = semver.parse(version);
     if (parsed.prerelease.length) {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
+
+    //  replace() now only runs if releaseNotes is valid
     releaseNotes =
       '# Release Notes\n' +
       releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
-
     const lastPreRelease = allReleases.find(
       (r) =>
         semver.parse(r.version).prerelease[0] === 'beta' ||
