@@ -49,9 +49,14 @@ app.use(
     fallthrough: true,
   }),
 );
+// this middleware redirects all unknown routes to /, which may not be ideal:
+// app.use((req, res) => {
+//   res.redirect('/');
+// });
 
+// Better approach: Serve a 404 page instead
 app.use((req, res) => {
-  res.redirect('/');
+  res.status(404).render('404');
 });
 
 const server = app.listen(process.env.PORT || 8080, () => {
