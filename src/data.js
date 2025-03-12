@@ -51,8 +51,9 @@ const getReleasesOrUpdate = pMemoize(
 const getDownloadStatsOrUpdate = pMemoize(
   async () => {
     const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
-    return response.json();
-    return {
+    const data=await response.json();
+    return {  
+      ...data,
       electron: electronJSON,
       nightly: nightlyJSON,
     };
@@ -215,5 +216,6 @@ module.exports = {
   getPRComments,
   getRecentPRs,
   compareTagToCommit,
-  getTSDefs,
+  getTSDefs, 
+  getDownloadStatsOrUpdate,
 };
