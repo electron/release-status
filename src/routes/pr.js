@@ -38,7 +38,7 @@ async function getPRReleaseStatus(prNumber) {
     const backports = [];
     let availableIn = null;
 
-    // We've been merged, let's find out if this is available in a nightly
+    // We've been merged, now checking which release version includes this PR
     if (merged) {
       const allReleases = releases.filter(
         (r) =>
