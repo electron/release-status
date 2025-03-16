@@ -185,6 +185,7 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
+
 router.get(
   '/:version',
   a(async (req, res) => {
@@ -197,14 +198,18 @@ router.get(
       return res.redirect('/');
     }
 
-    let releaseNotes = release.body;
+    let releaseNotes = release.body ?? '';
     const parsed = semver.parse(version);
+    if (releaseNotes){
     if (parsed.prerelease.length) {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
     releaseNotes =
       '# Release Notes\n' +
       releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+  }else{
+    releaseNotes='No release notes available.';
+  }
 
     const lastPreRelease = allReleases.find(
       (r) =>
