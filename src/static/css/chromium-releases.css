@@ -1,0 +1,113 @@
+.chromium-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .refresh-btn {
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  
+  .refresh-btn:hover {
+    background-color: #3367d6;
+  }
+  
+  .refresh-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .milestone-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    width: 100%;
+  }
+  
+  .milestone-card {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .milestone-header {
+    background-color: #4285f4;
+    color: white;
+    padding: 12px;
+    text-align: center;
+  }
+  
+  .milestone-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .milestone-content {
+    padding: 16px;
+  }
+  
+  .milestone-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .milestone-table tr {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .milestone-table tr:last-child {
+    border-bottom: none;
+  }
+  
+  .milestone-table td {
+    padding: 10px 0;
+  }
+  
+  .milestone-table .label {
+    font-weight: bold;
+    color: #555;
+    width: 45%;
+    vertical-align: top;
+  }
+  
+  .milestone-table .value {
+    color: #333;
+    vertical-align: top;
+  }
+  
+  .controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+  
+  .auto-refresh {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .last-updated {
+    margin-left: auto;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  @media (max-width: 768px) {
+    .milestone-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+  

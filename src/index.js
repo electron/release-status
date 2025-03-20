@@ -40,6 +40,7 @@ app.use('/', require('./routes/home'));
 app.use('/release', require('./routes/release'));
 app.use('/releases', require('./routes/releases'));
 app.use('/history', require('./routes/history'));
+app.use('/chromium-releases', require('./routes/chromium-releases'));
 app.use('/release-build', require('./routes/release-build'));
 app.use('/pr', require('./routes/pr'));
 app.use('/pr-lookup', require('./routes/pr-lookup'));

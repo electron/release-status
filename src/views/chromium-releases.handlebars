@@ -1,0 +1,77 @@
+<div class="chromium-container">
+  <h1>Chromium Release Schedule</h1>
+  
+  <button id="refresh-button" class="refresh-btn">
+    <i class="fas fa-sync-alt"></i> Refresh Data
+  </button>
+
+  <div class="milestone-cards">
+    {{#each data}}
+      <div class="milestone-card">
+        <div class="milestone-header">
+          <h2>Milestone {{mstone}}</h2>
+        </div>
+        <div class="milestone-content">
+          <table class="milestone-table">
+            <tr>
+              <td class="label">Branch</td>
+              <td class="value">{{formatDate branch_point}}</td>
+            </tr>
+            <tr>
+              <td class="label">Beta Promotion (Chrome Browser)</td>
+              <td class="value">{{formatDate earliest_beta}}</td>
+            </tr>
+            <tr>
+              <td class="label">Stable Cut</td>
+              <td class="value">{{formatDate stable_cut}}</td>
+            </tr>
+            <tr>
+              <td class="label">Early Stable Release</td>
+              <td class="value">{{formatDate final_beta}}</td>
+            </tr>
+            <tr>
+              <td class="label">Stable Release (Chrome Browser)</td>
+              <td class="value">{{formatDate stable_date}}</td>
+            </tr>
+            <tr>
+              <td class="label">Extended Support / Refresh</td>
+              <td class="value">{{formatDate stable_refresh_first}}</td>
+            </tr>
+            <tr>
+              <td class="label">Desktop Owner (US, EMEA)</td>
+              <td class="value">{{lookup ldaps 'desktop_us'}}, {{lookup ldaps 'desktop_emea'}}</td>
+            </tr>
+            <tr>
+              <td class="label">Mobile Owner (US, EMEA)</td>
+              <td class="value">{{lookup ldaps 'mobile_us'}}, {{lookup ldaps 'mobile_emea'}}</td>
+            </tr>
+            <tr>
+              <td class="label">ChromeOS Feature Freeze</td>
+              <td class="value">{{formatDate feature_freeze}}</td>
+            </tr>
+            <tr>
+              <td class="label">ChromeOS Beta Promotion</td>
+              <td class="value">{{formatDate earliest_beta_chromeos}}</td>
+            </tr>
+            <tr>
+              <td class="label">ChromeOS Stable Release</td>
+              <td class="value">{{formatDate late_stable_date}}</td>
+            </tr>
+            <tr>
+              <td class="label">Milestone Owner</td>
+              <td class="value">{{lookup ldaps 'cros'}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+</div>
+
+<script>
+  document.getElementById('refresh-button').addEventListener('click', function() {
+    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    this.disabled = true;
+    window.location.reload();
+  });
+</script>
