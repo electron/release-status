@@ -66,6 +66,9 @@ router.get(
       return res.redirect('/releases/stable');
     }
 
+    if (version === '0.x') {
+      return res.redirect(`/release/compare/0.x/0.x`);
+    }    
     if (channel === 'stable') {
       filter = ({ version }) =>
         !version.includes('alpha') && !version.includes('beta') && !version.includes('nightly');
@@ -78,10 +81,11 @@ router.get(
     const releases = await getReleasesOrUpdate();
     const { page, limit, version } = req.query;
     const releasesFromChannel = releases.filter(filter);
-    let major = parseInt(version, 10);
+    let major = version === '0.x' ? 0 : parseInt(version, 10);
     if (isNaN(major) || major < 0) {
       major = null;
     }
+    
     const majors = releasesFromChannel.reduce((acc, val) => {
       acc.add(semver.major(val.version));
       return acc;

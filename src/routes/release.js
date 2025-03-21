@@ -110,6 +110,10 @@ async function getValidVersionRange(startVersion, endVersion, res) {
 
 async function handleComparisonRequest(startVersion, endVersion, res) {
   const [allReleases, versionRange] = await getValidVersionRange(startVersion, endVersion, res);
+  if (startVersion === '0.x' || endVersion === '0.x') {
+    res.redirect(`/release/v0.0.1`); // Redirect to initial version of Electron
+    return;
+  }  
   if (!versionRange) return;
 
   const allGitHubReleases = await Promise.all(
