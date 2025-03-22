@@ -4,37 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Electron Releases</title>
-    <link
-      rel="shortcut icon"
-      href="https://www.electronjs.org/images/favicon.ico"
-    />
+
+    <!-- Favicon for the website -->
+    <link rel="shortcut icon" href="https://www.electronjs.org/images/favicon.ico" />
+
+    <!-- Google Font for styling -->
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Main CSS file -->
     <link rel="stylesheet" href="/css/styles.css" type="text/css" />
+
+    <!-- Conditional CSS file inclusion -->
     {{#if css}}
     <link rel="stylesheet" href="/css/{{css}}.css" type="text/css" />
     {{/if}}
+
+    <!-- Font Awesome icons -->
     <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script>
   </head>
   <body>
+    
+    <!-- Navigation Bar -->
     <nav class="navbar">
       <div>
         <a href="/">
+          <!-- Electron logo -->
           <img src="https://www.electronjs.org/assets/img/logo.svg" />
           <span class="title">Electron Releases</span>
         </a>
         <div>
-          <a  class="navitem" href="/releases">All Releases</a>
-          <a  class="navitem" href="/history">History</a>
-          <a  class="navitem" href="/pr-lookup">PR Lookup</a>
-          <a  class="navitem" href="https://electronjs.org" target="_blank" rel="noopener noreferrer">Website</a>
+          <!-- Navigation links -->
+          <a class="navitem" href="/releases">All Releases</a>
+          <a class="navitem" href="/history">History</a>
+          <a class="navitem" href="/pr-lookup">PR Lookup</a>
+          <a class="navitem" href="https://electronjs.org" target="_blank" rel="noopener noreferrer">Website</a>
         </div>
       </div>
     </nav>
+
+    <!-- Header Section -->
     <header>
       <div>
         <h1>
           Electron Releases
           {{#if title}} - {{{title}}}{{/if}}
+
+          <!-- Dropdown for comparing versions -->
           {{#if compareList}}
           <div class="version-select-wrapper">
             <select class="version-select" onchange="goToCompare()">
@@ -48,14 +63,19 @@
         </h1>
       </div>
     </header>
+
+    <!-- Main Content Section -->
     <main>
       <div>
         {{{ body }}}
       </div>
     </main>
+
+    <!-- Footer Section -->
     <footer>
       <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
           <ul style="list-style: none; padding-left: 0; text-align: center;">
+            <!-- Footer Links -->
             <li style="display: inline-block;"><a href="https://bsky.app/profile/electronjs.org" rel="noopener noreferrer">Bluesky</a></li>
             <li style="display: inline-block;"><a href="https://github.com/electron/electron" rel="noopener noreferrer">Repository</a></li>
           </ul>
@@ -64,11 +84,14 @@
           </div>
       </div>
     </footer>
+
+    <!-- JavaScript for version comparison -->
     <script>
       function goToCompare() {
         const elem = document.querySelector('.version-select');
         window.location.href = `/release/compare/{{ compareTarget }}/${elem.value}`;
       }
     </script>
+
   </body>
 </html>
