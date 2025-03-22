@@ -62,17 +62,21 @@ footer > div {
 }
 
 .navbar {
-  min-height: 86px;
-  justify-content: space-between;
   display: flex;
-  font-size: 16px;
-  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   background: #2b2e3b;
+  padding: 10px 20px;
+  min-height: 5rem; /* Changed height to min-height */
+  width: 100%;
+  flex-wrap: wrap; /* Allows items to move to the next line */
 }
 
 .navbar > div {
+  display: flex;
   flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap; /* Allows wrapping if necessary */
 }
 
 .navbar > div > :first-child {
@@ -90,31 +94,51 @@ footer > div {
   margin-right: 0.5rem;
 }
 
-.navbar .title {
-  color: #9feaf9;
-  font-weight: 600;
-}
-
 .navbar a {
   color: #9feaf9;
   text-decoration: none !important;
   margin-right: 25px;
 }
 
+.navitem:hover {
+  color: white;
+  text-decoration: underline !important;
+}
+
+.navbar .title {
+  color: #9feaf9;
+  font-weight: 600;
+}
+
+/* Responsive Fix */
 @media screen and (max-width: 576px) {
-  .navbar > div {
+  .navbar {
     flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
   }
 
-  .navbar a {
-    margin-top: 8px;
-    justify-content: center;
+  .navbar > div {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .navbar > div a {
+    display: block;
+    margin: 5px 0;
+  }
+
+  .navbar a:hover {
+    color: white;
+    text-decoration: underline;
   }
 
   .navbar > div > div {
-    justify-content: center;
-    margin-top: 8px;
-    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
