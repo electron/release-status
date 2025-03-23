@@ -66,28 +66,40 @@ h1 {
 .search-container button:hover {
   background-color: #2f3b56;
 }
+/* Ensure the table container allows scrolling on small screens */
+.recent-prs {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling */
+}
 
+/* Table styling */
 table {
   width: 100%;
+  min-width: 600px; /* Prevents excessive shrinking */
   border-collapse: collapse;
   margin-top: 20px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Table headers and cells */
 th,
 td {
   text-align: left;
   padding: 12px;
   border-bottom: 1px solid #ddd;
+  white-space: nowrap; /* Prevents text wrapping */
 }
 
+/* Styling for table headers */
 th {
   background-color: #f2f4f7;
   color: #3b4a6b;
   font-weight: bold;
 }
 
+/* Links inside table cells */
 td a {
   color: #3b4a6b;
   text-decoration: none;
@@ -97,10 +109,89 @@ td a:hover {
   text-decoration: underline;
 }
 
+/* Highlight row on hover */
 tr:hover {
   background-color: #f9fafc;
 }
 
 tr:last-child td {
   border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  table {
+    min-width: 100%; /* Adjust table to screen width */
+    font-size: 14px; /* Reduce font size */
+  }
+
+  th,
+  td {
+    padding: 10px;
+    white-space: normal; /* Allow text wrapping */
+  }
+
+  th {
+    font-size: 14px;
+  }
+}
+
+/* Fully responsive for small screens */
+@media (max-width: 480px) {
+  .recent-prs {
+    overflow-x: auto;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+
+  thead {
+    display: block;
+    width: 100%;
+    background-color: #f2f4f7;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  thead tr {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  thead th {
+    flex: 1;
+    text-align: left;
+    padding: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  tbody {
+    display: block;
+    width: 100%;
+  }
+
+  tbody tr {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    font-size: 14px;
+  }
+
+  tbody td::before {
+    content: attr(data-label); /* Show labels for each row */
+    font-weight: bold;
+    margin-right: 10px;
+  }
 }
