@@ -173,3 +173,19 @@ async function main() {
 main().catch((err) => {
   console.error(err);
 });
+
+// searchReleases function
+function searchReleases() {
+  let selectedDate = document.getElementById('searchDate').value;
+
+  if (!selectedDate) {
+    alert('Please select a date!');
+    return;
+  }
+
+  // Format date as YYYY-MM-DD
+  const formattedDate = selectedDate;
+
+  // Redirect to the history page for the selected date
+  window.location.href = `http://localhost:8080/history/${formattedDate}`;
+}

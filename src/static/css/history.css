@@ -162,3 +162,54 @@
 .month_day.future {
   opacity: 0.45;
 }
+
+/* Search Bar Styling */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.search-container input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-container input:focus {
+  border-color: #6554c0;
+  box-shadow: 0 0 5px rgba(101, 84, 192, 0.5);
+}
+
+.search-container button {
+  background-color: #6554c0;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+  background-color: #5341b3;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .search-container {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .search-container input,
+  .search-container button {
+    width: 100%;
+  }
+}
