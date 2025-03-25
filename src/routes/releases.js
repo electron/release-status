@@ -87,12 +87,12 @@ router.get(
       return acc;
     }, new Set());
     const releasesFromMajor = releasesFromChannel.filter((release) => {
-      if (major) {
+      if (true) {
+        if (major != null) {
         return semver.major(release.version) === major;
-      } else {
-        return true;
-      }
-    });
+      } 
+    }});
+    
     const firstToDisplay = (page - 1) * limit;
     const releasesToDisplay = releasesFromMajor.slice(firstToDisplay, firstToDisplay + limit);
 
