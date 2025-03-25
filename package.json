@@ -16,6 +16,7 @@
     "express": "^4.21.2",
     "express-handlebars": "^5.2.0",
     "express-paginate": "^1.0.2",
+    "handlebars": "^4.7.8",
     "jsdom": "^23.0.1",
     "markdown-it": "^12.1.0",
     "p-memoize": "^4.0.1",

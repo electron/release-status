@@ -15,6 +15,11 @@
     {{/if}}
     <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script>
   </head>
+  <script>
+    function toggleMenu() {
+  document.querySelector(".navbar").classList.toggle("active");
+}
+  </script>
   <body>
     <nav class="navbar">
       <div>
@@ -22,6 +27,7 @@
           <img src="https://www.electronjs.org/assets/img/logo.svg" />
           <span class="title">Electron Releases</span>
         </a>
+         <span class="menu-icon" onclick="toggleMenu()">☰</span>
         <div>
           <a href="/releases">All Releases</a>
           <a href="/history">History</a>

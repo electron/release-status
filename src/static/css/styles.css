@@ -207,3 +207,48 @@ h5,
 h6 {
   color: #0d4a59;
 }
+
+
+.navbar {
+  min-height: 86px;
+  justify-content: space-between;
+  display: flex;
+  font-size: 16px;
+  flex-direction: row;
+  align-items: center;
+  background: #2b2e3b;
+  padding: 10px 20px;
+  position: relative;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #9feaf9;
+}
+
+
+@media screen and (max-width: 576px) {
+  .navbar a {
+    display: none;
+  }
+
+  .menu-icon {
+    display: block;
+  }
+
+  .navbar.active a {
+    display: block;
+    background: #2b2e3b;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .navbar.active {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
