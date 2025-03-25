@@ -118,6 +118,22 @@ footer > div {
   }
 }
 
+@media screen and (max-width: 390px) {
+  .navbar > div {
+    flex-direction: column;
+  }
+
+  .navbar a {
+    margin-top: 8px;
+    margin-right: 12px;
+    font-size: 14px;
+    justify-content: center;
+  }
+  header > div {
+    line-height: 1;
+  }
+}
+
 header {
   background: white;
   border-bottom: 1px solid #e8e8e8;
