@@ -40,16 +40,16 @@ async function getPRReleaseStatus(prNumber) {
 
     // We've been merged, let's find out if this is available in a nightly
     if (merged) {
-      const allNightlies = releases.filter(
-        (r) => semver.parse(r.version).prerelease[0] === 'nightly',
+      const allReleases = releases.filter(
+        (r) => semver.parse(r.version).prerelease[0] === 'nightly' || semver.parse(r.version).prerelease[0] !== undefined,
       );
-      for (const nightly of allNightlies) {
-        const dateParts = nightly.date.split('-').map((n) => parseInt(n, 10));
+      for (const release of allR) {
+        const dateParts = release.date.split('-').map((n) => parseInt(n, 10));
         const releaseDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2] + 1);
         if (releaseDate > new Date(merged_at)) {
-          const comparison = await compareTagToCommit(`v${nightly.version}`, merge_commit_sha);
+          const comparison = await compareTagToCommit(`v${release.version}`, merge_commit_sha);
           if (comparison.status === 'behind') {
-            availableIn = nightly;
+            availableIn = release;
             break;
           }
         }
