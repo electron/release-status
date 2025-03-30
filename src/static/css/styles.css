@@ -61,7 +61,7 @@ footer > div {
   width: 100%;
 }
 
-.navbar {
+nav {
   min-height: 86px;
   justify-content: space-between;
   display: flex;
@@ -69,52 +69,79 @@ footer > div {
   flex-direction: row;
   align-items: center;
   background: #2b2e3b;
+  padding: 0px 20px 0px 50px;
 }
 
-.navbar > div {
-  flex-direction: row;
-}
-
-.navbar > div > :first-child {
-  flex: 1;
-}
-
-.navbar > div > div,
-.navbar > div > a {
-  display: flex;
-  align-items: center;
-}
-
-.navbar img {
+nav img {
   height: 2rem;
   margin-right: 0.5rem;
 }
 
-.navbar .title {
+.title {
   color: #9feaf9;
   font-weight: 600;
+  text-decoration: none;
 }
 
-.navbar a {
+nav ul{
+  display: flex;
+  list-style: none;
+}
+
+nav ul li{
+  margin: 0 15px;
+}
+
+#click{
+  display: none;
+}
+
+
+
+nav ul li a{
   color: #9feaf9;
-  text-decoration: none !important;
-  margin-right: 25px;
+  text-decoration: none;
 }
 
-@media screen and (max-width: 576px) {
-  .navbar > div {
-    flex-direction: column;
+nav .menu-btn i{
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+}
+
+@media (max-width: 950px) {
+
+  #click:checked ~ .menu-btn i::before{
+    content: "\f00d";
   }
 
-  .navbar a {
-    margin-top: 8px;
-    justify-content: center;
+  nav ul{
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    background: #414141;
+    height: 100vh;
+    width: 100%;
+    display: block;
+    text-align: center;
+    transition: all 0.3s ease;
   }
 
-  .navbar > div > div {
-    justify-content: center;
-    margin-top: 8px;
-    margin-bottom: 16px;
+  #click:checked ~ ul{
+    left: 0%;
+  }
+
+  nav ul li{
+    margin: 40px 0;
+  }
+
+  nav ul li a{
+    font-size: 20px;
+  }
+
+  nav .menu-btn i{
+    display: block;
   }
 }
 
