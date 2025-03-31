@@ -38,24 +38,35 @@ const getOctokit = async () => {
 
 const getReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electronjs.org/headers/index.json');
-    const releases = await response.json();
-    return releases.sort((a, b) => semver.compare(b.version, a.version));
+    try {
+      const response = await fetch('https://electronjs.org/headers/index.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const releases = await response.json();
+      return releases.sort((a, b) => semver.compare(b.version, a.version));
+    } catch (error) {
+      console.error('Failed to fetch releases:', error);
+      return [];
+    }
   },
   {
     cache: new ExpiryMap(60 * 1000),
     cacheKey: () => 'releases',
   },
 );
-
 const getDownloadStatsOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
-    return response.json();
-    return {
-      electron: electronJSON,
-      nightly: nightlyJSON,
-    };
+    try {
+      const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+      return response.json();
+      return {
+        electron: electronJSON,
+        nightly: nightlyJSON,
+      };
+    } catch (error) {
+      console.error('Failed to fetch download stats:', error);
+    }
   },
   {
     cache: new ExpiryMap(60 * 1000),
@@ -65,8 +76,12 @@ const getDownloadStatsOrUpdate = pMemoize(
 
 const getActiveReleasesOrUpdate = pMemoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
-    return response.json();
+    try {
+      const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+      return response.json();
+    } catch (error) {
+      console.log(error.message || error);
+    }
   },
   {
     cache: new ExpiryMap(30 * 1000),
