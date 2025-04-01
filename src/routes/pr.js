@@ -18,8 +18,8 @@ Handlebars.registerHelper('html', (content) => DOMPurify.sanitize(content));
 
 async function getPRReleaseStatus(prNumber) {
   const releases = await getReleasesOrUpdateSortedByDate();
-  const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]); // get PR info
-  if (!prInfo) return null; // if the PR is not found, return null
+  const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]);
+  if (!prInfo) return null;
 
   const { base, merged, merged_at, merge_commit_sha } = prInfo;
 
@@ -41,7 +41,7 @@ async function getPRReleaseStatus(prNumber) {
     if (merged) {
       const allPrereleases = releases.filter((r) => { // non-nightly prereleases
         let releaseTag = semver.parse(r.version).prerelease[0];
-        return releaseTag !== 'nightly' && releaseTag !== undefined; // filter out non-nightly releases and not stable releases
+        return releaseTag !== 'nightly' && releaseTag !== undefined; // filter out nightly and stable releases
       });
       for (const prerelease of allPrereleases) {
         const dateParts = prerelease.date.split('-').map((n) => parseInt(n, 10));
