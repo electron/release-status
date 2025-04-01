@@ -52,11 +52,11 @@ const getReleasesOrUpdateSortedByDate = pMemoize(
   async () => {
     const response = await fetch('https://electronjs.org/headers/index.json');
     const releases = await response.json();
-    return releases.sort((a, b) => new Date(a.date) - new Date(b.date)); // sort data from oldest to newest
+    return releases.sort((a, b) => new Date(a.date) - new Date(b.date));
   },
   {
     cache: new ExpiryMap(60 * 1000),
-    cacheKey: () => 'releases_by_date',
+    cacheKey: () => 'releases_sorted_by_date',
   },
 );
 
