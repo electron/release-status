@@ -87,7 +87,7 @@ router.get(
       return acc;
     }, new Set());
     const releasesFromMajor = releasesFromChannel.filter((release) => {
-      if (major) {
+      if (major !== null) {
         return semver.major(release.version) === major;
       } else {
         return true;
