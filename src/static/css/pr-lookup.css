@@ -19,6 +19,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 5px;
 }
 
 .lookup-input button:hover {
@@ -67,6 +68,10 @@ h1 {
   background-color: #2f3b56;
 }
 
+.lookup-container {
+  width: 100%;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -103,4 +108,23 @@ tr:hover {
 
 tr:last-child td {
   border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  th {
+    font-size: 1rem;
+    padding: 5px;
+    text-align: center;
+  }
+
+  td {
+    font-size: 0.8rem;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .lookup-container {
+    overflow-x: scroll;
+    overflow-y: visible;
+  }
 }
