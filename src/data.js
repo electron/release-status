@@ -56,7 +56,7 @@ const getReleasesOrUpdateSortedByDate = pMemoize(
   },
   {
     cache: new ExpiryMap(60 * 1000),
-    cacheKey: () => 'releases',
+    cacheKey: () => 'releases_by_date',
   },
 );
 
