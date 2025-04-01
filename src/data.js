@@ -3,6 +3,8 @@ const { Octokit } = require('@octokit/rest');
 const ExpiryMap = require('expiry-map');
 const pMemoize = require('p-memoize');
 const semver = require('semver');
+const fs = require('fs');
+const path = require('path');
 
 const REPO_DATA = {
   owner: 'electron',
@@ -36,15 +38,28 @@ const getOctokit = async () => {
   return octokit;
 };
 
-const getReleasesOrUpdate = pMemoize(
+const getVersionsOrUpdate = pMemoize(
   async () => {
     const response = await fetch('https://electronjs.org/headers/index.json');
     const releases = await response.json();
-    return releases.sort((a, b) => semver.compare(b.version, a.version));
+    const support = JSON.parse(fs.readFileSync(path.join(__dirname, 'versions-support.json')));
+    return {
+      support: support.map((version) => {
+        const stableRelease =
+          releases.find((release) => release.version === `${version.major}.0.0`) !== undefined;
+        const endOfLife = version.endOfLife;
+        return {
+          ...version,
+          isSupported: !endOfLife || new Date() <= new Date(endOfLife),
+          isStable: stableRelease,
+        };
+      }),
+      releases: releases.sort((a, b) => semver.compare(b.version, a.version)),
+    };
   },
   {
     cache: new ExpiryMap(60 * 1000),
-    cacheKey: () => 'releases',
+    cacheKey: () => 'versions',
   },
 );
 
@@ -208,7 +223,7 @@ const getTSDefs = pMemoize(
 
 module.exports = {
   getGitHubRelease,
-  getReleasesOrUpdate,
+  getVersionsOrUpdate,
   getActiveReleasesOrUpdate,
   getAllSudowoodoReleasesOrUpdate,
   getPR,
