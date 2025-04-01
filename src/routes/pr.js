@@ -8,7 +8,13 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 const a = require('../utils/a');
-const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments } = require('../data');
+const {
+  compareTagToCommit,
+  getReleasesOrUpdate,
+  getPR,
+  getPRComments,
+  getReleasesOrUpdateSortedByDate,
+} = require('../data');
 
 const router = new Router();
 
@@ -17,10 +23,9 @@ Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString(
 Handlebars.registerHelper('html', (content) => DOMPurify.sanitize(content));
 
 async function getPRReleaseStatus(prNumber) {
-  const releases = [...(await getReleasesOrUpdate())].reverse();
-  const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]);
-
-  if (!prInfo) return null;
+  const releases = await getReleasesOrUpdateSortedByDate();
+  const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]); // get PR info
+  if (!prInfo) return null; // if the PR is not found, return null
 
   const { base, merged, merged_at, merge_commit_sha } = prInfo;
 
@@ -38,18 +43,20 @@ async function getPRReleaseStatus(prNumber) {
     const backports = [];
     let availableIn = null;
 
-    // We've been merged, let's find out if this is available in a nightly
+    // We've been merged
     if (merged) {
-      const allNightlies = releases.filter(
-        (r) => semver.parse(r.version).prerelease[0] === 'nightly',
-      );
-      for (const nightly of allNightlies) {
-        const dateParts = nightly.date.split('-').map((n) => parseInt(n, 10));
+      // non-nightly prereleases
+      const allPrereleases = releases.filter((r) => {
+        let releaseTag = semver.parse(r.version).prerelease[0];
+        return releaseTag !== 'nightly' && releaseTag !== undefined; // filter out non-nightly releases and not stable releases
+      });
+      for (const prerelease of allPrereleases) {
+        const dateParts = prerelease.date.split('-').map((n) => parseInt(n, 10));
         const releaseDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2] + 1);
         if (releaseDate > new Date(merged_at)) {
-          const comparison = await compareTagToCommit(`v${nightly.version}`, merge_commit_sha);
+          const comparison = await compareTagToCommit(`v${prerelease.version}`, merge_commit_sha);
           if (comparison.status === 'behind') {
-            availableIn = nightly;
+            availableIn = prerelease;
             break;
           }
         }
@@ -167,11 +174,12 @@ router.get(
   '/:number',
   a(async (req, res) => {
     const prNumber = parseInt(req.params.number, 10);
-    if (isNaN(prNumber) || prNumber < 0) return res.redirect('/');
-    const prInfo = await getPRReleaseStatus(prNumber);
-    if (!prInfo) return res.redirect('/');
+    if (isNaN(prNumber) || prNumber < 0) return res.redirect('/'); // if the number is invalid, redirect to home
+    const prInfo = await getPRReleaseStatus(prNumber); // get PR info and release status
+    if (!prInfo) return res.redirect('/'); // if the PR is not found, redirect to home
 
     res.render('pr', {
+      // render the PR page with the PR info
       ...prInfo,
       css: 'pr',
       title: `PR #${prNumber} - Release Status`,

@@ -48,6 +48,18 @@ const getReleasesOrUpdate = pMemoize(
   },
 );
 
+const getReleasesOrUpdateSortedByDate = pMemoize(
+  async () => {
+    const response = await fetch('https://electronjs.org/headers/index.json');
+    const releases = await response.json();
+    return releases.sort((a, b) => new Date(a.date) - new Date(b.date)); // sort data from oldest to newest
+  },
+  {
+    cache: new ExpiryMap(60 * 1000),
+    cacheKey: () => 'releases',
+  },
+);
+
 const getDownloadStatsOrUpdate = pMemoize(
   async () => {
     const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
@@ -209,6 +221,7 @@ const getTSDefs = pMemoize(
 module.exports = {
   getGitHubRelease,
   getReleasesOrUpdate,
+  getReleasesOrUpdateSortedByDate,
   getActiveReleasesOrUpdate,
   getAllSudowoodoReleasesOrUpdate,
   getPR,
