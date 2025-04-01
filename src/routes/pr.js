@@ -8,13 +8,7 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 const a = require('../utils/a');
-const {
-  compareTagToCommit,
-  getReleasesOrUpdate,
-  getPR,
-  getPRComments,
-  getReleasesOrUpdateSortedByDate,
-} = require('../data');
+const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments, getReleasesOrUpdateSortedByDate } = require('../data');
 
 const router = new Router();
 
@@ -45,8 +39,7 @@ async function getPRReleaseStatus(prNumber) {
 
     // We've been merged
     if (merged) {
-      // non-nightly prereleases
-      const allPrereleases = releases.filter((r) => {
+      const allPrereleases = releases.filter((r) => { // non-nightly prereleases
         let releaseTag = semver.parse(r.version).prerelease[0];
         return releaseTag !== 'nightly' && releaseTag !== undefined; // filter out non-nightly releases and not stable releases
       });
@@ -174,12 +167,11 @@ router.get(
   '/:number',
   a(async (req, res) => {
     const prNumber = parseInt(req.params.number, 10);
-    if (isNaN(prNumber) || prNumber < 0) return res.redirect('/'); // if the number is invalid, redirect to home
-    const prInfo = await getPRReleaseStatus(prNumber); // get PR info and release status
-    if (!prInfo) return res.redirect('/'); // if the PR is not found, redirect to home
+    if (isNaN(prNumber) || prNumber < 0) return res.redirect('/');
+    const prInfo = await getPRReleaseStatus(prNumber);
+    if (!prInfo) return res.redirect('/');
 
     res.render('pr', {
-      // render the PR page with the PR info
       ...prInfo,
       css: 'pr',
       title: `PR #${prNumber} - Release Status`,
