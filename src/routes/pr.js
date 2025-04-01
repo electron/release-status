@@ -8,7 +8,7 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 const a = require('../utils/a');
-const { compareTagToCommit, getPR, getPRComments, getReleasesOrUpdateSortedByDate } = require('../data');
+const { compareTagToCommit, getPR, getPRComments, getReleasesOrUpdateSortedByDate} = require('../data');
 
 const router = new Router();
 
@@ -39,9 +39,9 @@ async function getPRReleaseStatus(prNumber) {
 
     // We've been merged
     if (merged) {
-      const allPrereleases = releases.filter((r) => { // non-nightly prereleases
+      const allPrereleases = releases.filter((r) => { // get all prereleases (nightly, beta, alpha)
         let releaseTag = semver.parse(r.version).prerelease[0];
-        return releaseTag !== 'nightly' && releaseTag !== undefined; // filter out nightly and stable releases
+        return releaseTag !== undefined; // filter out stable releases
       });
       for (const prerelease of allPrereleases) {
         const dateParts = prerelease.date.split('-').map((n) => parseInt(n, 10));
