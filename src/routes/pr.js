@@ -8,7 +8,7 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 const a = require('../utils/a');
-const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments, getReleasesOrUpdateSortedByDate } = require('../data');
+const { compareTagToCommit, getPR, getPRComments, getReleasesOrUpdateSortedByDate } = require('../data');
 
 const router = new Router();
 
