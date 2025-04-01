@@ -63,19 +63,19 @@ function generateMonth(year, month, getDateInfo) {
 
       const cell = document.createElement('a');
       cell.classList.add('month_day');
-      // if (future) {
-      //   cell.classList.add('future');
-      // }
-      cell.innerText = valid ? `${n}` : '';
-      cell.setAttribute('data-date', `${year}-${month}-${n}`);
-      const date = `${year}-${month}-${n}`;
-      cell.href = `/newreleases?date=${date}`;
+
+      if (valid) {
+        cell.innerText = valid ? `${n}` : '';
+        cell.setAttribute('data-date', `${year}-${month}-${n}`);
+        const date = `${year}-${month}-${n}`;
+        cell.href = `/newreleases?date=${date}`;
+      }
 
       const info = document.createElement('div');
       info.classList.add('info');
       cell.appendChild(info);
 
-      const { hasBeta, hasStable, hasNightly } = getDateInfo(year, month, n);
+      const { hasBeta, hasStable, hasNightly, hasManualEntry } = getDateInfo(year, month, n);
 
       // if (hasBeta) {
       //   const betaTag = document.createElement('i');
@@ -84,6 +84,14 @@ function generateMonth(year, month, getDateInfo) {
       //   betaTag.style.backgroundColor = '#6554C0';
       //   info.appendChild(betaTag);
       // }
+
+      if (hasManualEntry) {
+        const stableTag = document.createElement('i');
+        stableTag.classList.add('fas');
+        stableTag.classList.add('fa-tags');
+        stableTag.style.backgroundColor = 'blue';
+        info.appendChild(stableTag);
+      }
 
       if (hasStable) {
         const stableTag = document.createElement('i');
@@ -138,16 +146,183 @@ async function main() {
         if (events.length === 0) {
           noeventAdded.style.display = 'block';
         } else {
+          console.log('logging the events', events);
           noeventAdded.style.display = 'none';
           eventDisplay.innerHTML = events
             .map(
               (event) =>
-                `<div class="event-item">
+                `<div class="event-item"  id="event-${event._id}">
             <h3>${event.title}</h3>
             <p>${event.description}</p>
-          </div>`,
+
+            
+
+
+            <div style="display: none;" id="update-${event._id}">
+    <label>Event Title</label>
+    <input type="text" data-id="${event._id}" id="eventtitle-${event._id}" class="title" />
+    <label>Event Description</label>
+    <input type="text" data-id="${event._id}" id="eventdescription-${event._id}" class="description" />
+    <button style="display: none;" class='send' data-id="${event._id}" id="save-${event._id}">Save</button>
+    <button class="close" data-id="${event._id}">Close</button>
+  </div>
+
+
+
+            <div>
+            <button class='delete' data-id="${event._id}">Delete</button>
+            <button class='update' data-id="${event._id}">Update</button>
+            </div>
+
+
+      </div>`,
             )
             .join('');
+
+          //Add event listeners for input field
+          const titleinput = document.querySelectorAll('.title');
+          titleinput.forEach((input) => {
+            input.addEventListener('input', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              const savebutton = document.getElementById(`save-${id}`);
+
+              if (input.value.trim() != '') {
+                savebutton.style.display = 'block';
+              } else {
+                savebutton.style.display = 'none';
+              }
+            });
+          });
+
+          // Add event listeners for update buttons
+          const updateButtons = document.querySelectorAll('.update');
+          updateButtons.forEach((button) => {
+            button.addEventListener('click', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              const updatediv = document.getElementById(`update-${id}`);
+
+              // Use getComputedStyle to check visibility
+              const isVisible = window.getComputedStyle(updatediv).display !== 'none';
+
+              if (isVisible) {
+                updatediv.style.display = 'none'; // Hide the div
+              } else {
+                updatediv.style.display = 'block'; // Show the div
+              }
+            });
+          });
+
+          // Add event listeners for close buttons
+          const closeButtons = document.querySelectorAll('.close');
+          closeButtons.forEach((button) => {
+            button.addEventListener('click', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              const updatediv = document.getElementById(`update-${id}`);
+
+              // Use getComputedStyle to check visibility
+              const isVisible = window.getComputedStyle(updatediv).display !== 'none';
+
+              if (isVisible) {
+                updatediv.style.display = 'none'; // Hide the div
+              } else {
+                updatediv.style.display = 'block'; // Show the div
+              }
+            });
+          });
+
+          // Add event listeners for delete buttons
+          const deleteButtons = document.querySelectorAll('.delete');
+          deleteButtons.forEach((button) => {
+            button.addEventListener('click', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              console.log('logging the id and its type', id, typeof id);
+
+              try {
+                const response = await fetch(`/api/events/delete/${id}`, {
+                  method: 'DELETE',
+                });
+
+                if (response.ok) {
+                  alert('Event deleted successfully!');
+                  // Remove the event from the UI
+                  const eventElement = document.getElementById(`event-${id}`);
+                  if (eventElement) {
+                    console.log('logging the event element ', eventElement);
+                    eventElement.style.display = 'none';
+                    eventElement.remove();
+                  }
+
+                  // If no events remain, show the "no events" message
+                  if (eventDisplay.children.length === 0) {
+                    noeventAdded.style.display = 'block';
+                  }
+                } else {
+                  console.error('Error deleting event:', await response.json().error);
+                  alert('Failed to delete the event.');
+                }
+              } catch (error) {
+                console.error('Network error:', error);
+                alert('An error occurred while deleting the event.');
+              }
+            });
+          });
+
+          // Add event listeners for save buttons
+          const saveButtons = document.querySelectorAll('.send');
+          saveButtons.forEach((button) => {
+            button.addEventListener('click', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              const titleInput = document.getElementById(`eventtitle-${id}`);
+              const descriptionInput = document.getElementById(`eventdescription-${id}`);
+              const updatediv = document.getElementById(`update-${id}`);
+
+              const updatedTitle = titleInput.value.trim();
+              const updatedDescription = descriptionInput.value.trim();
+
+              if (!updatedTitle || !updatedDescription) {
+                alert('Both title and description are required!');
+                return;
+              }
+
+              try {
+                // Send the updated data to the server
+                const response = await fetch(`/api/events/update/${id}`, {
+                  method: 'PUT', // Use PUT or PATCH depending on your API
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    title: updatedTitle,
+                    description: updatedDescription,
+                  }),
+                });
+
+                if (response.ok) {
+                  alert('Event updated successfully!');
+
+                  // Update the UI with the new title and description
+                  const eventElement = document.getElementById(`event-${id}`);
+                  const titleElement = eventElement.querySelector('h3');
+                  const descriptionElement = eventElement.querySelector('p');
+
+                  titleElement.textContent = updatedTitle;
+                  descriptionElement.textContent = updatedDescription;
+
+                  // Hide the update div
+                  updatediv.style.display = 'none';
+                  titleInput.value = '';
+                  descriptionInput.value = '';
+                  button.style.display = 'none';
+                } else {
+                  console.error('Error updating event:', await response.json());
+                  alert('Failed to update the event.');
+                }
+              } catch (error) {
+                console.error('Network error:', error);
+                alert('An error occurred while updating the event.');
+              }
+            });
+          });
         }
       })
       .catch((error) => {
@@ -224,6 +399,8 @@ async function main() {
           body: JSON.stringify(event),
         });
 
+        const data = await response.json();
+
         if (response.ok) {
           alert('Event added successfully!');
           titleInput.value = '';
@@ -232,13 +409,136 @@ async function main() {
           noeventAdded.style.display = 'none';
           const newEventDiv = document.createElement('div');
           newEventDiv.classList.add('event-item');
+          newEventDiv.id = `event-${data.id}`;
           newEventDiv.innerHTML = `
         <h3>${title}</h3>
         <p>${description}</p>
+                    <div style="display: none;" id="update-${event._id}">
+    <label>Event Title</label>
+    <input type="text" data-id="${event._id}" id="eventtitle-${event._id}" class="title" />
+    <label>Event Description</label>
+    <input type="text" data-id="${event._id}" id="eventdescription-${event._id}" class="description" />
+    <button style="display: none;" class='send' data-id="${event._id}" id="save-${event._id}">Save</button>
+    <button class="close" data-id="${event._id}">Close</button>
+  </div>
+        <div>
+        <button class='delete' data-id="${data.id}">Delete</button>
+        <button class='update' data-id="${event._id}">Update</button>
+        </div>
       `;
 
           // Append to the existing eventDisplay
           eventDisplay.appendChild(newEventDiv);
+
+          // Add event listener to the save button of the new event
+          const saveButton = newEventDiv.querySelector('.send');
+          saveButton.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const titleInput = document.getElementById(`eventtitle-${id}`);
+            const descriptionInput = document.getElementById(`eventdescription-${id}`);
+            const updatediv = document.getElementById(`update-${id}`);
+
+            const updatedTitle = titleInput.value.trim();
+            const updatedDescription = descriptionInput.value.trim();
+
+            if (!updatedTitle || !updatedDescription) {
+              alert('Both title and description are required!');
+              return;
+            }
+
+            try {
+              // Send the updated data to the server
+              const response = await fetch(`/api/events/update/${id}`, {
+                method: 'PUT', // Use PUT or PATCH depending on your API
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  title: updatedTitle,
+                  description: updatedDescription,
+                }),
+              });
+
+              if (response.ok) {
+                alert('Event updated successfully!');
+
+                // Update the UI with the new title and description
+                const titleElement = newEventDiv.querySelector('h3');
+                const descriptionElement = newEventDiv.querySelector('p');
+
+                titleElement.textContent = updatedTitle;
+                descriptionElement.textContent = updatedDescription;
+
+                // Hide the update div
+                updatediv.style.display = 'none';
+              } else {
+                console.error('Error updating event:', await response.json());
+                alert('Failed to update the event.');
+              }
+            } catch (error) {
+              console.error('Network error:', error);
+              alert('An error occurred while updating the event.');
+            }
+          });
+
+          // Add event listener to the delete button of the new event
+          const deleteButton = newEventDiv.querySelector('.delete');
+          deleteButton.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            console.log('Deleting event with ID:', id);
+
+            try {
+              const response = await fetch(`/api/events/delete/${id}`, {
+                method: 'DELETE',
+              });
+
+              if (response.ok) {
+                alert('Event deleted successfully!');
+                // Remove the event from the UI
+                newEventDiv.remove();
+
+                // If no events remain, show the "no events" message
+                if (eventDisplay.children.length === 0) {
+                  noeventAdded.style.display = 'block';
+                }
+              } else {
+                console.error('Error deleting event:', await response.json());
+                alert('Failed to delete the event.');
+              }
+            } catch (error) {
+              console.error('Network error:', error);
+              alert('An error occurred while deleting the event.');
+            }
+          });
+
+          // After dynamically adding a new event
+          const newUpdateButton = newEventDiv.querySelector('.update');
+          newUpdateButton.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const updatediv = document.getElementById(`update-${id}`);
+
+            const isVisible = window.getComputedStyle(updatediv).display !== 'none';
+
+            if (isVisible) {
+              updatediv.style.display = 'none';
+            } else {
+              updatediv.style.display = 'block';
+            }
+          });
+
+          const newCloseButton = newEventDiv.querySelector('.close');
+          newCloseButton.addEventListener('click', async (e) => {
+            const id = e.target.getAttribute('data-id');
+            const updatediv = document.getElementById(`update-${id}`);
+
+            const isVisible = window.getComputedStyle(updatediv).display !== 'none';
+
+            if (isVisible) {
+              updatediv.style.display = 'none';
+            } else {
+              updatediv.style.display = 'block';
+            }
+          });
         } else {
           console.error('Error adding event:', await response.json());
         }
@@ -249,6 +549,30 @@ async function main() {
 
     return;
   }
+
+  let eventslist;
+
+  async function fetchEvents() {
+    try {
+      const response = await fetch('/api/events');
+      if (!response.ok) throw new Error('Failed to fetch events');
+
+      const events = await response.json();
+      console.log('Fetched events:', events);
+      return events;
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      return []; // Return an empty array to avoid breaking code
+    }
+  }
+
+  // Call the function
+  // fetchEvents().then(events => {
+  //   eventslist=events
+  //   console.log("Final events list:", eventslist);
+  // });
+
+  eventslist = await fetchEvents();
 
   if (url.split('=')?.[1] != undefined) {
     num = Number(url.split('=')?.[1]);
@@ -283,13 +607,17 @@ async function main() {
     }
     calendarSection.appendChild(
       generateMonth(year, month, (y, m, d) => {
+        const datestr = `${y}-${m}-${d}`;
         const dateString = `${y}-${m < 10 ? `0${m}` : m}-${d < 10 ? `0${d}` : d}T00:00:00`;
         const onDate = newreleases.filter((r) => r.stable_date === dateString);
-
+        const manualdates = eventslist?.filter((e) => {
+          return e.eventd === datestr;
+        });
         return {
           hasBeta: false,
           hasStable: onDate.length == 0 ? false : true,
           hasNightly: false,
+          hasManualEntry: manualdates.length == 0 ? false : true,
         };
       }),
     );
