@@ -70,28 +70,71 @@ header .latest-beta {
 
 .install-commands {
   display: flex;
+  gap: 16px;
+}
+
+.command-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #2b2f3b;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .install-commands .command {
   flex: 1;
-  background: #2b2f3b;
+  background: transparent;
   color: #9feaf9;
-  padding: 8px 32px;
-  text-align: center;
+  padding: 8px 16px;
+  margin: 0;
+  text-align: left;
 }
 
-.install-commands .command:not(:first-child) {
-  margin-left: 16px;
+.copy-button {
+  background: transparent;
+  border: none;
+  color: #9feaf9;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-button:hover {
+  color: #ffffff;
+}
+
+.copy-button.copied {
+  color: #4caf50;
+}
+
+.copy-button.copied i {
+  animation: fadeOut 1.5s ease-in-out;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }
 
 @media screen and (max-width: 767px) {
   .install-commands {
     flex-direction: column;
+    gap: 8px;
   }
 
-  .install-commands .command {
-    margin-left: 0 !important;
-    margin-top: 0 !important;
+  .command-container {
+    width: 100%;
   }
 }
 

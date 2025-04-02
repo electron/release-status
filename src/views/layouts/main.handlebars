@@ -1,32 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <title>Electron Releases</title>
+    <link rel='shortcut icon' href='https://www.electronjs.org/assets/img/favicon.ico' />
     <link
-      rel="shortcut icon"
-      href="https://www.electronjs.org/assets/img/favicon.ico"
+      href='https://fonts.googleapis.com/css2?family=Arimo:wght@700&display=swap'
+      rel='stylesheet'
     />
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css" type="text/css" />
+    <link rel='stylesheet' href='/css/styles.css' type='text/css' />
     {{#if css}}
-    <link rel="stylesheet" href="/css/{{css}}.css" type="text/css" />
+      <link rel='stylesheet' href='/css/{{css}}.css' type='text/css' />
     {{/if}}
-    <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/8fb0264ba9.js' crossorigin='anonymous'></script>
   </head>
   <body>
-    <nav class="navbar">
+    <nav class='navbar'>
       <div>
-        <a href="/">
-          <img src="https://www.electronjs.org/assets/img/logo.svg" />
-          <span class="title">Electron Releases</span>
+        <a href='/'>
+          <img src='https://www.electronjs.org/assets/img/logo.svg' />
+          <span class='title'>Electron Releases</span>
         </a>
         <div>
-          <a href="/releases">All Releases</a>
-          <a href="/history">History</a>
-          <a href="/pr-lookup">PR Lookup</a>
-          <a href="https://electronjs.org" target="_blank" rel="noopener noreferrer">Website</a>
+          <a href='/releases'>All Releases</a>
+          <a href='/history'>History</a>
+          <a href='/pr-lookup'>PR Lookup</a>
+          <a href='https://electronjs.org' target='_blank' rel='noopener noreferrer'>Website</a>
         </div>
       </div>
     </nav>
@@ -36,39 +35,46 @@
           Electron Releases
           {{#if title}} - {{{title}}}{{/if}}
           {{#if compareList}}
-          <div class="version-select-wrapper">
-            <select class="version-select" onchange="goToCompare()">
-              <option disabled selected>Compare To:</option>
-              {{#each compareList}}
-              <option>v{{this}}</option>
-              {{/each}}
-            </select>
-          </div>
+            <div class='version-select-wrapper'>
+              <select class='version-select' onchange='goToCompare()'>
+                <option disabled selected>Compare To:</option>
+                {{#each compareList}}
+                  <option>v{{this}}</option>
+                {{/each}}
+              </select>
+            </div>
           {{/if}}
         </h1>
       </div>
     </header>
     <main>
       <div>
-        {{{ body }}}
+        {{{body}}}
       </div>
     </main>
     <footer>
-      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-          <ul style="list-style: none; padding-left: 0; text-align: center;">
-            <li style="display: inline-block;"><a href="https://bsky.app/profile/electronjs.org" rel="noopener noreferrer">Bluesky</a></li>
-            <li style="display: inline-block;"><a href="https://github.com/electron/electron" rel="noopener noreferrer">Repository</a></li>
-          </ul>
-          <div>
-            <p>Provided with&nbsp;❤️&nbsp;by Electron</p>
-          </div>
+      <div
+        style='display: flex; justify-content: center; align-items: center; flex-direction: column;'
+      >
+        <ul style='list-style: none; padding-left: 0; text-align: center;'>
+          <li style='display: inline-block;'><a
+              href='https://bsky.app/profile/electronjs.org'
+              rel='noopener noreferrer'
+            >Bluesky</a></li>
+          <li style='display: inline-block;'><a
+              href='https://github.com/electron/electron'
+              rel='noopener noreferrer'
+            >Repository</a></li>
+        </ul>
+        <div>
+          <p>Provided with&nbsp;❤️&nbsp;by Electron</p>
+        </div>
       </div>
     </footer>
     <script>
-      function goToCompare() {
-        const elem = document.querySelector('.version-select');
-        window.location.href = `/release/compare/{{ compareTarget }}/${elem.value}`;
-      }
+      function goToCompare() { const elem = document.querySelector('.version-select');
+      window.location.href = `/release/compare/{{compareTarget}}/${elem.value}`; }
     </script>
+    <script src='/js/copy-command.js'></script>
   </body>
 </html>
