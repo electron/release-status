@@ -24,7 +24,6 @@
     "time-ago": "^0.2.1"
   },
   "devDependencies": {
-    "cpy-cli": "^5.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.0",
     "nodemon": "^3.1.7",
@@ -43,7 +42,7 @@
     "start": "node src/index.js",
     "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
-    "postinstall": "cpy 'node_modules/prismjs/themes/*.css' 'src/static/css/prismjs/'",
+    "postinstall": "node -e \"require('fs').cpSync('./node_modules/prismjs/themes/', './src/static/css/prismjs/', { recursive: true })\"",
     "prepare": "husky"
   }
 }
