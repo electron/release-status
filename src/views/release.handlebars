@@ -1,5 +1,6 @@
 <div>
   <div class='install-commands'>
+
     {{#ifEquals prerelease 'nightly'}}
       <pre class='command'>npm install electron-nightly@{{version}}<button
           class='copy-button'
@@ -24,15 +25,6 @@
         ><i class='fas fa-copy'></i></button></pre>
     {{/ifEquals}}
   </div>
-
-  <script>
-    function copyCommand(button) { const commandText = button.parentElement.textContent.trim();
-    navigator.clipboard.writeText(commandText).then(() => { button.classList.add('copied');
-    button.innerHTML = '<i class="fas fa-check"></i>'; setTimeout(() => {
-    button.classList.remove('copied'); button.innerHTML = '<i class="fas fa-copy"></i>'; }, 1500);
-    }).catch(err => { console.error('Failed to copy text: ', err); }); }
-  </script>
-
   {{#ifEquals prerelease 'nightly'}}
     <div class='release-banner'>
       Note: This is a nightly release, this means it is shipping with the latest "main" branch
@@ -142,3 +134,9 @@
     <option>PDBS</option>
   </select> }}
 </div>
+<script>
+  function copyCommand(button) { const command = button.parentElement.textContent.trim();
+  navigator.clipboard.writeText(command).then(() => { const icon = button.querySelector('i');
+  icon.className = 'fas fa-check'; button.style.color = '#4CAF50'; setTimeout(() => { icon.className
+  = 'fas fa-copy'; button.style.color = ''; }, 1000); }); }
+</script>
