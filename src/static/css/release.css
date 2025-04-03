@@ -70,71 +70,28 @@ header .latest-beta {
 
 .install-commands {
   display: flex;
-  gap: 16px;
-}
-
-.command-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  background: #2b2f3b;
-  border-radius: 4px;
-  overflow: hidden;
 }
 
 .install-commands .command {
   flex: 1;
-  background: transparent;
+  background: #2b2f3b;
   color: #9feaf9;
-  padding: 8px 16px;
-  margin: 0;
-  text-align: left;
+  padding: 8px 32px;
+  text-align: center;
 }
 
-.copy-button {
-  background: transparent;
-  border: none;
-  color: #9feaf9;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.copy-button:hover {
-  color: #ffffff;
-}
-
-.copy-button.copied {
-  color: #4caf50;
-}
-
-.copy-button.copied i {
-  animation: fadeOut 1.5s ease-in-out;
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
-  }
+.install-commands .command:not(:first-child) {
+  margin-left: 16px;
 }
 
 @media screen and (max-width: 767px) {
   .install-commands {
     flex-direction: column;
-    gap: 8px;
   }
 
-  .command-container {
-    width: 100%;
+  .install-commands .command {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
   }
 }
 
@@ -210,4 +167,35 @@ header .latest-beta {
   align-items: center;
   font-size: 11px;
   min-width: 82px;
+}
+
+.command {
+  position: relative;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.copy-button:hover {
+  color: #d8d8d8;
+}
+
+.copy-button.copied {
+  color: #4caf50;
 }

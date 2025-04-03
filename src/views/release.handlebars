@@ -1,33 +1,38 @@
 <div>
   <div class='install-commands'>
     {{#ifEquals prerelease 'nightly'}}
-      <div class='command-container'>
-        <pre class='command'>npm install electron-nightly@{{version}}</pre>
-        <button class='copy-button' data-command='npm install electron-nightly@{{version}}'>
-          <i class='fas fa-copy'></i>
-        </button>
-      </div>
-      <div class='command-container'>
-        <pre class='command'>yarn add electron-nightly@{{version}}</pre>
-        <button class='copy-button' data-command='yarn add electron-nightly@{{version}}'>
-          <i class='fas fa-copy'></i>
-        </button>
-      </div>
+      <pre class='command'>npm install electron-nightly@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
+      <pre class='command'>yarn add electron-nightly@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
     {{else}}
-      <div class='command-container'>
-        <pre class='command'>npm install electron@{{version}}</pre>
-        <button class='copy-button' data-command='npm install electron@{{version}}'>
-          <i class='fas fa-copy'></i>
-        </button>
-      </div>
-      <div class='command-container'>
-        <pre class='command'>yarn add electron@{{version}}</pre>
-        <button class='copy-button' data-command='yarn add electron@{{version}}'>
-          <i class='fas fa-copy'></i>
-        </button>
-      </div>
+      <pre class='command'>npm install electron@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
+      <pre class='command'>yarn add electron@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
     {{/ifEquals}}
   </div>
+
+  <script>
+    function copyCommand(button) { const commandText = button.parentElement.textContent.trim();
+    navigator.clipboard.writeText(commandText).then(() => { button.classList.add('copied');
+    button.innerHTML = '<i class="fas fa-check"></i>'; setTimeout(() => {
+    button.classList.remove('copied'); button.innerHTML = '<i class="fas fa-copy"></i>'; }, 1500);
+    }).catch(err => { console.error('Failed to copy text: ', err); }); }
+  </script>
+
   {{#ifEquals prerelease 'nightly'}}
     <div class='release-banner'>
       Note: This is a nightly release, this means it is shipping with the latest "main" branch
