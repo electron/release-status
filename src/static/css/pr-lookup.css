@@ -1,7 +1,5 @@
-.pr-lookup-container {
+.lookup-container {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
 .lookup-input {
   text-align: center;
