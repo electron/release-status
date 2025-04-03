@@ -43,7 +43,7 @@ async function getPRReleaseStatus(prNumber) {
       const allReleases = releases.filter(
         (r) => semver.parse(r.version).prerelease[0] === 'nightly' || semver.parse(r.version).prerelease[0] !== undefined,
       );
-      for (const release of allR) {
+      for (const release of allReleases) {
         const dateParts = release.date.split('-').map((n) => parseInt(n, 10));
         const releaseDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2] + 1);
         if (releaseDate > new Date(merged_at)) {
