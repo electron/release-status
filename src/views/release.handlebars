@@ -78,13 +78,20 @@
   </select> --}}
 </div>
 <script>
+  function copyCommand(button) {
+    const command = button.parentElement.textContent.trim();
 
-  function copyCommand(button) { const command = button.parentElement.textContent.trim();
+    navigator.clipboard.writeText(command).then(() => {
+      const icon = button.querySelector('i');
+      icon.className = 'fas fa-check';
+      button.style.color = '#4CAF50';
 
-  navigator.clipboard.writeText(command).then(() => { const icon = button.querySelector('i');
-
-  icon.className = 'fas fa-check'; button.style.color = '#4CAF50'; setTimeout(() => { icon.className
-
-  = 'fas fa-copy'; button.style.color = ''; }, 1000); }); }
-
+      setTimeout(() => {
+        icon.className = 'fas fa-copy';
+        button.style.color = '';
+      }, 1000);
+    });
+  }
 </script>
+
+
