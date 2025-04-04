@@ -1,12 +1,28 @@
 <div>
   <div class="install-commands">
 
-    {{#ifEquals prerelease "nightly"}}
-      <pre class="command">npm install electron-nightly@{{ version }}</pre>
-      <pre class="command">yarn add electron-nightly@{{ version }}</pre>
+     {{#ifEquals prerelease 'nightly'}}
+      <pre class='command'>npm install electron-nightly@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
+      <pre class='command'>yarn add electron-nightly@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
     {{else}}
-      <pre class="command">npm install electron@{{ version }}</pre>
-      <pre class="command">yarn add electron@{{ version }}</pre>
+            <pre class='command'>npm install electron@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
+      <pre class='command'>yarn add electron@{{version}}<button
+          class='copy-button'
+          title='Copy to Clipboard'
+          onclick='copyCommand(this)'
+        ><i class='fas fa-copy'></i></button></pre>
     {{/ifEquals}}
   </div>
   {{#ifEquals prerelease "nightly"}}
@@ -61,3 +77,21 @@
     <option>PDBS</option>
   </select> --}}
 </div>
+<script>
+  function copyCommand(button) {
+    const command = button.parentElement.textContent.trim();
+
+    navigator.clipboard.writeText(command).then(() => {
+      const icon = button.querySelector('i');
+      icon.className = 'fas fa-check';
+      button.style.color = '#4CAF50';
+
+      setTimeout(() => {
+        icon.className = 'fas fa-copy';
+        button.style.color = '';
+      }, 1000);
+    });
+  }
+</script>
+
+
