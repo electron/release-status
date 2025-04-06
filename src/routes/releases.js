@@ -29,6 +29,30 @@ Handlebars.registerPartial('metadata', function (version) {
   </div>`;
 });
 
+router.get('/releases/:channel', async (req, res) => {
+  const { version, sort = 'newest' } = req.query;
+  const channel = req.params.channel;
+
+  let releases = await getReleasesByChannel(channel);
+
+  releases.sort((a, b) => {
+    const dateA = new Date(a.published_at);
+    const dateB = new Date(b.published_at);
+    return sort === 'oldest' ? dateA - dateB : dateB - dateA;
+  });
+
+  const majors = [...new Set(releases.map((r) => r.tag_name.split('.')[0]))];
+
+  res.render('releases/index', {
+    releases,
+    majors,
+    major: version || 'All',
+    channel,
+    sort, // 👈 Make sure this is passed!
+    pages: [],
+  });
+});
+
 Handlebars.registerHelper('paginate', function (pages, page, prev, next, first, last) {
   return `
     <nav class="pagination" role="navigation" aria-label="Pagination Navigation">

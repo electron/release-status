@@ -22,6 +22,14 @@
         </div>
       </a>
     </div>
+    <div class="release-sort-container">
+      <strong>Sort by date</strong>
+      <select id="sort-select" onchange="updateFilters()">
+        <option value="newest" {{#ifEquals sort "newest"}}selected{{/ifEquals}}>Newest First</option>
+        <option value="oldest" {{#ifEquals sort "oldest"}}selected{{/ifEquals}}>Oldest First</option>
+      </select>
+    </div>
+
     <strong>Filter by major release</strong>
     <div class="release-version-selector-container">
       <select id="version-select" onchange="showSelectedVersion()">
@@ -48,6 +56,20 @@
     const { value: version } = document.getElementById("version-select");
     window.location.search = version === 'All' ? '' : `version=${version}`;
   }
+
+  function updateFilters() {
+    const version = document.getElementById("version-select").value;
+    const sort = document.getElementById("sort-select").value;
+    const query = new URLSearchParams();
+
+    if (version !== 'All') query.set("version", version);
+    query.set("sort", sort);
+
+    const path = window.location.pathname; // keep the same channel path
+    window.location.href = `${path}?${query.toString()}`;
+  }
+
+
 </script>
 
 {{{paginate this.pages this.page this.prev this.next this.first this.last}}}
