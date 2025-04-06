@@ -168,3 +168,165 @@
   gap: 25px;
   justify-content: center;
 }
+
+/* General container styling */
+.event-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Event item styling */
+.event-item {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Event header styling */
+.event-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 3px;
+}
+
+.event-header p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Event actions styling */
+.event-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.event-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.event-actions .update {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.event-actions .delete {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Update form styling */
+.event-update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.event-update-form input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.event-update-form button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.event-update-form .send {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.event-update-form .close {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+/* No events message styling */
+.no-events {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 1rem;
+}
+
+/* Container for the form */
+.event-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 1rem auto;
+  width: 100%;
+}
+
+/* Label styling */
+.event-form-container label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Input and textarea styling */
+.event-form-container input,
+.event-form-container textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Textarea specific styling */
+.event-form-container textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Button styling */
+.event-form-container button {
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.event-form-container button:hover {
+  background-color: #0056b3;
+}
+
+/* Hide button initially */
+.event-form-container button[style*='display: none'] {
+  display: none !important;
+}

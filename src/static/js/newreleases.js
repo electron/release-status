@@ -127,11 +127,10 @@ async function main() {
   const url = window.location.href;
   console.log('value of url', url.includes('date'));
   if (url.includes('date')) {
-    console.log('logging the hello');
-
     const calendarSection = document.querySelector('main > div .calendar');
     // Clear out the loading...
     calendarSection.innerHTML = '';
+
     const eventDisplay = document.createElement('div');
     const noeventAdded = document.createElement('div');
     noeventAdded.innerHTML = '<p>No events found for this date.</p>';
@@ -148,34 +147,28 @@ async function main() {
         } else {
           console.log('logging the events', events);
           noeventAdded.style.display = 'none';
+
           eventDisplay.innerHTML = events
             .map(
               (event) =>
-                `<div class="event-item"  id="event-${event._id}">
-            <h3>${event.title}</h3>
-            <p>${event.description}</p>
-
-            
-
-
-            <div style="display: none;" id="update-${event._id}">
-    <label>Event Title</label>
-    <input type="text" data-id="${event._id}" id="eventtitle-${event._id}" class="title" />
-    <label>Event Description</label>
-    <input type="text" data-id="${event._id}" id="eventdescription-${event._id}" class="description" />
-    <button style="display: none;" class='send' data-id="${event._id}" id="save-${event._id}">Save</button>
-    <button class="close" data-id="${event._id}">Close</button>
-  </div>
-
-
-
-            <div>
-            <button class='delete' data-id="${event._id}">Delete</button>
-            <button class='update' data-id="${event._id}">Update</button>
-            </div>
-
-
-      </div>`,
+                `<div class="event-item" id="event-${event._id}">
+              <div class="event-header">
+                <h3>${event.title}</h3>
+                <p>${event.description}</p>
+              </div>
+              <div class="event-actions">
+                <button class="update" data-id="${event._id}">Update</button>
+                <button class="delete" data-id="${event._id}">Delete</button>
+              </div>
+              <div class="event-update-form" style="display: none;" id="update-${event._id}">
+                <label for="eventtitle-${event._id}">Event Title</label>
+                <input type="text" data-id="${event._id}" id="eventtitle-${event._id}" class="title" placeholder="Enter new title" />
+                <label for="eventdescription-${event._id}">Event Description</label>
+                <input type="text" data-id="${event._id}" id="eventdescription-${event._id}" class="description" placeholder="Enter new description" />
+                <button class="send" data-id="${event._id}" id="save-${event._id}" style="display: none;">Save</button>
+                <button class="close" data-id="${event._id}">Close</button>
+              </div>
+            </div>`,
             )
             .join('');
 
@@ -330,6 +323,9 @@ async function main() {
         eventDisplay.innerHTML = '<p>Failed to load events.</p>';
       });
 
+    const formContainer = document.createElement('div');
+    formContainer.classList.add('event-form-container');
+
     const titleLabel = document.createElement('label');
     titleLabel.textContent = 'Event Title:';
     titleLabel.setAttribute('for', 'eventTitle');
@@ -356,14 +352,25 @@ async function main() {
     AddEventTypeButton.textContent = 'Add Event Type';
     AddEventTypeButton.style.display = 'none'; // Initially hidden
 
-    // Append elements to the calendar section
-    calendarSection.appendChild(titleLabel);
-    calendarSection.appendChild(titleInput);
-    calendarSection.appendChild(descLabel);
-    calendarSection.appendChild(descInput);
-    calendarSection.appendChild(AddEventTypeButton);
-    calendarSection.appendChild(noeventAdded);
-    calendarSection.appendChild(eventDisplay);
+    // // Append elements to the calendar section
+    // calendarSection.appendChild(titleLabel);
+    // calendarSection.appendChild(titleInput);
+    // calendarSection.appendChild(descLabel);
+    // calendarSection.appendChild(descInput);
+    // calendarSection.appendChild(AddEventTypeButton);
+    // calendarSection.appendChild(noeventAdded);
+    // calendarSection.appendChild(eventDisplay);
+
+    calendarSection.appendChild(formContainer);
+    formContainer.appendChild(titleLabel);
+    formContainer.appendChild(titleInput);
+    formContainer.appendChild(descLabel);
+    formContainer.appendChild(descInput);
+    formContainer.appendChild(AddEventTypeButton);
+    formContainer.appendChild(noeventAdded);
+    formContainer.appendChild(eventDisplay);
+
+    calendarSection.appendChild(formContainer);
 
     titleInput.addEventListener('input', () => {
       if (titleInput.value.trim() !== '') {
