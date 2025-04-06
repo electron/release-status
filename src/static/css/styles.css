@@ -101,7 +101,6 @@ footer > div {
   margin-right: 25px;
 }
 
-/*  my add start*/
 #menu{
   display: flex;
   justify-content: flex-end;
@@ -130,27 +129,9 @@ footer > div {
 }
 
 
-/* my add end */
-
 
 @media screen and (max-width: 576px) {
-  /* .navbar > div {
-    flex-direction: column;
-  }
 
-  .navbar a {
-    margin-top: 8px;
-    justify-content: center;
-  }
-
-  .navbar > div > div {
-    justify-content: center;
-    margin-top: 8px;
-    margin-bottom: 16px;
-  } */
-
-
-  /*  my add start */
   #menu{
     background-color: #0d4a59;
     display: block;
@@ -182,13 +163,10 @@ footer > div {
  
 
   #bar{
-    /* color: #fff; */
     display: block;
     font-size: 1.7rem;
     cursor: pointer;
   }
-
-  /*  my add end */
 }
 
 header {
