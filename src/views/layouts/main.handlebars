@@ -10,26 +10,32 @@
     />
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     {{#if css}}
     <link rel="stylesheet" href="/css/{{css}}.css" type="text/css" />
     {{/if}}
     <script src="https://kit.fontawesome.com/8fb0264ba9.js" crossorigin="anonymous"></script>
   </head>
   <body>
+
+
     <nav class="navbar">
       <div>
         <a href="/">
           <img src="https://www.electronjs.org/assets/img/logo.svg" />
           <span class="title">Electron Releases</span>
         </a>
-        <div>
+        <div id="menu">
           <a href="/releases">All Releases</a>
           <a href="/history">History</a>
           <a href="/pr-lookup">PR Lookup</a>
           <a href="https://electronjs.org" target="_blank" rel="noopener noreferrer">Website</a>
         </div>
+        <i id="bar" class="fa-solid fa-bars"></i>
+
       </div>
     </nav>
+
     <header>
       <div>
         <h1>
@@ -69,6 +75,17 @@
         const elem = document.querySelector('.version-select');
         window.location.href = `/release/compare/{{ compareTarget }}/${elem.value}`;
       }
+
+      {{!-- for media query --}}
+
+      const bar = document.getElementById("bar");
+      const menu = document.getElementById("menu");
+
+      if(bar){
+       bar.addEventListener("click", ()=>{
+        menu.classList.toggle("active");
+       })
+       };
     </script>
   </body>
 </html>

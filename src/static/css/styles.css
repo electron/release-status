@@ -101,8 +101,40 @@ footer > div {
   margin-right: 25px;
 }
 
+/*  my add start*/
+#menu{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  list-style: none;
+}
+
+#menu  a{
+  text-decoration: none;
+  margin-left: 40px;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+#bar{
+  color: #fff;
+  display: none;
+}
+
+#bar {
+  transition: transform 0.3s ease-in-out;
+}
+
+#bar:hover {
+  transform: scale(1.2);
+}
+
+
+/* my add end */
+
+
 @media screen and (max-width: 576px) {
-  .navbar > div {
+  /* .navbar > div {
     flex-direction: column;
   }
 
@@ -115,7 +147,48 @@ footer > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;
+  } */
+
+
+  /*  my add start */
+  #menu{
+    background-color: #0d4a59;
+    display: block;
+    width: 230px;
+    height: auto;
+    position: absolute;
+    top: 80px;
+    right: -100%;
+    padding: 30px 0;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 13px;
+    opacity: 0;
+    transition: all 0.3s ease;
   }
+  #menu.active{
+    right: 10px;
+    opacity: 1;
+  }
+
+  #menu a{
+    padding: 1rem;
+    padding-bottom: 12px;
+    font-size: 20px;
+  }
+
+  #menu a{
+    color: #9feaf9;
+  }
+ 
+
+  #bar{
+    /* color: #fff; */
+    display: block;
+    font-size: 1.7rem;
+    cursor: pointer;
+  }
+
+  /*  my add end */
 }
 
 header {
@@ -138,7 +211,7 @@ header > div {
 }
 
 main {
-  /* background: #f5f5f5; */
+  background: #f5f5f5;
   background: #ebedf0;
 }
 
