@@ -78,10 +78,32 @@ header .latest-beta {
   color: #9feaf9;
   padding: 8px 32px;
   text-align: center;
+  position: relative;
 }
 
 .install-commands .command:not(:first-child) {
   margin-left: 16px;
+}
+
+.copy-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9feaf9;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.copy-button:hover {
+  color: #ffffff;
+}
+
+.copy-button i {
+  font-size: 16px;
 }
 
 @media screen and (max-width: 767px) {
