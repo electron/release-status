@@ -44,5 +44,6 @@
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
     "postinstall": "node -e \"require('fs').cpSync('./node_modules/prismjs/themes/', './src/static/css/prismjs/', { recursive: true })\"",
     "prepare": "husky"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

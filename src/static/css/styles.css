@@ -207,3 +207,65 @@ h5,
 h6 {
   color: #0d4a59;
 }
+
+/* Mobile Menu Styles */
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .fa-times,
+.navbar .fa-bars {
+  display: none;
+  color: var(--electron-color-light);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 576px) {
+  .navbar > div {
+    flex-direction: row !important; /* Override existing mobile style */
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .nav-links {
+    position: fixed;
+    background: var(--electron-color-dark);
+    height: 100vh;
+    width: 200px;
+    top: 0;
+    right: -200px;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 2rem;
+    z-index: 100;
+    transition: right 0.5s;
+  }
+
+  .nav-links > div {
+    flex-direction: column !important;
+    width: 100%;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 1rem;
+    margin-right: 0 !important;
+    text-align: center;
+    border-bottom: 1px solid var(--electron-color-mid);
+  }
+
+  .navbar .fa-times,
+  .navbar .fa-bars {
+    display: block;
+    z-index: 101;
+  }
+
+  .navbar .fa-times {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+}
