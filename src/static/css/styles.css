@@ -95,10 +95,23 @@ footer > div {
   font-weight: 600;
 }
 
-.navbar a {
+/* .navbar a {
   color: #9feaf9;
   text-decoration: none !important;
   margin-right: 25px;
+} */
+.title {
+  color: #9feaf9;
+  text-decoration: none !important; /*added two classes this is 1st one for top logo*/
+  margin-right: 25px;
+}
+.links {
+  color: #9feaf9;
+  text-decoration: none !important; /*this is 2nd one for below contents*/
+  margin-right: 25px;
+}
+.links:hover {
+  color: #9feaf9c3;
 }
 
 @media screen and (max-width: 576px) {
@@ -115,6 +128,13 @@ footer > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;
+    display: flex;
+    justify-content: space-around;
+  }
+  .links {
+    color: #9feaf9;
+    text-decoration: none !important;
+    margin-right: 0;
   }
 }
 
