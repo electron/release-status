@@ -104,6 +104,7 @@ footer > div {
 @media screen and (max-width: 576px) {
   .navbar > div {
     flex-direction: column;
+    margin-left: 1rem;
   }
 
   .navbar a {
@@ -115,6 +116,12 @@ footer > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;
+  }
+
+  .navbar > div > div > a {
+    text-align: center;
+    font-size: 0.91rem;
+    line-height: 1;
   }
 }
 
