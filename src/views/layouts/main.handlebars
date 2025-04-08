@@ -17,16 +17,27 @@
   </head>
   <body>
     <nav class="navbar">
-      <div>
-        <a href="/">
+      <div class="navbar-container">
+        <a href="/" class="title-element">
           <img src="https://www.electronjs.org/assets/img/logo.svg" />
           <span class="title">Electron Releases</span>
         </a>
-        <div>
+        <div class="navbar-lists-name">
           <a href="/releases">All Releases</a>
           <a href="/history">History</a>
           <a href="/pr-lookup">PR Lookup</a>
           <a href="https://electronjs.org" target="_blank" rel="noopener noreferrer">Website</a>
+        </div>
+        <div class="navbar-lists-img">
+          <div class="dropdown">
+            <button type="button" class="dropdown-button" onclick="toggleDropdown()"><i class="fas fa-list"></i></button>
+            <div class="dropdown-content">
+              <li id="list-style-none"><a href="/releases">All Releases</a></li>
+              <li id="list-style-none"><a href="/history">History</i></a></li>
+              <li id="list-style-none"><a href="/pr-lookup">PR Lookup</i></a></li>
+              <li id="list-style-none"><a href="https://electronjs.org" target="_blank" rel="noopener noreferrer">Website</a></li>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -68,6 +79,18 @@
       function goToCompare() {
         const elem = document.querySelector('.version-select');
         window.location.href = `/release/compare/{{ compareTarget }}/${elem.value}`;
+      }
+      function toggleDropdown() {
+        document.querySelector(".dropdown").classList.toggle("show");
+      }
+
+      window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-button')) {
+          const dropdowns = document.getElementsByClassName("dropdown");
+          for (let i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].classList.remove('show');
+          }
+        }
       }
     </script>
   </body>

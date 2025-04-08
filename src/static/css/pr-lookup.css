@@ -67,12 +67,19 @@ h1 {
   background-color: #2f3b56;
 }
 
-table {
-  width: 100%;
+#table {
+  width: 90vw;
   border-collapse: collapse;
+  margin-left: 12px;
+  margin-right: 12px;
   margin-top: 20px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
 }
 
 th,
@@ -80,6 +87,23 @@ td {
   text-align: left;
   padding: 12px;
   border-bottom: 1px solid #ddd;
+}
+
+@media screen and (max-width: 500px) {
+  #table {
+    width: 80vw;
+    border-collapse: none;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
 }
 
 th {
@@ -103,4 +127,37 @@ tr:hover {
 
 tr:last-child td {
   border-bottom: none;
+}
+
+.table-container {
+  overflow-x: none;
+  width: 100vw;
+}
+
+#table {
+  width: 100vw;
+  border-collapse: none;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 500px) {
+  .lookup-input input[type='text'],
+  .lookup-input button {
+    width: 90%;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .lookup-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  th,
+  td {
+    padding: 8px;
+    font-size: 14px;
+  }
 }

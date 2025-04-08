@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@electron/github-app-auth": "^1.2.0",
+    "@electron/history": "file:",
     "@octokit/rest": "^18.3.5",
     "diff": "^5.1.0",
     "dompurify": "^3.2.4",
@@ -21,7 +22,8 @@
     "p-memoize": "^4.0.1",
     "prismjs": "^1.30.0",
     "semver": "^7.5.2",
-    "time-ago": "^0.2.1"
+    "time-ago": "^0.2.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "husky": "^9.1.7",

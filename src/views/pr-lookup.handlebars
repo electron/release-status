@@ -1,28 +1,28 @@
 <div>
-<div class="lookup-input">
-  <form onsubmit="lookup(event)">
-    <input id="input" type="text" placeholder="12345" required>
-    <button type="submit">Search</button>
-  </form>
-</div>
-<p class="error" id="error"></p>
-<div class="recent-prs">
-  <table>
-    <thead>
-      <tr>
-        <th>PR Number</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody id="table-body">
-      {{#each recentPRs}}
-      {{> recentPR this}}
-      {{/each}}
-    </tbody>
-  </table>
-</div>
+  <div class="lookup-input">
+    <form onsubmit="lookup(event)">
+      <input id="input" type="text" placeholder="12345" required>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <p class="error" id="error"></p>
+  <div class="table-container">
+    <table id="table">
+      <thead>
+        <tr>
+          <th>PR Number</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        {{#each recentPRs}}
+        {{> recentPR this}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
