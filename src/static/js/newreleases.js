@@ -420,22 +420,37 @@ async function main() {
           newEventDiv.innerHTML = `
         <h3>${title}</h3>
         <p>${description}</p>
-                    <div style="display: none;" id="update-${event._id}">
+                    <div style="display: none;" id="update-${data.id}">
     <label>Event Title</label>
-    <input type="text" data-id="${event._id}" id="eventtitle-${event._id}" class="title" />
+    <input type="text" data-id="${data.id}" id="eventtitle-${data.id}" class="title" />
     <label>Event Description</label>
-    <input type="text" data-id="${event._id}" id="eventdescription-${event._id}" class="description" />
-    <button style="display: none;" class='send' data-id="${event._id}" id="save-${event._id}">Save</button>
-    <button class="close" data-id="${event._id}">Close</button>
+    <input type="text" data-id="${data.id}" id="eventdescription-${data.id}" class="description" />
+    <button style="display: none;" class='send' data-id="${data.id}" id="save-${data.id}">Save</button>
+    <button class="close" data-id="${data.id}">Close</button>
   </div>
         <div>
         <button class='delete' data-id="${data.id}">Delete</button>
-        <button class='update' data-id="${event._id}">Update</button>
+        <button class='update' data-id="${data.id}">Update</button>
         </div>
       `;
 
           // Append to the existing eventDisplay
           eventDisplay.appendChild(newEventDiv);
+
+          //Add event listeners for input field
+          const titleinput = document.querySelectorAll('.title');
+          titleinput.forEach((input) => {
+            input.addEventListener('input', async (e) => {
+              const id = e.target.getAttribute('data-id');
+              const savebutton = document.getElementById(`save-${id}`);
+
+              if (input.value.trim() != '') {
+                savebutton.style.display = 'block';
+              } else {
+                savebutton.style.display = 'none';
+              }
+            });
+          });
 
           // Add event listener to the save button of the new event
           const saveButton = newEventDiv.querySelector('.send');

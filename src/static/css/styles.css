@@ -41,6 +41,13 @@ body {
   margin: 0;
 }
 
+@media screen and (max-width: 600px) {
+  .body {
+    width: fit-content;
+    margin: 0 auto; /* Center the navbar horizontally */
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -115,6 +122,25 @@ footer > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;
+    /* flex-direction: column; */
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .navbar > div > div {
+    flex-direction: column;
+  }
+
+  .navbar a {
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  .navbar > div > div {
+    justify-content: center;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    /* flex-direction: column; */
   }
 }
 
