@@ -41,6 +41,13 @@ body {
   margin: 0;
 }
 
+@media screen and (max-width: 398px) {
+  body {
+    width: fit-content;
+    margin: 0 auto; /* Center the body horizontally */
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -115,6 +122,27 @@ footer > div {
     justify-content: center;
     margin-top: 8px;
     margin-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .navbar a {
+    margin-top: 8px;
+    justify-content: center;
+  }
+
+  .navbar > div > div {
+    justify-content: center;
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .navbar > div {
+    width: 400px;
+    padding-right: 0px;
+    padding-left: 16px;
   }
 }
 
