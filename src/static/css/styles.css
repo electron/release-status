@@ -118,19 +118,6 @@ footer > div {
   }
 }
 
-@media screen and (max-width: 576px) {
-  .navbar a {
-    margin-top: 8px;
-    justify-content: center;
-  }
-
-  .navbar > div > div {
-    justify-content: center;
-    margin-top: 8px;
-    margin-bottom: 16px;
-  }
-}
-
 header {
   background: white;
   border-bottom: 1px solid #e8e8e8;
