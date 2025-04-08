@@ -21,7 +21,8 @@
     "p-memoize": "^4.0.1",
     "prismjs": "^1.30.0",
     "semver": "^7.5.2",
-    "time-ago": "^0.2.1"
+    "time-ago": "^0.2.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "husky": "^9.1.7",
@@ -42,7 +43,7 @@
     "start": "node src/index.js",
     "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
     "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
-    "postinstall": "node -e \"require('fs').cpSync('./node_modules/prismjs/themes/', './src/static/css/prismjs/', { recursive: true })\"",
+    "postinstall": "cp node_modules/prismjs/themes/*.css src/static/css/prismjs",
     "prepare": "husky"
   }
 }

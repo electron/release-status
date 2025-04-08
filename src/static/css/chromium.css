@@ -1,0 +1,269 @@
+.container {
+    width: 100%;
+    padding: 20px;
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+  
+  .key {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .key > span {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 12px;
+  }
+  
+  .key > span > i {
+    margin-right: 8px;
+    padding: 8px;
+    border-radius: 50%;
+  }
+  
+ 
+  .legend-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  
+
+  .calendar-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 24px;
+    padding: 10px;
+    gap: 20px;
+  }
+  
+  .nav-button {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .nav-button:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.1);
+  }
+  
+  .current-period {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #333;
+  }
+  
+
+  .chromium-calendar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    flex-direction: row;
+    gap: 30px;
+    padding: 20px;
+  }
+  
+
+  .month {
+    width: 400px; 
+    background-color: white;
+    margin: 8px;
+    padding: 20px 25px 30px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+  }
+  
+  .month_row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .month_row.header {
+    height: 80px; 
+    padding: 0 15px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .month_row.header h3 {
+    margin: 0;
+    font-size: 1.6em; 
+    color: #333;
+  }
+  
+  .month_row.day_row {
+    margin: 15px 0;
+    color: #666;
+    font-size: 1.1em; 
+    font-weight: 500;
+  }
+  
+  .month_day {
+    flex: 1;
+    position: relative;
+    height: 50px; 
+    width: 50px; 
+    line-height: 50px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1em; 
+  }
+  
+  .month_day.today {
+    background-color: rgba(66, 133, 244, 0.1);
+    border-radius: 50%;
+    font-weight: bold;
+    color: #4285F4;
+  }
+  
+  .month_day .info {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 6px;
+    min-height: 10px;
+  }
+  
+  
+  .month_day .info > i.fa-chrome {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+
+  .channel-dot {
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    box-shadow: none;
+    transition: transform 0.15s ease;
+    border: none;
+    outline: none;
+  }
+  
+
+  .channel-dot.future-milestone {
+    border: 2px dashed rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    opacity: 0.8;
+  }
+  
+  .month_day:hover .channel-dot {
+    transform: scale(1.3);
+  }
+ 
+  .milestone-tooltip {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 100;
+    font-size: 13px; 
+    max-width: 300px;
+    display: none;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    text-align: left;
+    line-height: 1.4;
+  }
+  
+  .milestone-tooltip hr {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid #eee;
+  }
+  
+  .milestone-tooltip .channel-list {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+  }
+  
+  .month_day:hover .milestone-tooltip {
+    display: block;
+  }
+  
+
+  .month_day.future {
+    opacity: 0.75;
+    color: #999;
+  }
+  
+  .month_day.has-milestone {
+    cursor: pointer;
+  }
+  
+  .month_day.has-milestone:hover {
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
+  
+
+  @media (max-width: 1300px) {
+    .month {
+      width: 350px;
+    }
+    
+    .month_day {
+      height: 45px;
+      width: 45px;
+      line-height: 45px;
+    }
+  }
+  
+  @media (max-width: 1100px) {
+    .month {
+      width: 300px;
+    }
+    
+    .month_day {
+      height: 40px;
+      width: 40px;
+      line-height: 40px;
+      font-size: 1em;
+    }
+    
+    .month_row.header h3 {
+      font-size: 1.3em;
+    }
+  }
