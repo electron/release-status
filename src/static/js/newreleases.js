@@ -454,7 +454,7 @@ async function main() {
       const title = titleInput.value.trim();
       const description = descInput.value.trim();
       const eventd = eventda;
-      console.log('logging the value', typeof eventdate); // Replace this with actual selected date
+      console.log('logging the value', typeof eventd); // Replace this with actual selected date
 
       if (!title) {
         alert('Event title is required!');
