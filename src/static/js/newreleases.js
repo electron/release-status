@@ -64,18 +64,29 @@ function generateMonth(year, month, getDateInfo) {
       const cell = document.createElement('a');
       cell.classList.add('month_day');
 
+      const { hasBeta, hasStable, hasNightly, hasManualEntry, mstonenumber, offsetvalue, limit } =
+        getDateInfo(year, month, n);
+
       if (valid) {
         cell.innerText = valid ? `${n}` : '';
         cell.setAttribute('data-date', `${year}-${month}-${n}`);
+        cell.setAttribute('data-mstonenumber', mstonenumber);
         const date = `${year}-${month}-${n}`;
-        cell.href = `/newreleases?date=${date}`;
+        cell.href =
+          mstonenumber != ''
+            ? `/newreleases?date=${date}&mstonenumber=${mstonenumber}&offset=${offsetvalue}&limit=${limit}`
+            : `/newreleases?date=${date}`;
       }
 
       const info = document.createElement('div');
       info.classList.add('info');
       cell.appendChild(info);
 
-      const { hasBeta, hasStable, hasNightly, hasManualEntry } = getDateInfo(year, month, n);
+      //const { hasBeta, hasStable, hasNightly, hasManualEntry , mstonenumber } = getDateInfo(year, month, n);
+
+      // if(mstonenumber != ''){
+      //   info.setAttribute('data-mstonenumber', mstonenumber);
+      // }
 
       // if (hasBeta) {
       //   const betaTag = document.createElement('i');
@@ -131,13 +142,66 @@ async function main() {
     // Clear out the loading...
     calendarSection.innerHTML = '';
 
+    const tagslist = document.querySelector('.key');
+    tagslist.innerHTML = '';
+    //tagslist.style.display = 'none';
+    console.log('logging the tagslist', tagslist);
+
+    const releaseslist = document.createElement('div');
+    releaseslist.classList.add('releases-list');
+    releaseslist.innerHTML = '<p>Loading...</p>';
+    calendarSection.appendChild(releaseslist);
     const eventDisplay = document.createElement('div');
     const noeventAdded = document.createElement('div');
     noeventAdded.innerHTML = '<p>No events found for this date.</p>';
     // Container for displaying fetched events
     eventDisplay.classList.add('event-list');
 
-    const eventda = url.split('=')?.[1];
+    //const eventda = url.split('=')?.[1];
+
+    // Get the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Extract the 'date' parameter
+    const eventda = urlParams.get('date');
+    const mstonenumber = urlParams.get('mstonenumber');
+    const offset = urlParams.get('offset');
+    const limit = urlParams.get('limit');
+
+    if (mstonenumber != '') {
+      if (offset != 0) {
+        response = await fetch(
+          `https://chromiumdash.appspot.com/fetch_milestone_schedule?offset=${offset}&n=${limit}`,
+        );
+      } else {
+        response = await fetch(
+          'https://chromiumdash.appspot.com/fetch_milestone_schedule?offset=0&n=11',
+        );
+      }
+
+      if (mstonenumber == '' || mstonenumber == undefined || mstonenumber == null) {
+        releaseslist.innerHTML = `<p>No releases found for this date.</p>`;
+      }
+
+      const releasesarray = await response.json();
+      const newreleasesarray = releasesarray?.mstones;
+      const mstonerelease = newreleasesarray?.filter((r) => r.mstone === Number(mstonenumber));
+      console.log('logging the newreleasesarray', newreleasesarray);
+      console.log('logging the mstonerelease', mstonerelease);
+
+      releaseslist.innerHTML = `
+  <div class="releases-list">
+    <h3>Release Information</h3>
+    <p>Version: ${mstonenumber}</p>
+    <p>Stable Version Release Date: ${mstonerelease[0]?.stable_date}</p>
+    <p>Final Beta Version Release Date: ${mstonerelease[0]?.final_beta}</p>`;
+    }
+
+    if (mstonenumber == '' || mstonenumber == undefined || mstonenumber == null) {
+      releaseslist.innerHTML = `<p>No releases found for this date.</p>`;
+    }
+
+    console.log('Extracted date:', eventda);
 
     fetch(`/api/events/${eventda}`)
       .then((response) => response.json())
@@ -326,6 +390,9 @@ async function main() {
     const formContainer = document.createElement('div');
     formContainer.classList.add('event-form-container');
 
+    const heading = document.createElement('h3');
+    heading.textContent = 'Events Manager';
+
     const titleLabel = document.createElement('label');
     titleLabel.textContent = 'Event Title:';
     titleLabel.setAttribute('for', 'eventTitle');
@@ -362,6 +429,7 @@ async function main() {
     // calendarSection.appendChild(eventDisplay);
 
     calendarSection.appendChild(formContainer);
+    formContainer.appendChild(heading);
     formContainer.appendChild(titleLabel);
     formContainer.appendChild(titleInput);
     formContainer.appendChild(descLabel);
@@ -382,12 +450,10 @@ async function main() {
       }
     });
 
-    console.log('logging the value', url.split('=')?.[1]);
-
     AddEventTypeButton.addEventListener('click', async () => {
       const title = titleInput.value.trim();
       const description = descInput.value.trim();
-      const eventd = url.split('=')?.[1];
+      const eventd = eventda;
       console.log('logging the value', typeof eventdate); // Replace this with actual selected date
 
       if (!title) {
@@ -632,6 +698,8 @@ async function main() {
         const datestr = `${y}-${m}-${d}`;
         const dateString = `${y}-${m < 10 ? `0${m}` : m}-${d < 10 ? `0${d}` : d}T00:00:00`;
         const onDate = newreleases.filter((r) => r.stable_date === dateString);
+        const offsetvalue = num > 0 ? (num - 1) * 11 : 0;
+        const limit = num > 0 ? num * 11 : 11;
         const manualdates = eventslist?.filter((e) => {
           return e.eventd === datestr;
         });
@@ -640,6 +708,9 @@ async function main() {
           hasStable: onDate.length == 0 ? false : true,
           hasNightly: false,
           hasManualEntry: manualdates.length == 0 ? false : true,
+          mstonenumber: onDate.length == 0 ? '' : onDate[0].mstone,
+          offsetvalue: offsetvalue,
+          limit: limit,
         };
       }),
     );
