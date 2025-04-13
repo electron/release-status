@@ -8,7 +8,7 @@ const router = new Router();
 Handlebars.registerPartial('recentPR', function (pr) {
   const mergedAt = new Date(pr.merged_at).toLocaleString();
   const author = pr.user.login;
-  return `<tr onclick="window.open('/pr/${encodeURIComponent(pr.number)}', '_blank')">
+  return `<tr onclick="window.location = '/pr/${encodeURIComponent(pr.number)}'">
     <td><a target="_blank"
       href="https://github.com/electron/electron/pulls/${pr.number}">
       #${pr.number}
