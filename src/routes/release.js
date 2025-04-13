@@ -122,7 +122,8 @@ async function handleComparisonRequest(startVersion, endVersion, res) {
       notes = notes.split(`@${r.tag_name.substr(1)}\`.`)[1];
     }
     notes =
-      '# Release Notes\n' + notes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+      '# Release Notes\n' +
+      (notes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') || '');
     return [notes, r.tag_name];
   });
 
