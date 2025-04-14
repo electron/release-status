@@ -8,7 +8,7 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 const a = require('../utils/a');
-const { compareTagToCommit, getReleasesOrUpdate, getPR, getPRComments } = require('../data');
+const { compareTagToCommit, getVersionsOrUpdate, getPR, getPRComments } = require('../data');
 
 const router = new Router();
 
@@ -17,7 +17,7 @@ Handlebars.registerHelper('formattedDate', (date) => new Date(date).toUTCString(
 Handlebars.registerHelper('html', (content) => DOMPurify.sanitize(content));
 
 async function getPRReleaseStatus(prNumber) {
-  const releases = [...(await getReleasesOrUpdate())].reverse();
+  const releases = [...(await getVersionsOrUpdate()).releases].reverse();
   const [prInfo, comments] = await Promise.all([getPR(prNumber), getPRComments(prNumber)]);
 
   if (!prInfo) return null;

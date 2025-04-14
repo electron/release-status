@@ -3,7 +3,7 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 
 const a = require('./utils/a');
-const { getReleasesOrUpdate, getActiveReleasesOrUpdate } = require('./data');
+const { getVersionsOrUpdate, getActiveReleasesOrUpdate } = require('./data');
 
 const app = express();
 
@@ -25,7 +25,23 @@ app.get(
   '/releases.json',
   a(async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(await getReleasesOrUpdate());
+    res.json((await getVersionsOrUpdate()).releases);
+  }),
+);
+
+app.get(
+  '/versions.json',
+  a(async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json(await getVersionsOrUpdate());
+  }),
+);
+
+app.get(
+  '/support.json',
+  a(async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.json((await getVersionsOrUpdate()).support);
   }),
 );
 
