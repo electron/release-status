@@ -115,7 +115,7 @@ async function handleComparisonRequest(startVersion, endVersion, res) {
   const allGitHubReleases = await Promise.all(
     versionRange.map((r) => getGitHubRelease(`v${r.version}`)),
   );
-  const allNotes = allGitHubReleases.filter(Boolean).map((r) => {
+  const allNotes = allGitHubReleases.map((r) => {
     let notes = r.body;
     const parsed = semver.parse(r.tag_name);
     if (parsed.prerelease.length) {
