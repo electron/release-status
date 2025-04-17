@@ -20,7 +20,12 @@ When developing locally, you may want to use the `watch` script instead, which w
 
 ### GitHub Authentication
 
-The app pulls release information from GitHub, and local usage (especially going through pages of past releases) may hit the rate limit for anonymous GitHub usage. You can provide a GitHub Personal Access Token (PAT) by setting the `GITHUB_TOKEN` environment variable before running the app locally, which will have higher rate limits.
+GitHub limits how many API requests you can make without logging in. If you're running the app locally and it fetches a lot of GitHub data (like release history), you might hit that limit.
+
+To avoid this, create a GitHub Personal Access Token (PAT) and set it in your environment like this:
+##On Windows (PowerShell):
+#  $env:GITHUB_TOKEN="your_token_here"
+This gives the app permission to make more API requests without getting blocked.
 
 ## License
 
