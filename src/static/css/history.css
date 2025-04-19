@@ -95,6 +95,8 @@
   justify-content: center;
   text-decoration: none !important;
   color: inherit !important;
+    border: 0.001rem solid   #cccccc;
+
 }
 
 .month_day .info {
