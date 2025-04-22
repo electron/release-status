@@ -197,9 +197,9 @@ router.get(
       return res.redirect('/');
     }
 
-    let releaseNotes = release.body;
+    let releaseNotes = release.body ?? 'No data';
     const parsed = semver.parse(version);
-    if (parsed.prerelease.length) {
+    if (parsed.prerelease.length && releaseNotes !== 'No data') {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
     releaseNotes =
