@@ -197,14 +197,15 @@ router.get(
       return res.redirect('/');
     }
 
-    let releaseNotes = release.body ?? 'No data';
+    let releaseNotes = release.body;
     const parsed = semver.parse(version);
-    if (parsed.prerelease.length && releaseNotes !== 'No data') {
+    if (releaseNotes && parsed.prerelease.length) {
       releaseNotes = releaseNotes.split(new RegExp(`@${escapeRegExp(version.substr(1))}\`?.`))[1];
     }
-    releaseNotes =
-      '# Release Notes\n' +
-      releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '');
+    releaseNotes = releaseNotes
+      ? '# Release Notes\n' +
+        releaseNotes.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '')
+      : 'No data';
 
     const lastPreRelease = allReleases.find(
       (r) =>
