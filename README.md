@@ -5,18 +5,16 @@ the [Electron](https://github.com/electron/electron) project.
 
 ## Getting started
 
-The website is a simple Node.js app built using [Express](https://expressjs.com/) and [Handlebars.js](https://handlebarsjs.com/).
+The website is built using [Remix](https://remix.run/).
 
 ### Installation
 
-To run the app locally, install dependencies and run the `start` script:
+To run the app locally, install dependencies and run the `dev` script:
 
 ```
-yarn
-yarn start
+npm install
+npm run dev
 ```
-
-When developing locally, you may want to use the `watch` script instead, which watches for file changes using [nodemon](https://github.com/remy/nodemon).
 
 ### GitHub Authentication
 
