@@ -1,3 +1,9 @@
-.envrc
 node_modules
-src/static/css/prismjs/*.css
+
+/.cache
+/build
+.env
+
+.envrc
+coverage
+.kvcache
