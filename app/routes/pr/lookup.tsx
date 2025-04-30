@@ -166,9 +166,10 @@ export default function PRLookup() {
                       #{pr.number}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 max-w-md truncate">
-                    {pr.title}
-                  </td>
+                  <td
+                    className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 max-w-md truncate"
+                    dangerouslySetInnerHTML={{ __html: pr.title }}
+                  ></td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {pr.author}
                   </td>

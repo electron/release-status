@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { renderGroupedReleaseNotes, renderMarkdownSafely } from './markdown';
+import {
+  renderGroupedReleaseNotes,
+  renderMarkdownSafely,
+  renderPRTitleMarkdownSafely,
+} from './markdown';
 
 describe('renderMarkdownSafely', () => {
   test('renders headers correctly', () => {
@@ -25,7 +29,7 @@ describe('renderMarkdownSafely', () => {
 
   test('renders inline code correctly', () => {
     expect(renderMarkdownSafely('`foo`')).toMatchInlineSnapshot(`
-      "<p class="mb-2 text-base text-gray-800 dark:text-gray-200"><code class="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-sm font-mono text-red-600 dark:text-red-400">foo</code></p>
+      "<p class="mb-2 text-base text-gray-800 dark:text-gray-200"><code class="bg-gray-100 dark:bg-gray-800 rounded text-sm px-1 py-0.5 font-mono text-red-600 dark:text-red-400">foo</code></p>
       "
     `);
   });
@@ -63,6 +67,32 @@ describe('renderMarkdownSafely', () => {
       </ul>
       "
     `);
+  });
+});
+
+describe('renderPRTitleMarkdownSafely', () => {
+  test('renders inline code blocks correctly', () => {
+    expect(renderPRTitleMarkdownSafely('`foo`')).toMatchInlineSnapshot(
+      `"<code class="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 font-mono text-red-600 dark:text-red-400">foo</code>"`,
+    );
+  });
+
+  test('does not render other markdown', () => {
+    expect(renderPRTitleMarkdownSafely('*foo* _bar_')).toMatchInlineSnapshot(`"*foo* _bar_"`);
+  });
+
+  test('does not render other block markdown', () => {
+    expect(renderPRTitleMarkdownSafely('> test')).toMatchInlineSnapshot(`"&gt; test"`);
+  });
+
+  test('does not render other code blocks', () => {
+    expect(renderPRTitleMarkdownSafely('```foo```')).toMatchInlineSnapshot(
+      `"<code class="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 font-mono text-red-600 dark:text-red-400">foo</code>"`,
+    );
+
+    expect(renderPRTitleMarkdownSafely('```\nfoo\n```')).toMatchInlineSnapshot(
+      `"<code class="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 font-mono text-red-600 dark:text-red-400">foo</code>"`,
+    );
   });
 });
 
