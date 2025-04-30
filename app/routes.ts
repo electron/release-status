@@ -16,6 +16,7 @@ export default [
   // Redirects
   redirect('releases', 'redirects/releases.tsx'),
   redirect('releases/:channel', 'redirects/releases.tsx'),
+  redirect('release-build/:id', 'redirects/release-build.tsx'),
   // UI routes
   route('build/:id', 'routes/build/release-job.tsx'),
   route('history', 'routes/history.tsx'),
