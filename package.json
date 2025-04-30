@@ -1,48 +1,84 @@
 {
-  "name": "@electron/history",
+  "name": "release-v2",
   "private": true,
-  "version": "1.0.0",
-  "main": "src/index.js",
-  "license": "MIT",
-  "engines": {
-    "node": ">=20"
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "dev": "TZ=America/Los_Angeles remix vite:dev",
+    "dev:redis": "docker compose up -d && REDIS_URL=redis://localhost:6379 npm run dev",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "prettier": "prettier ./app/**/*.ts ./app/**/*.tsx",
+    "start": "TZ=America/Los_Angeles remix-serve ./build/server/index.js",
+    "typecheck": "tsc",
+    "test": "vitest",
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
-    "@electron/github-app-auth": "^1.2.0",
-    "@octokit/rest": "^18.3.5",
-    "diff": "^5.1.0",
-    "dompurify": "^3.2.4",
-    "expiry-map": "^2.0.0",
-    "express": "^4.21.2",
-    "express-handlebars": "^5.2.0",
-    "express-paginate": "^1.0.2",
-    "jsdom": "^23.0.1",
-    "markdown-it": "^12.1.0",
-    "p-memoize": "^4.0.1",
-    "prismjs": "^1.30.0",
-    "semver": "^7.5.2",
-    "time-ago": "^0.2.1"
+    "@electron/github-app-auth": "^3.0.0",
+    "@icons-pack/react-simple-icons": "^12.7.0",
+    "@keyvhq/core": "^2.1.7",
+    "@keyvhq/file": "^2.1.7",
+    "@keyvhq/memoize": "^2.1.7",
+    "@keyvhq/redis": "^2.1.8",
+    "@octokit/rest": "^21.1.1",
+    "@remix-run/node": "^2.16.5",
+    "@remix-run/react": "^2.16.5",
+    "@remix-run/serve": "^2.16.5",
+    "cookie": "^1.0.2",
+    "dompurify": "^3.2.5",
+    "geoip-lite": "^1.4.10",
+    "isbot": "^5.1.26",
+    "jsdom": "^26.1.0",
+    "lucide-react": "^0.503.0",
+    "markdown-it": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "semver": "^7.7.1"
   },
   "devDependencies": {
+    "@eslint/compat": "^1.2.8",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.25.1",
+    "@remix-run/dev": "^2.16.5",
+    "@remix-run/route-config": "^2.16.5",
+    "@types/geoip-lite": "^1.4.4",
+    "@types/jsdom": "^21.1.7",
+    "@types/markdown-it": "^14.1.2",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "@types/semver": "^7.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "@vitest/coverage-v8": "^3.1.2",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^9.25.1",
+    "eslint-import-resolver-typescript": "^4.3.4",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.0",
-    "nodemon": "^3.1.7",
-    "prettier": "^3.3.3"
+    "jiti": "^2.4.2",
+    "lint-staged": "^15.5.1",
+    "postcss": "^8.4.38",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.1.6",
+    "vite": "^6.0.0",
+    "vite-tsconfig-paths": "^4.2.1",
+    "vitest": "^3.1.2",
+    "vitest-fetch-mock": "^0.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "lint-staged": {
-    "src/**/*.js": [
-      "prettier --write"
-    ],
-    "src/**/*.css": [
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --cache --cache-location ./node_modules/.cache/eslint . --fix",
       "prettier --write"
     ]
-  },
-  "scripts": {
-    "watch": "nodemon --watch src --ext js,css,handlebars --exec \"npm run start\"",
-    "start": "node src/index.js",
-    "lint": "prettier --check \"src/**/*.js\" \"src/**/*.css\"",
-    "prettier:write": "prettier --write \"src/**/*.js\" \"src/**/*.css\"",
-    "postinstall": "node -e \"require('fs').cpSync('./node_modules/prismjs/themes/', './src/static/css/prismjs/', { recursive: true })\"",
-    "prepare": "husky"
   }
 }

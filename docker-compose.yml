@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  release_redis:
+    image: redis
+    container_name: release.redis
+    ports:
+      - "6379:6379"
