@@ -1,11 +1,21 @@
 import { type RouteConfig, index, route } from '@remix-run/route-config';
 
+const redirect = (path: string, file: string) => {
+  return {
+    ...route(path, file),
+    id: path,
+  };
+};
+
 export default [
   // Home page
   index('routes/home.tsx'),
   // API routes
   route('releases.json', 'api/releases.ts'),
   route('active.json', 'api/active.ts'),
+  // Redirects
+  redirect('releases', 'redirects/releases.tsx'),
+  redirect('releases/:channel', 'redirects/releases.tsx'),
   // UI routes
   route('build/:id', 'routes/build/release-job.tsx'),
   route('history', 'routes/history.tsx'),
