@@ -5,6 +5,7 @@ import memoize from '@keyvhq/memoize';
 import { getKeyvCache } from './cache';
 import { ElectronRelease, getAllVersionsInMajor, VersionFilter } from './release-data';
 import { styleHtmlContent } from './html-renderer';
+import { renderPRTitleMarkdownSafely } from './markdown';
 
 const REPO_DATA = {
   owner: 'electron',
@@ -102,7 +103,7 @@ export const getRecentPRs = memoize(
         .slice(0, 10)
         .map((pr) => ({
           number: pr.number,
-          title: pr.title,
+          title: renderPRTitleMarkdownSafely(pr.title),
           url: pr.html_url,
           createdAt: pr.created_at,
           author: pr.user?.login || 'Unknown User',
@@ -260,7 +261,7 @@ export const getPRDetails = memoize(
           ).data;
           backportOf = {
             number: parentPR.number,
-            title: parentPR.title,
+            title: renderPRTitleMarkdownSafely(parentPR.title),
             author: parentPR.user?.login || 'Unknown User',
             authorAvatar: parentPR.user?.avatar_url || null,
             authorUrl: parentPR.user?.html_url || null,
@@ -276,7 +277,7 @@ export const getPRDetails = memoize(
 
       return {
         number: pr.number,
-        title: pr.title,
+        title: renderPRTitleMarkdownSafely(pr.title),
         body: styleHtmlContent((pr as unknown as Record<string, string>).body_html),
         url: pr.html_url,
         state: pr.state,

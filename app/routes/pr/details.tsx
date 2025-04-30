@@ -186,7 +186,8 @@ export default function PRDetails() {
                 <div className="flex-grow">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
                     <h2 className="text-2xl font-bold text-[#2f3241] dark:text-white">
-                      #{prData.number}: {prData.title}
+                      #{prData.number}:{' '}
+                      <span dangerouslySetInnerHTML={{ __html: prData.title }}></span>
                     </h2>
                     <div className="flex items-center">
                       <span
@@ -277,7 +278,8 @@ export default function PRDetails() {
                         className="text-lg font-medium text-[#2f3241] dark:text-white hover:text-[#9feaf9] transition-colors"
                         prefetch="intent"
                       >
-                        #{prData.backportOf.number}: {prData.backportOf.title}
+                        #{prData.backportOf.number}:{' '}
+                        <span dangerouslySetInnerHTML={{ __html: prData.backportOf.title }}></span>
                       </Link>
                     </div>
                   </div>

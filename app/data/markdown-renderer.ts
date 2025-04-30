@@ -1,9 +1,15 @@
 import MarkdownIt from 'markdown-it';
 
-export const makeMD = (opts: { tailwindLists: boolean }) => {
-  const md = new MarkdownIt({
-    html: true,
-  }).use(smallStyleCleanupPlugin);
+export const makeMD = (opts: {
+  tailwindLists: boolean;
+  md?: MarkdownIt;
+  inlineCodeSmall?: boolean;
+}) => {
+  const md =
+    opts.md ||
+    new MarkdownIt({
+      html: true,
+    }).use(smallStyleCleanupPlugin);
 
   // Tailwind styling for markdown-it output
   // Paragraphs
@@ -33,7 +39,7 @@ export const makeMD = (opts: { tailwindLists: boolean }) => {
   // Inline code
   md.renderer.rules.code_inline = (tokens, idx) => {
     const content = md.utils.escapeHtml(tokens[idx].content);
-    return `<code class="bg-gray-100 dark:bg-gray-800 rounded px-1 py-0.5 text-sm font-mono text-red-600 dark:text-red-400">${content}</code>`;
+    return `<code class="bg-gray-100 dark:bg-gray-800 rounded ${opts.inlineCodeSmall ? 'text-sm ' : ''}px-1 py-0.5 font-mono text-red-600 dark:text-red-400">${content}</code>`;
   };
 
   // Code blocks (indented or fenced)
