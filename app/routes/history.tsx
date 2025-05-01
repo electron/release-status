@@ -158,31 +158,29 @@ export default function ReleaseHistory() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
         <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
           <Calendar className="w-7 h-7" />
           Release History {year}
         </h2>
-      </div>
 
-      <div className="mb-2 flex justify-between">
-        <button
-          className="p-2 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed hover:text-[#0550ae] dark:hover:text-[#9feaf9] transition-colors"
-          onClick={() => setYear(`${year - 1}`)}
-          disabled={year <= MIN_YEAR}
-        >
-          <ArrowLeft className="inline-block" />
-          <span>{year - 1}</span>
-        </button>
-        <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
-        <button
-          className="p-2 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed hover:text-[#0550ae] dark:hover:text-[#9feaf9] transition-colors"
-          disabled={year >= new Date().getFullYear()}
-          onClick={() => setYear(`${year + 1}`)}
-        >
-          <span>{year + 1}</span>
-          <ArrowRight className="inline-block" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            onClick={() => setYear(`${year - 1}`)}
+            disabled={year <= MIN_YEAR}
+          >
+            <ArrowLeft className="inline-block h-4" />
+          </button>
+          <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
+          <button
+            className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            disabled={year >= new Date().getFullYear()}
+            onClick={() => setYear(`${year + 1}`)}
+          >
+            <ArrowRight className="inline-block h-4" />
+          </button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
