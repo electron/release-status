@@ -127,8 +127,8 @@ export default function SingleRelease() {
         />
 
         <div className="grid md:grid-cols-2 gap-4">
-          <InstallCommand version={version} name="npm" prefix="npm install" />
-          <InstallCommand version={version} name="yarn" prefix="yarn add" />
+          <InstallCommand version={version} name="npm" prefix="npm install --save-dev" />
+          <InstallCommand version={version} name="yarn" prefix="yarn add --dev" />
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
