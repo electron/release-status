@@ -72,22 +72,21 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return redirect('/release');
   }
 
-  const grouped = renderGroupedReleaseNotes(
-    versionsForNotes.map((version, i) => {
-      let releaseNotes = githubReleaseNotes[i]!;
-      const parsed = semverParse(version);
-      if (parsed?.prerelease.length) {
-        releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
-      }
-      releaseNotes =
-        releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') ||
-        'Missing...';
-      return {
-        version,
-        content: releaseNotes,
-      };
-    }),
-  );
+  const rawGroupedNotes = versionsForNotes.map((version, i) => {
+    let releaseNotes = githubReleaseNotes[i]!;
+    const parsed = semverParse(version);
+    if (parsed?.prerelease.length) {
+      releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
+    }
+    releaseNotes =
+      releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') || 'Missing...';
+    return {
+      version,
+      content: releaseNotes,
+    };
+  });
+
+  const grouped = renderGroupedReleaseNotes(rawGroupedNotes);
 
   return {
     fromElectronRelease,
@@ -234,9 +233,9 @@ export default function CompareReleases() {
               {Object.keys(grouped).map((groupName) => {
                 return (
                   <div key={groupName}>
-                    <h4 className="text-lg font-semibold text-[#2f3241] dark:text-white mb-4">
+                    <h2 className="text-lg font-semibold text-[#2f3241] dark:text-white mb-4">
                       {groupName}
-                    </h4>
+                    </h2>
                     <ul className="space-y-6">
                       {grouped[groupName].map(({ version, content }) => {
                         const color = version === toElectronRelease.version ? 'green' : 'purple';

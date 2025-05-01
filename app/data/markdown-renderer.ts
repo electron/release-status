@@ -18,12 +18,12 @@ export const makeMD = (opts: {
 
   // Headings
   const headingSizes = {
-    '1': 'text-xl font-bold mb-3',
-    '2': 'text-xl font-semibold mb-3',
-    '3': 'text-xl font-semibold mb-3',
-    '4': 'text-xl font-semibold mb-3',
-    '5': 'text-lg font-medium mb-2',
-    '6': 'text-base font-medium mb-1',
+    '1': 'font-bold my-3',
+    '2': 'font-semibold my-3',
+    '3': 'font-semibold my-3',
+    '4': 'font-semibold my-3',
+    '5': 'font-medium my-2',
+    '6': 'text-base font-medium my-1',
   } as const;
   md.renderer.rules.heading_open = (tokens, idx) => {
     const level = tokens[idx].tag.slice(1) as '1' | '2' | '3' | '4' | '5' | '6';
