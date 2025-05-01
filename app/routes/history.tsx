@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { Link, useLoaderData, useSearchParams } from '@remix-run/react';
-import { Calendar, Clock, Info, MoonIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Info, MoonIcon } from 'lucide-react';
 import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';
 import { parse as semverParse } from 'semver';
@@ -163,7 +163,26 @@ export default function ReleaseHistory() {
           <Calendar className="w-7 h-7" />
           Release History {year}
         </h2>
+      </div>
+
+      <div className="mb-2 flex justify-between">
+        <button
+          className="p-2 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed hover:text-[#0550ae] dark:hover:text-[#9feaf9] transition-colors"
+          onClick={() => setYear(`${year - 1}`)}
+          disabled={year <= MIN_YEAR}
+        >
+          <ArrowLeft className="inline-block" />
+          <span>{year - 1}</span>
+        </button>
         <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
+        <button
+          className="p-2 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed hover:text-[#0550ae] dark:hover:text-[#9feaf9] transition-colors"
+          disabled={year >= new Date().getFullYear()}
+          onClick={() => setYear(`${year + 1}`)}
+        >
+          <span>{year + 1}</span>
+          <ArrowRight className="inline-block" />
+        </button>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
