@@ -13,7 +13,7 @@ const titleMdIt = new MarkdownIt('zero', {
 });
 titleMdIt.inline.ruler.enable(['backticks']);
 const listMD = makeMD({ tailwindLists: true, inlineCodeSmall: true });
-const noListMD = makeMD({ tailwindLists: false, inlineCodeSmall: true });
+const noListMD = makeMD({ tailwindLists: false, inlineCodeSmall: true, levelShift: 2 });
 const titleMD = makeMD({
   tailwindLists: false,
   md: titleMdIt,
