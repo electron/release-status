@@ -8,7 +8,7 @@ import {
 describe('renderMarkdownSafely', () => {
   test('renders headers correctly', () => {
     expect(renderMarkdownSafely('# Foo')).toMatchInlineSnapshot(`
-      "<h1 class="font-bold my-3 text-gray-900 dark:text-gray-100">Foo</h1>
+      "<h1 class="text-xl font-bold my-3 text-gray-900 dark:text-gray-100">Foo</h1>
       "
     `);
   });

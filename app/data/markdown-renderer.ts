@@ -19,11 +19,11 @@ export const makeMD = (opts: {
 
   // Headings
   const headingSizes = {
-    '1': 'font-bold my-3',
-    '2': 'font-semibold my-3',
-    '3': 'font-semibold my-3',
-    '4': 'font-semibold my-3',
-    '5': 'font-medium my-2',
+    '1': 'text-xl font-bold my-3',
+    '2': 'text-xl font-semibold my-3',
+    '3': 'text-lg font-semibold my-3',
+    '4': 'text-lg font-semibold my-3',
+    '5': 'text-base font-medium my-2',
     '6': 'text-base font-medium my-1',
   } as const;
   md.renderer.rules.heading_open = (tokens, idx) => {
