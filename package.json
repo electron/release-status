@@ -28,6 +28,7 @@
     "@remix-run/react": "^2.16.5",
     "@remix-run/serve": "^2.16.5",
     "cookie": "^1.0.2",
+    "date-fns": "^4.1.0",
     "dompurify": "^3.2.5",
     "geoip-lite": "^1.4.10",
     "isbot": "^5.1.26",
