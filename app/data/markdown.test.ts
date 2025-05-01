@@ -8,14 +8,14 @@ import {
 describe('renderMarkdownSafely', () => {
   test('renders headers correctly', () => {
     expect(renderMarkdownSafely('# Foo')).toMatchInlineSnapshot(`
-      "<h1 class="text-xl font-bold mb-3 text-gray-900 dark:text-gray-100">Foo</h1>
+      "<h1 class="font-bold my-3 text-gray-900 dark:text-gray-100">Foo</h1>
       "
     `);
   });
 
   test('renders absurd headers correctly', () => {
     expect(renderMarkdownSafely('###### Foo')).toMatchInlineSnapshot(`
-      "<h6 class="text-base font-medium mb-1 text-gray-900 dark:text-gray-100">Foo</h6>
+      "<h6 class="text-base font-medium my-1 text-gray-900 dark:text-gray-100">Foo</h6>
       "
     `);
   });
@@ -184,6 +184,40 @@ describe('renderGroupedReleaseNotes', () => {
             "content": "<ul>
       <li><p class="mb-2 text-base text-gray-800 dark:text-gray-200">More stuff</p></li>
       <li><p class="mb-2 text-base text-gray-800 dark:text-gray-200">Even more stuff</p></li>
+      </ul>
+      ",
+            "version": "v1.0.0",
+          },
+        ],
+      }
+    `);
+  });
+
+  test('renders version grouped release notes correctly (Windows newlines)', () => {
+    const releaseNotes = [
+      {
+        version: 'v1.0.0',
+        content: '## New Feature\r\n\r\n* Added new feature',
+      },
+      {
+        version: 'v1.1.0',
+        content: '## New Feature\r\n\r\n* Added another feature',
+      },
+    ];
+
+    expect(renderGroupedReleaseNotes(releaseNotes)).toMatchInlineSnapshot(`
+      {
+        "New Feature": [
+          {
+            "content": "<ul>
+      <li><p class="mb-2 text-base text-gray-800 dark:text-gray-200">Added another feature</p></li>
+      </ul>
+      ",
+            "version": "v1.1.0",
+          },
+          {
+            "content": "<ul>
+      <li><p class="mb-2 text-base text-gray-800 dark:text-gray-200">Added new feature</p></li>
       </ul>
       ",
             "version": "v1.0.0",
