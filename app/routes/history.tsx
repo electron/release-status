@@ -151,6 +151,14 @@ export default function ReleaseHistory() {
     [setSearchParams],
   );
 
+  const decrementYear = useCallback(() => {
+    setYear(`${year - 1}`);
+  }, [year, setYear]);
+
+  const incrementYear = useCallback(() => {
+    setYear(`${year + 1}`);
+  }, [year, setYear]);
+
   const allowedYears = [];
   for (let y = MIN_YEAR; y <= new Date().getFullYear(); y++) {
     allowedYears.push(`${y}`);
@@ -167,7 +175,7 @@ export default function ReleaseHistory() {
         <div className="flex gap-2">
           <button
             className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-            onClick={() => setYear(`${year - 1}`)}
+            onClick={decrementYear}
             disabled={year <= MIN_YEAR}
           >
             <ArrowLeft className="inline-block h-4" />
@@ -175,8 +183,8 @@ export default function ReleaseHistory() {
           <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
           <button
             className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-            disabled={year >= allowedYears[allowedYears.length - 1]}
-            onClick={() => setYear(`${year + 1}`)}
+            disabled={year >= Number(allowedYears[allowedYears.length - 1])}
+            onClick={incrementYear}
           >
             <ArrowRight className="inline-block h-4" />
           </button>
