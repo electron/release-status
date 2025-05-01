@@ -9,7 +9,7 @@ import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: `Electron PR Lookup` },
+    { title: `PR Lookup | Electron Releases` },
     {
       name: 'description',
       content: `Lookup recent pull requests in Electron, including their details and which Electron versions they were included in.`,

@@ -21,7 +21,7 @@ import { Select } from '~/components/Select';
 export const meta: MetaFunction = ({ params }) => {
   return [
     {
-      title: `Electron Compare - ${params.fromVersion} -> ${params.toVersion}`,
+      title: `Comparing ${params.fromVersion} -> ${params.toVersion} | Electron Releases`,
     },
     {
       name: 'description',

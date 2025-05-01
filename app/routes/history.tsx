@@ -8,7 +8,7 @@ import { Select } from '~/components/Select';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Electron Release History' },
+    { title: 'History | Electron Releases' },
     {
       name: 'description',
       content: 'Calendar of Electron releases from the past year.',

@@ -25,7 +25,7 @@ import { Select } from '~/components/Select';
 
 export const meta: MetaFunction = ({ params }) => {
   return [
-    { title: `Electron ${params.version}` },
+    { title: `${params.version} | Electron Releases` },
     {
       name: 'description',
       content: `Electron ${params.version} - Release details`,
