@@ -68,6 +68,24 @@ describe('renderMarkdownSafely', () => {
       "
     `);
   });
+
+  test('renders github alerts correctly', () => {
+    expect(
+      renderMarkdownSafely(
+        '> [!TIP]\n> This is a tip\n> \n\n> [!NOTE]\n> This is a note\n> \n\n> [!WARNING]\n> This is a warning\n> \n\n> [!IMPORTANT]\n> This is important',
+      ),
+    ).toMatchInlineSnapshot(`
+      "<blockquote class="border-l-4 p-4 rounded-md mb-4 border-l-4 p-4 rounded-md bg-green-50 border-green-300 text-green-800 dark:bg-green-950 dark:border-green-600 dark:text-green-100"><p class="mb-2 text-base text-gray-800 dark:text-gray-200"><strong class="block font-semibold uppercase mb-1">TIP</strong>This is a tip</p>
+      </blockquote>
+      <blockquote class="border-l-4 p-4 rounded-md mb-4 border-l-4 p-4 rounded-md bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-950 dark:border-blue-600 dark:text-blue-100"><p class="mb-2 text-base text-gray-800 dark:text-gray-200"><strong class="block font-semibold uppercase mb-1">NOTE</strong>This is a note</p>
+      </blockquote>
+      <blockquote class="border-l-4 p-4 rounded-md mb-4 border-l-4 p-4 rounded-md bg-yellow-50 border-yellow-300 text-yellow-900 dark:bg-yellow-950 dark:border-yellow-500 dark:text-yellow-100"><p class="mb-2 text-base text-gray-800 dark:text-gray-200"><strong class="block font-semibold uppercase mb-1">WARNING</strong>This is a warning</p>
+      </blockquote>
+      <blockquote class="border-l-4 p-4 rounded-md mb-4 border-l-4 p-4 rounded-md bg-red-50 border-red-300 text-red-800 dark:bg-red-950 dark:border-red-600 dark:text-red-100"><p class="mb-2 text-base text-gray-800 dark:text-gray-200"><strong class="block font-semibold uppercase mb-1">IMPORTANT</strong>This is important</p>
+      </blockquote>
+      "
+    `);
+  });
 });
 
 describe('renderPRTitleMarkdownSafely', () => {
