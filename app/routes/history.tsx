@@ -202,13 +202,14 @@ export default function ReleaseHistory() {
           const isFutureMonth = year === new Date().getFullYear() && monthIndex > currentMonth;
           const isCurrentMonth = year === new Date().getFullYear() && monthIndex === currentMonth;
           const daysInMonth = getDaysInMonth(year, month);
+          const daysSoFar = isCurrentMonth ? currentDayOfMonth : daysInMonth;
 
           let missedNightlies = 0;
-          for (let i = 1; i <= daysInMonth; i++) {
+          for (let i = 1; i <= daysSoFar; i++) {
             missedNightlies += calendarData[month][i].missedNightly ? 1 : 0;
           }
           const nightlyPercentage =
-            Math.round(((daysInMonth - missedNightlies) / daysInMonth) * 10_000) / 100;
+            Math.round(((daysSoFar - missedNightlies) / daysSoFar) * 10_000) / 100;
 
           return (
             <div
