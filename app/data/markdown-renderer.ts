@@ -1,4 +1,5 @@
 import MarkdownIt from 'markdown-it';
+import { githubAlerts } from './markdown-plugins/github-alerts';
 
 export const makeMD = (opts: {
   tailwindLists: boolean;
@@ -9,7 +10,9 @@ export const makeMD = (opts: {
     opts.md ||
     new MarkdownIt({
       html: true,
-    }).use(smallStyleCleanupPlugin);
+    })
+      .use(smallStyleCleanupPlugin)
+      .use(githubAlerts);
 
   // Tailwind styling for markdown-it output
   // Paragraphs
