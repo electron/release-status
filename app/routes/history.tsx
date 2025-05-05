@@ -175,7 +175,7 @@ export default function ReleaseHistory() {
           <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
           <button
             className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-            disabled={year >= new Date().getFullYear()}
+            disabled={year >= allowedYears[allowedYears.length - 1]}
             onClick={() => setYear(`${year + 1}`)}
           >
             <ArrowRight className="inline-block h-4" />
