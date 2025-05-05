@@ -1,10 +1,20 @@
-import { Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import {
+  isRouteErrorResponse,
+  Link,
+  Links,
+  Meta,
+  NavLink,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useRouteError,
+} from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 
 import './tailwind.css';
 import { Logo } from '~/components/Logo';
 import { ArrowUpRight, History, Search } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const links: LinksFunction = () => [];
 
@@ -41,6 +51,41 @@ const nav = [
     path: 'https://www.electronjs.org/docs/latest',
   },
 ];
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  const [trying, setTrying] = useState(false);
+  const handleClick = () => {
+    setTrying(true);
+    window.location.reload();
+  };
+  return (
+    <div className="flex flex-col items-center justify-center h-full px-6 py-12 text-center bg-white dark:bg-zinc-900">
+      <div className="max-w-md space-y-4">
+        <h1 className="text-2xl font-bold text-red-600 dark:text-red-400">
+          Oops! Something went wrong
+        </h1>
+
+        <p className="text-base text-gray-700 dark:text-gray-300">
+          {isRouteErrorResponse(error)
+            ? `${error.status} - ${error.statusText}`
+            : error instanceof Error
+              ? error.message
+              : 'An unexpected error occurred.'}
+        </p>
+
+        <button
+          className={`px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-gray-800 border border-gray-500 dark:border-gray-700 text-gray-800 dark:text-gray-400 transition-colors`}
+          onClick={handleClick}
+          disabled={trying}
+        >
+          {trying ? 'Trying...' : 'Try again'}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
