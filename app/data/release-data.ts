@@ -18,32 +18,37 @@ export type ElectronRelease = {
 
 export const getReleasesOrUpdate = memoize(
   async () => {
-    const response = await fetch('https://electronjs.org/headers/index.json');
-    if (response.status !== 200) return [];
-    const releases = (await response.json()) as ElectronRelease[];
-    return releases
-      .sort((a, b) => {
-        const aParsed = semverParse(a.version);
-        const bParsed = semverParse(b.version);
-        if (!aParsed || !bParsed) return 0;
-        const mainCompared = bParsed.compareMain(aParsed);
-        if (mainCompared !== 0) return mainCompared;
-        if (aParsed.prerelease.length === 0 && bParsed.prerelease.length > 0) return -1;
-        if (aParsed.prerelease.length > 0 && bParsed.prerelease.length === 0) return 1;
-        if (aParsed.prerelease.length > 0 && bParsed.prerelease.length > 0) {
-          const aPre = aParsed.prerelease[0];
-          const bPre = bParsed.prerelease[0];
-          if (aPre === bPre) return 0;
-          if (aPre === 'nightly') return 1;
-          if (bPre === 'nightly') return -1;
-          return bParsed.comparePre(aParsed);
-        }
-        return semverCompare(b.version, a.version);
-      })
-      .map((r) => ({
-        ...r,
-        v8: r.v8.replace('-electron.0', ''),
-      }));
+    try {
+      const response = await fetch('https://electronjs.org/headers/index.json');
+      if (response.status !== 200) return [];
+      const releases = (await response.json()) as ElectronRelease[];
+      return releases
+        .sort((a, b) => {
+          const aParsed = semverParse(a.version);
+          const bParsed = semverParse(b.version);
+          if (!aParsed || !bParsed) return 0;
+          const mainCompared = bParsed.compareMain(aParsed);
+          if (mainCompared !== 0) return mainCompared;
+          if (aParsed.prerelease.length === 0 && bParsed.prerelease.length > 0) return -1;
+          if (aParsed.prerelease.length > 0 && bParsed.prerelease.length === 0) return 1;
+          if (aParsed.prerelease.length > 0 && bParsed.prerelease.length > 0) {
+            const aPre = aParsed.prerelease[0];
+            const bPre = bParsed.prerelease[0];
+            if (aPre === bPre) return 0;
+            if (aPre === 'nightly') return 1;
+            if (bPre === 'nightly') return -1;
+            return bParsed.comparePre(aParsed);
+          }
+          return semverCompare(b.version, a.version);
+        })
+        .map((r) => ({
+          ...r,
+          v8: r.v8.replace('-electron.0', ''),
+        }));
+    } catch (err) {
+      console.error('Failed to fetch releases:', err);
+      return [];
+    }
   },
   getKeyvCache('electron-releases'),
   {
@@ -94,17 +99,25 @@ export type SudowoodoRelease = {
 
 export const getActiveReleasesOrUpdate = memoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
-    if (response.status !== 200) {
+    try {
+      const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+      if (response.status !== 200) {
+        return {
+          currentlyRunning: [],
+          queued: [],
+        };
+      }
+      return (await response.json()) as {
+        currentlyRunning: SudowoodoRelease[];
+        queued: SudowoodoRelease[];
+      };
+    } catch (err) {
+      console.error('Failed to fetch active releases:', err);
       return {
         currentlyRunning: [],
         queued: [],
       };
     }
-    return (await response.json()) as {
-      currentlyRunning: SudowoodoRelease[];
-      queued: SudowoodoRelease[];
-    };
   },
   getKeyvCache('sudowoodo-releases'),
   {
@@ -114,11 +127,18 @@ export const getActiveReleasesOrUpdate = memoize(
 
 export const getSudowoodoRelease = memoize(
   async (id: string) => {
-    const response = await fetch(`https://electron-sudowoodo.herokuapp.com/release/history/${id}`);
-    if (response.status !== 200) {
+    try {
+      const response = await fetch(
+        `https://electron-sudowoodo.herokuapp.com/release/history/${id}`,
+      );
+      if (response.status !== 200) {
+        return null;
+      }
+      return (await response.json()) as SudowoodoRelease;
+    } catch (err) {
+      console.error('Failed to fetch SudoWoodo releases:', err);
       return null;
     }
-    return (await response.json()) as SudowoodoRelease;
   },
   getKeyvCache('sudowoodo-releases-by-id'),
   {
