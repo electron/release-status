@@ -151,11 +151,19 @@ export const getSudowoodoRelease = memoize(
 
 export const getReleaseForVersion = async (version: string) => {
   const allReleases = await getReleasesOrUpdate();
+  if (allReleases.length === 0) return [];
   return allReleases.find((r) => semverEq(r.version, version));
 };
 
 export const getLatestReleases = async () => {
   const allReleases = await getReleasesOrUpdate();
+  if (allReleases.length === 0) {
+    return {
+      latestSupported: [],
+      lastPreRelease: undefined,
+      lastNightly: [],
+    };
+  }
   const lastNightly = allReleases.find((r) => semverParse(r.version)!.prerelease[0] === 'nightly')!;
   let lastPreRelease = allReleases.find(
     (r) =>
@@ -191,6 +199,7 @@ export const getAllVersionsInMajor = async (
   if (!parsed) return [];
 
   const allReleases = await getReleasesOrUpdate();
+  if (allReleases.length === 0) return [];
   return allReleases
     .filter(
       (r) =>
