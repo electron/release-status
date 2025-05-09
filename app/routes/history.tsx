@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, useLoaderData, useSearchParams } from '@remix-run/react';
+import { Link, PrefetchPageLinks, useLoaderData, useSearchParams } from '@remix-run/react';
 import { Calendar, Clock, Info, MoonIcon } from 'lucide-react';
 import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';
@@ -86,7 +86,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       calendarData[month][day].stable.push(release.version);
     }
   }
-  args.context.cacheControl = 'private, max-age=30';
+  args.context.cacheControl = 'private, max-age=120';
 
   const currentMonth = currentDate.getMonth();
   const currentDayOfMonth = currentDate.getDate();
@@ -107,6 +107,7 @@ const getDaysInMonth = (year: number, month: (typeof months)[number]) => {
 };
 
 export default function ReleaseHistory() {
+  const [preloadAllYears, setPreloadAllYears] = useState(false);
   const [, setSearchParams] = useSearchParams();
   const {
     data: calendarData,
@@ -150,6 +151,9 @@ export default function ReleaseHistory() {
     },
     [setSearchParams],
   );
+  const onYearSelectClick = useCallback(() => {
+    setPreloadAllYears(true);
+  }, []);
 
   const allowedYears = [];
   for (let y = MIN_YEAR; y <= new Date().getFullYear(); y++) {
@@ -158,12 +162,22 @@ export default function ReleaseHistory() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {preloadAllYears
+        ? allowedYears.map((year) => (
+            <PrefetchPageLinks key={year} page={`/history?year=${year}`} />
+          ))
+        : null}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
           <Calendar className="w-7 h-7" />
           Release History {year}
         </h2>
-        <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
+        <Select
+          options={allowedYears}
+          selected={`${year}`}
+          onChange={setYear}
+          onClick={onYearSelectClick}
+        />
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
