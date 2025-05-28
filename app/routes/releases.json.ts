@@ -1,4 +1,4 @@
-import { json } from '@remix-run/node';
+import { data } from '@remix-run/node';
 import { getReleasesOrUpdate } from '../data/release-data';
 
 export const loader = async ({ request }) => {
@@ -15,7 +15,8 @@ export const loader = async ({ request }) => {
 
   const releases = await getReleasesOrUpdate();
 
-  return json(releases, {
+  return data(releases, {
+    status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
