@@ -14,7 +14,6 @@ export const loader = async ({ request }) => {
   }
 
   const releases = await getReleasesOrUpdate();
-
   return data(releases, {
     status: 200,
     headers: {
