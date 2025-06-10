@@ -15,7 +15,7 @@ import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = (args) => {
   return [
-    { title: `Electron Release Job - ${args.params.id}` },
+    { title: `Job ${args.params.id} | Electron Releases` },
     {
       name: 'description',
       content: 'Live information about a specific Electron release job.',
@@ -30,6 +30,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     // Guess at three hours for the build time
     const estimatedCompletion = new Date(started.getTime() + 1_000 * 60 * 60 * 3);
     const timeZone = guessTimeZoneFromRequest(args.request);
+    args.context.cacheControl = 'private, max-age=30';
     return {
       ...build,
       started: prettyDateString(build.started, timeZone),
