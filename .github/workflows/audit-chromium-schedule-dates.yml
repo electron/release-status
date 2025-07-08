@@ -13,6 +13,10 @@ jobs:
     name: Audit Chromium Schedule Dates
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: '.nvmrc'
       - name: Restore previous run data
         uses: dawidd6/action-download-artifact@20319c5641d495c8a52e688b7dc5fada6c3a9fbc # v8
         with:
@@ -20,7 +24,7 @@ jobs:
           if_no_artifact_found: ignore
           workflow_conclusion: 'completed'
           search_artifacts: true
-      - run: npm install @electron/fiddle-core
+      - run: npm install @electron/fiddle-core@2.0.0
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
@@ -87,7 +91,7 @@ jobs:
               return data;
             };
 
-            const versions = await ElectronVersions.create(undefined, { ignoreCache: true });
+            const versions = await ElectronVersions.create({ ignoreCache: true });
             const release = versions.getReleaseInfo(versions.latest);
 
             const milestone = parseInt(release.chrome.match(/(\d+)\.\d+\.\d+\.\d+/)[1]);
