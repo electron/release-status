@@ -21,11 +21,13 @@ jobs:
         uses: dawidd6/action-download-artifact@20319c5641d495c8a52e688b7dc5fada6c3a9fbc # v8
         with:
           name: data
+          branch: main
           if_no_artifact_found: ignore
           workflow_conclusion: 'completed'
           search_artifacts: true
-      - run: npm install @electron/fiddle-core@2.0.0
+      - run: npm install @electron/fiddle-core@2.0.1
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        id: audit-chromium-schedule
         with:
           script: |
             const fs = require('node:fs/promises');
@@ -65,7 +67,10 @@ jobs:
               const headers = [{ data: 'Name', header: true }];
 
               if (prevData !== null && milestone in prevData && keys.some((key) => data[key] !== prevData[milestone][key])) {
+                // Set this as failed so it's easy to scan runs to find failures
                 process.exitCode = 1;
+
+                core.setOutput('changesDetected', true);
 
                 core.summary.addEOL();
                 core.summary.addRaw('> [!WARNING]\n> Changes to milestone dates detected', true);
@@ -108,7 +113,7 @@ jobs:
 
             await core.summary.write();
       - name: Send Slack message if dates changed
-        if: failure()
+        if: ${{ always() && steps.audit-chromium-schedule.outputs.changesDetected && github.ref == 'refs/heads/main' }}
         uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
         with:
           payload: |
