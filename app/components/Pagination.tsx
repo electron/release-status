@@ -16,7 +16,7 @@ type ButtonProps = {
 const Button = ({ children, isDisabled, onClick }: ButtonProps) => {
   return (
     <button
-      className={`px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 transition-colors ${
+      className={`px-1 sm:px-2 md:px-4 py-1 sm:py-2 text-sm font-medium rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 transition-colors ${
         isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
       }`}
       disabled={isDisabled}
@@ -77,7 +77,7 @@ export const Pagination = ({ page, maxPage, setPage }: PaginationProps) => {
             return (
               <span
                 key={`...${index}`}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400"
+                className="md:w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400"
               >
                 ...
               </span>
@@ -85,8 +85,8 @@ export const Pagination = ({ page, maxPage, setPage }: PaginationProps) => {
           }
           const className =
             p === page
-              ? 'w-8 h-8 flex items-center justify-center rounded-md bg-[#2f3241] text-white text-sm font-medium'
-              : `w-8 h-8 flex items-center justify-center rounded-md ${
+              ? 'w-8 h-7 md:h-8 flex items-center justify-center rounded-md bg-[#2f3241] text-white text-sm font-medium'
+              : `w-8 h-7 md:h-8 flex items-center justify-center rounded-md ${
                   isLoading ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                 } text-gray-700 dark:text-gray-300 text-sm font-medium transition-colors`;
           return (
