@@ -1,6 +1,13 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { parse as semverParse, lt as semverLessThan, gt as semverGreaterThan } from 'semver';
-import { redirect, useLoaderData, useNavigate, useNavigation, useParams } from '@remix-run/react';
+import {
+  Link,
+  redirect,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useParams,
+} from '@remix-run/react';
 import {
   SiGooglechrome,
   SiGooglechromeHex,
@@ -226,8 +233,10 @@ export default function CompareReleases() {
 
               <div className="text-center mt-2">
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {toVersion} includes changes from {versionsBetween.length + 1} version
-                  {versionsBetween.length ? 's' : ''} since {fromVersion}
+                  <Link to={`/release/${toVersion}`}>{toVersion}</Link> includes changes from{' '}
+                  {versionsBetween.length + 1} version
+                  {versionsBetween.length ? 's' : ''} since{' '}
+                  <Link to={`/release/${fromVersion}`}>{fromVersion}</Link>
                 </span>
               </div>
             </div>
@@ -254,11 +263,12 @@ export default function CompareReleases() {
                             </div>
                             <div className="text-gray-700 dark:text-gray-300">
                               <div className="flex items-center gap-2 mb-1">
-                                <span
+                                <Link
+                                  to={`/release/v${version}`}
                                   className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-${color}-100 text-${color}-800 dark:bg-${color}-900/30 dark:text-${color}-400`}
                                 >
                                   {version}
-                                </span>
+                                </Link>
                               </div>
                               <div dangerouslySetInnerHTML={{ __html: content }}></div>
                             </div>
