@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { Link, PrefetchPageLinks, useLoaderData, useSearchParams } from '@remix-run/react';
-import { Calendar, Clock, Info, MoonIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Info, MoonIcon } from 'lucide-react';
 import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';
 import { parse as semverParse } from 'semver';
@@ -155,6 +155,14 @@ export default function ReleaseHistory() {
     setPreloadAllYears(true);
   }, []);
 
+  const decrementYear = useCallback(() => {
+    setYear(`${year - 1}`);
+  }, [year, setYear]);
+
+  const incrementYear = useCallback(() => {
+    setYear(`${year + 1}`);
+  }, [year, setYear]);
+
   const allowedYears = [];
   for (let y = MIN_YEAR; y <= new Date().getFullYear(); y++) {
     allowedYears.push(`${y}`);
@@ -167,17 +175,34 @@ export default function ReleaseHistory() {
             <PrefetchPageLinks key={year} page={`/history?year=${year}`} />
           ))
         : null}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
         <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
           <Calendar className="w-7 h-7" />
           Release History {year}
         </h2>
-        <Select
-          options={allowedYears}
-          selected={`${year}`}
-          onChange={setYear}
-          onClick={onYearSelectClick}
-        />
+
+        <div className="flex gap-2">
+          <button
+            className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            onClick={decrementYear}
+            disabled={year <= MIN_YEAR}
+          >
+            <ArrowLeft className="inline-block h-4" />
+          </button>{' '}
+          <Select
+            options={allowedYears}
+            selected={`${year}`}
+            onChange={setYear}
+            onClick={onYearSelectClick}
+          />
+          <button
+            className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            disabled={year >= Number(allowedYears[allowedYears.length - 1])}
+            onClick={incrementYear}
+          >
+            <ArrowRight className="inline-block h-4" />
+          </button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
