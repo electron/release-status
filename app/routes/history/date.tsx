@@ -8,7 +8,7 @@ import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = (args) => {
   return [
-    { title: `Electron Releases - ${args.params.date}` },
+    { title: `${args.params.date} | Electron Releases` },
     {
       name: 'description',
       content: `Electron releases on ${args.params.date}`,

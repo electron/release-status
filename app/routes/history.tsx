@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, useLoaderData, useSearchParams } from '@remix-run/react';
+import { Link, PrefetchPageLinks, useLoaderData, useSearchParams } from '@remix-run/react';
 import { ArrowLeft, ArrowRight, Calendar, Clock, Info, MoonIcon } from 'lucide-react';
 import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';
@@ -8,7 +8,7 @@ import { Select } from '~/components/Select';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Electron Release History' },
+    { title: 'History | Electron Releases' },
     {
       name: 'description',
       content: 'Calendar of Electron releases from the past year.',
@@ -86,7 +86,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       calendarData[month][day].stable.push(release.version);
     }
   }
-  args.context.cacheControl = 'private, max-age=30';
+  args.context.cacheControl = 'private, max-age=120';
 
   const currentMonth = currentDate.getMonth();
   const currentDayOfMonth = currentDate.getDate();
@@ -107,6 +107,7 @@ const getDaysInMonth = (year: number, month: (typeof months)[number]) => {
 };
 
 export default function ReleaseHistory() {
+  const [preloadAllYears, setPreloadAllYears] = useState(false);
   const [, setSearchParams] = useSearchParams();
   const {
     data: calendarData,
@@ -150,6 +151,9 @@ export default function ReleaseHistory() {
     },
     [setSearchParams],
   );
+  const onYearSelectClick = useCallback(() => {
+    setPreloadAllYears(true);
+  }, []);
 
   const decrementYear = useCallback(() => {
     setYear(`${year - 1}`);
@@ -166,6 +170,11 @@ export default function ReleaseHistory() {
 
   return (
     <div className="max-w-4xl mx-auto">
+      {preloadAllYears
+        ? allowedYears.map((year) => (
+            <PrefetchPageLinks key={year} page={`/history?year=${year}`} />
+          ))
+        : null}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
         <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
           <Calendar className="w-7 h-7" />
@@ -179,8 +188,13 @@ export default function ReleaseHistory() {
             disabled={year <= MIN_YEAR}
           >
             <ArrowLeft className="inline-block h-4" />
-          </button>
-          <Select options={allowedYears} selected={`${year}`} onChange={setYear} />
+          </button>{' '}
+          <Select
+            options={allowedYears}
+            selected={`${year}`}
+            onChange={setYear}
+            onClick={onYearSelectClick}
+          />
           <button
             className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
             disabled={year >= Number(allowedYears[allowedYears.length - 1])}
@@ -227,13 +241,14 @@ export default function ReleaseHistory() {
           const isFutureMonth = year === new Date().getFullYear() && monthIndex > currentMonth;
           const isCurrentMonth = year === new Date().getFullYear() && monthIndex === currentMonth;
           const daysInMonth = getDaysInMonth(year, month);
+          const daysSoFar = isCurrentMonth ? currentDayOfMonth : daysInMonth;
 
           let missedNightlies = 0;
-          for (let i = 1; i <= daysInMonth; i++) {
+          for (let i = 1; i <= daysSoFar; i++) {
             missedNightlies += calendarData[month][i].missedNightly ? 1 : 0;
           }
           const nightlyPercentage =
-            Math.round(((daysInMonth - missedNightlies) / daysInMonth) * 10_000) / 100;
+            Math.round(((daysSoFar - missedNightlies) / daysSoFar) * 10_000) / 100;
 
           return (
             <div
