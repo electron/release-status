@@ -12,7 +12,7 @@ import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Electron Releases' },
+    { title: 'All | Electron Releases' },
     {
       name: 'description',
       content: 'All historical Electron releases.',
@@ -38,7 +38,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
   if (passedMajor?.startsWith('v')) {
     major = parseInt(passedMajor.substring(1), 10);
-    if (isNaN(major) || major <= 0) {
+    if (isNaN(major) || major < 0) {
       major = null;
     }
   }
@@ -63,7 +63,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       }
     })
     .filter((r) => {
-      if (major) {
+      if (major !== null) {
         return semverParse(r.version)!.major === major;
       }
       return true;

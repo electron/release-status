@@ -8,7 +8,8 @@ type InstallCommandProps = {
 };
 
 export const InstallCommand = ({ name, prefix, version }: InstallCommandProps) => {
-  const installString = `${prefix} electron@${version.slice(1)}`;
+  const isNightly = version.includes('nightly');
+  const installString = `${prefix} electron@${isNightly ? 'npm:electron-nightly@' : ''}${version.slice(1)}`;
 
   const [recentlyCopied, setDidRecentlyCopy] = useState(false);
 

@@ -25,7 +25,7 @@ import { prettyDateString } from '~/helpers/time';
 
 export const meta: MetaFunction = (args) => {
   return [
-    { title: `Electron PR #${args.params.number}` },
+    { title: `PR #${args.params.number} | Electron Releases` },
     {
       name: 'description',
       content: `Details about Electron PR #${args.params.number}, including its status, author, and which Electron versions it was included in.`,
