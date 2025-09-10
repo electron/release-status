@@ -58,7 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 flex flex-col">
           <header className="sticky top-0 z-10 bg-white/90 dark:bg-[#2f3241]/90 backdrop-blur-md border-b border-gray-200 dark:border-[#9feaf9]/10">
-            <div className="container mx-auto px-4 py-4 flex items-center justify-between flex flex-col sm:flex-row gap-4">
+            <div className="container mx-auto px-4 py-4 items-center justify-between flex flex-col sm:flex-row gap-4">
               <div className="flex items-center gap-2">
                 <Logo className="w-6 h-6 text-[#2f3241] dark:text-[#9feaf9]" />
                 <Link to="/" prefetch="intent">
