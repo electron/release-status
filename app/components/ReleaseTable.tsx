@@ -1,6 +1,7 @@
 import { Link } from '@remix-run/react';
+import { formatDistance } from 'date-fns';
 import { ElectronRelease } from '~/data/release-data';
-import { humanFriendlyDaysSince, prettyReleaseDate } from '~/helpers/time';
+import { prettyDateString, prettyReleaseDate } from '~/helpers/time';
 
 type ReleaseTableProps = {
   releases: (ElectronRelease | undefined)[];
@@ -91,9 +92,15 @@ export const ReleaseTable = ({
                           prefetch="intent"
                         >
                           <span className="flex items-center gap-2">
-                            <span>{humanFriendlyDaysSince(release)}</span>
-                            <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <span title={prettyDateString(release.fullDate, timeZone)}>
                               {prettyReleaseDate(release, timeZone)}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full">
+                              {release.fullDate
+                                ? formatDistance(release.fullDate, Date.now(), {
+                                    addSuffix: true,
+                                  })
+                                : ''}
                             </span>
                           </span>
                         </Link>
