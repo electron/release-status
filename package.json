@@ -13,15 +13,14 @@
     "typecheck": "tsc",
     "test": "vitest",
     "prepare": "husky",
-    "lint-staged": "lint-staged",
-    "postinstall": "patch-package"
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "@electron/github-app-auth": "^3.0.0",
     "@icons-pack/react-simple-icons": "^12.7.0",
     "@keyvhq/core": "^2.1.7",
     "@keyvhq/file": "^2.1.7",
-    "@keyvhq/memoize": "^2.1.7",
+    "@keyvhq/memoize": "patch:@keyvhq/memoize@npm%3A2.1.11#~/.yarn/patches/@keyvhq-memoize-npm-2.1.11-a8a4b45386.patch",
     "@keyvhq/redis": "^2.1.8",
     "@octokit/rest": "^21.1.1",
     "@remix-run/node": "^2.16.5",
@@ -35,7 +34,6 @@
     "jsdom": "^26.1.0",
     "lucide-react": "^0.503.0",
     "markdown-it": "^14.1.0",
-    "patch-package": "^8.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "semver": "^7.7.1"
@@ -83,5 +81,6 @@
       "eslint --cache --cache-location ./node_modules/.cache/eslint . --fix",
       "prettier --write"
     ]
-  }
+  },
+  "packageManager": "yarn@4.10.3+sha512.c38cafb5c7bb273f3926d04e55e1d8c9dfa7d9c3ea1f36a4868fa028b9e5f72298f0b7f401ad5eb921749eb012eb1c3bb74bf7503df3ee43fd600d14a018266f"
 }
