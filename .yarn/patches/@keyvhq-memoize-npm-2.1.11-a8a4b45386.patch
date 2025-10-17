@@ -1,0 +1,15 @@
+diff --git a/src/index.js b/src/index.js
+index 2eb0d8d66994251e492c25a07b49dc4a09ec4256..0c7f0485cfc430af6cf75710b2da566543780150 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -88,8 +88,8 @@ function memoize (
+ 
+       if (isStale) {
+         promise
+-          .then(() => (pending[key] = undefined))
+-          .catch(error => (info.staleError = error))
++          .catch((error) => (info.staleError = error))
++          .then(() => (pending[key] = undefined));
+         return done(data.value)
+       }
+ 

@@ -22,7 +22,7 @@ describe('renderMarkdownSafely', () => {
 
   test('renders links correctly', () => {
     expect(renderMarkdownSafely('[foo](https://electronjs.org)')).toMatchInlineSnapshot(`
-      "<p class="mb-2 text-base text-gray-800 dark:text-gray-200"><a class="text-[#0366d6] dark:text-[#58a6ff] hover:underline font-medium" rel="noopener noreferrer" href="https://electronjs.org" target="_blank">foo</a></p>
+      "<p class="mb-2 text-base text-gray-800 dark:text-gray-200"><a href="https://electronjs.org" rel="noopener noreferrer" class="text-[#0366d6] dark:text-[#58a6ff] hover:underline font-medium" target="_blank">foo</a></p>
       "
     `);
   });
