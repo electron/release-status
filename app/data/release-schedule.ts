@@ -1,7 +1,7 @@
 import { parse as parseSemver } from 'semver';
 import memoize from '@keyvhq/memoize';
 import { ElectronRelease, getReleasesOrUpdate } from './release-data';
-import { extractChromiumMilestone, extractNodeVersion, getPrereleaseType } from '~/helpers/version';
+import { extractChromiumMilestone, getPrereleaseType } from '~/helpers/version';
 import { getMilestoneSchedule } from './dash/chromium-schedule';
 import { getKeyvCache } from './cache';
 
@@ -12,7 +12,7 @@ export interface MajorReleaseSchedule {
   stableDate: string; // YYYY-MM-DD
   eolDate: string; // YYYY-MM-DD
   chromiumVersion: number; // milestone, aka major version
-  nodeVersion: string; // `${major}.${minor}`
+  nodeVersion: string; // full semver
   status: 'active' | 'prerelease' | 'eol';
 }
 
@@ -147,8 +147,8 @@ export const getAbsoluteSchedule = memoize(
         alphaDate = prevStable.toISOString().split('T')[0];
       }
 
-      const latestRelease = majorGroups.get(major)!.releases[0];
-      const nodeVersion = extractNodeVersion(latestRelease.node);
+      const group = majorGroups.get(major)!;
+      const latestRelease = group.releases[0];
 
       const entry: AbsoluteMajorReleaseSchedule = {
         version: `${major}.0.0`,
@@ -156,7 +156,7 @@ export const getAbsoluteSchedule = memoize(
         betaDate: chromiumSchedule.earliestBeta,
         stableDate: chromiumSchedule.stableDate,
         chromiumVersion: milestone,
-        nodeVersion,
+        nodeVersion: group.firstStable?.node ?? latestRelease.node,
         eolDate: '', // Placeholder, will be calculated
       };
 
