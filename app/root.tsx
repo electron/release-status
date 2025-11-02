@@ -3,7 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 
 import './tailwind.css';
 import { Logo } from '~/components/Logo';
-import { ArrowUpRight, History, Search } from 'lucide-react';
+import { ArrowUpRight, History, Search, CalendarPlus } from 'lucide-react';
 import { useEffect } from 'react';
 
 export const links: LinksFunction = () => [];
@@ -21,6 +21,15 @@ const nav = [
       </>
     ),
     path: '/history',
+  },
+  {
+    title: (
+      <>
+        <CalendarPlus className="w-4 h-4" />
+        Schedule
+      </>
+    ),
+    path: '/schedule',
   },
   {
     title: (

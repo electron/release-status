@@ -28,4 +28,5 @@ export default [
     route('compare/:fromVersion/:toVersion', 'routes/release/compare.tsx'),
     route(':version', 'routes/release/single.tsx'),
   ]),
+  route('schedule', 'routes/schedule.tsx'),
 ] satisfies RouteConfig;
