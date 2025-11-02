@@ -67,15 +67,6 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   ],
 ]);
 
-/**
- * Add days to a date string in YYYY-MM-DD format.
- */
-const addDays = (dateString: string, days: number): string => {
-  const date = new Date(dateString + 'T00:00:00');
-  date.setDate(date.getDate() + days);
-  return date.toISOString().split('T')[0];
-};
-
 // Determine support window: 4 for v12-15, 3 for the rest
 const getSupportWindow = (major: number): number => {
   return major >= 12 && major <= 15 ? 4 : 3;
@@ -137,64 +128,39 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // Helper to get stable date estimate
-    const getStableDate = async (major: number): Promise<string> => {
-      const milestone = milestoneMap.get(major);
-      if (!milestone) {
-        throw new Error(`No milestone found for major ${major}`);
-      }
-
-      const schedule = await getMilestoneSchedule(milestone);
-      return schedule.stableDate;
-    };
-
-    // Helper to get alpha date estimate
-    const getAlphaDate = async (major: number): Promise<string> => {
-      // Estimate: previous major's stable + 2 days
-      // Note: There is no exact rule for alpha release dates at this time,
-      // but historically they have been released ~2 days after the previous stable.
-      const prevMajor = major - 1;
-      const prevStableDate = await getStableDate(prevMajor);
-      return addDays(prevStableDate, 2);
-    };
-
     // Build absolute schedule data for each major
     const schedule: AbsoluteMajorReleaseSchedule[] = [];
 
     for (const major of sortedMajors) {
       const milestone = milestoneMap.get(major)!;
-
-      // Get beta date from Chromium schedule
       const chromiumSchedule = await getMilestoneSchedule(milestone);
-      const betaDate = chromiumSchedule.earliestBeta;
 
-      // Get stable date from Chromium schedule
-      const stableDate = chromiumSchedule.stableDate;
+      // Alpha: previous major's stable + 2 days (null for v14 and earlier)
+      let alphaDate: string | null = null;
+      if (major > 14) {
+        const prevMilestone = milestoneMap.get(major - 1)!;
+        const prevSchedule = await getMilestoneSchedule(prevMilestone);
 
-      // Get alpha date (null for v14 and earlier, estimated for v15+)
-      let alphaDate: string | null;
-      if (major <= 14) {
-        // No alpha releases before v15
-        alphaDate = null;
-      } else {
-        alphaDate = await getAlphaDate(major);
+        // Add 2 days to previous stable date
+        const prevStable = new Date(prevSchedule.stableDate + 'T00:00:00');
+        prevStable.setDate(prevStable.getDate() + 2);
+        alphaDate = prevStable.toISOString().split('T')[0];
       }
 
-      // Extract Node.js version from latest release in major
-      const latestRelease = majorGroups.get(major)!.releases[0]; // Already sorted newest first
+      const latestRelease = majorGroups.get(major)!.releases[0];
       const nodeVersion = extractNodeVersion(latestRelease.node);
 
       const entry: AbsoluteMajorReleaseSchedule = {
         version: `${major}.0.0`,
         alphaDate,
-        betaDate,
-        stableDate,
+        betaDate: chromiumSchedule.earliestBeta,
+        stableDate: chromiumSchedule.stableDate,
         chromiumVersion: milestone,
         nodeVersion,
         eolDate: '', // Placeholder, will be calculated
       };
 
-      // Apply overrides early so they cascade to dependent calculations
+      // Apply overrides early so they cascade to dependent calculations (e.g. EOL)
       const override = SCHEDULE_OVERRIDES.get(entry.version);
       if (override) {
         Object.assign(entry, override);
@@ -203,31 +169,22 @@ export const getAbsoluteSchedule = memoize(
       schedule.push(entry);
     }
 
-    // Helper to get stable date for EOL calculation
-    const getStableDateForEOL = async (major: number): Promise<string> => {
-      const entry = schedule.find((r) => r.version === `${major}.0.0`);
-      if (entry) {
-        return entry.stableDate;
-      }
-
-      // Need to estimate - this major doesn't exist in our data yet
-      const maxMajor = Math.max(...schedule.map((r) => parseInt(r.version.split('.')[0], 10)));
-      const maxEntry = schedule.find((r) => r.version === `${maxMajor}.0.0`);
-      if (!maxEntry) {
-        throw new Error(`Cannot extrapolate milestone for major ${major}`);
-      }
-
-      const diff = major - maxMajor;
-      const milestone = maxEntry.chromiumVersion + diff * 2;
-      const chromiumSchedule = await getMilestoneSchedule(milestone);
-      return chromiumSchedule.stableDate;
-    };
-
-    // Calculate EOL dates for all entries
+    // Calculate EOL dates
     for (const entry of schedule) {
       const major = parseInt(entry.version.split('.')[0], 10);
       const eolMajor = major + getSupportWindow(major);
-      entry.eolDate = await getStableDateForEOL(eolMajor);
+      const eolEntry = schedule.find((r) => r.version === `${eolMajor}.0.0`);
+
+      if (eolEntry) {
+        entry.eolDate = eolEntry.stableDate;
+      } else {
+        // Extrapolate for future versions
+        const maxMajor = Math.max(...schedule.map((r) => parseInt(r.version.split('.')[0], 10)));
+        const maxEntry = schedule.find((r) => r.version === `${maxMajor}.0.0`)!;
+        const milestone = maxEntry.chromiumVersion + (eolMajor - maxMajor) * 2; // 2 milestones per major
+        const eolSchedule = await getMilestoneSchedule(milestone);
+        entry.eolDate = eolSchedule.stableDate;
+      }
     }
 
     return schedule;
@@ -254,33 +211,16 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
     10,
   );
 
-  // Build final schedule with status
   const absoluteData = await getAbsoluteSchedule();
-  const schedule: MajorReleaseSchedule[] = [];
+  const supportWindow = getSupportWindow(latestStableMajor);
+  const minActiveMajor = latestStableMajor - supportWindow + 1;
 
-  for (const entry of absoluteData) {
+  const schedule: MajorReleaseSchedule[] = absoluteData.map((entry) => {
     const major = parseInt(entry.version.split('.')[0], 10);
-
-    // Determine status based on support window
-    let status: 'active' | 'prerelease' | 'eol';
-    const latestSupportWindow = getSupportWindow(latestStableMajor);
-
-    if (major > latestStableMajor) {
-      // Future release
-      status = 'prerelease';
-    } else if (major >= latestStableMajor - latestSupportWindow + 1) {
-      // Within support window
-      status = 'active';
-    } else {
-      // Outside support window
-      status = 'eol';
-    }
-
-    schedule.push({
-      ...entry,
-      status,
-    });
-  }
+    const status =
+      major > latestStableMajor ? 'prerelease' : major >= minActiveMajor ? 'active' : 'eol';
+    return { ...entry, status };
+  });
 
   // Sort descending by major version
   return schedule.sort((a, b) => {
