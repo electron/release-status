@@ -70,7 +70,6 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
         v{release.nodeVersion}
-        {release.status === 'prerelease' ? '+' : ''}
       </td>
     </tr>
   );
@@ -161,7 +160,8 @@ export default function Schedule() {
         <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
         <p>
           Release dates are goals and may be adjusted at any time for significant reasons, such as
-          security bugfixes.
+          security bugfixes. Prerelease dependency versions (Chromium, Node.js) are estimates and
+          may be upgraded before the stable release.
         </p>
       </div>
     </div>
