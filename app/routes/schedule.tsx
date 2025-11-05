@@ -6,6 +6,8 @@ import { getRelativeSchedule, type MajorReleaseSchedule } from '~/data/release-s
 import { prettyReleaseDate } from '~/helpers/time';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
+import './schedule.css';
+
 export const meta: MetaFunction = () => [
   { title: 'Schedule | Electron Releases' },
   {
@@ -69,11 +71,15 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
         ? 'bg-green-500'
         : 'bg-slate-500';
 
+  const bgClass =
+    release.status === 'eol'
+      ? 'bg-release-eol'
+      : release.status === 'prerelease'
+        ? 'bg-release-prerelease'
+        : 'bg-release-active';
+
   return (
-    <tr
-      key={release.version}
-      className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-    >
+    <tr key={release.version} className={`${bgClass} transition-colors`}>
       <td className="px-4 py-3 whitespace-nowrap">
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${statusColor}`}></div>
