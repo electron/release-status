@@ -65,6 +65,12 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
       alphaDate: '2021-07-20',
     },
   ],
+  [
+    '22.0.0',
+    {
+      eolDate: '2023-10-10',
+    },
+  ],
 ]);
 
 // Determine support window: 4 for v12-15, 3 for the rest
@@ -171,6 +177,11 @@ export const getAbsoluteSchedule = memoize(
 
     // Calculate EOL dates
     for (const entry of schedule) {
+      if (entry.eolDate !== '') {
+        // Already set via override
+        continue;
+      }
+
       const major = parseInt(entry.version.split('.')[0], 10);
       const eolMajor = major + getSupportWindow(major);
       const eolEntry = schedule.find((r) => r.version === `${eolMajor}.0.0`);
