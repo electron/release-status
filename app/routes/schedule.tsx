@@ -79,26 +79,26 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
         : 'bg-release-active';
 
   return (
-    <tr key={release.version} className={`${bgClass} transition-colors`}>
+    <tr key={release.version} className={`${bgClass} text-sm transition-colors`}>
       <td className="px-4 py-3 whitespace-nowrap">
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${statusColor}`}></div>
           <span className="font-semibold text-[#2f3241] dark:text-white">{release.version}</span>
         </div>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
         <FormatDate timeZone={timeZone}>{release.alphaDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
         <FormatDate timeZone={timeZone}>{release.betaDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
         <FormatDate timeZone={timeZone}>{release.stableDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
         <FormatDate timeZone={timeZone}>{release.eolDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
         <DependencyRelease
           href={`https://developer.chrome.com/blog/new-in-chrome-${release.chromiumVersion}`}
           release={release}
@@ -106,7 +106,7 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
           M{release.chromiumVersion}
         </DependencyRelease>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
         <DependencyRelease
           href={`https://nodejs.org/en/blog/release/v${release.nodeVersion}`}
           release={release}
