@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { Calendar, Info } from 'lucide-react';
+import { ArrowUpRight, Calendar, Info } from 'lucide-react';
+import React from 'react';
 import { getRelativeSchedule, type MajorReleaseSchedule } from '~/data/release-schedule';
 import { prettyReleaseDate } from '~/helpers/time';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
@@ -25,6 +26,32 @@ function FormatDate({
   }
 
   return <span>{prettyReleaseDate({ fullDate: releaseDate + 'T00:00:00' }, timeZone)}</span>;
+}
+
+function DependencyRelease({
+  href,
+  release,
+  children,
+}: {
+  href: string;
+  release: MajorReleaseSchedule;
+  children: React.ReactNode;
+}) {
+  if (release.status === 'prerelease') {
+    return <span>{children}</span>;
+  } else {
+    return (
+      <a
+        href={href}
+        className="hover:underline flex items-center"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {children}
+        <ArrowUpRight className="w-4 h-4 inline-block ml-0.5" />
+      </a>
+    );
+  }
 }
 
 export const loader = async (args: LoaderFunctionArgs) => {
@@ -66,10 +93,20 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
         <FormatDate timeZone={timeZone}>{release.eolDate}</FormatDate>
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-        M{release.chromiumVersion}
+        <DependencyRelease
+          href={`https://developer.chrome.com/blog/new-in-chrome-${release.chromiumVersion}`}
+          release={release}
+        >
+          M{release.chromiumVersion}
+        </DependencyRelease>
       </td>
       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-        v{release.nodeVersion}
+        <DependencyRelease
+          href={`https://nodejs.org/en/blog/release/v${release.nodeVersion}`}
+          release={release}
+        >
+          v{release.nodeVersion}
+        </DependencyRelease>
       </td>
     </tr>
   );
