@@ -64,41 +64,42 @@ export const loader = async (args: LoaderFunctionArgs) => {
 };
 
 function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZone: string }) {
-  const statusColor =
-    release.status === 'prerelease'
-      ? 'bg-yellow-500'
-      : release.status === 'active'
-        ? 'bg-green-500'
-        : 'bg-slate-500';
-
-  const bgClass =
-    release.status === 'eol'
-      ? 'bg-release-eol'
-      : release.status === 'prerelease'
-        ? 'bg-release-prerelease'
-        : 'bg-release-active';
+  const styles = {
+    prerelease: {
+      row: 'bg-release-prerelease text-yellow-900 dark:text-yellow-100',
+      status: 'bg-yellow-500',
+    },
+    active: {
+      row: 'bg-release-active text-green-900 dark:text-green-100',
+      status: 'bg-green-500',
+    },
+    eol: {
+      row: 'opacity-50 bg-gray-100 dark:bg-gray-900/30 hover:bg-gray-200 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300',
+      status: 'bg-slate-500',
+    },
+  }[release.status];
 
   return (
-    <tr key={release.version} className={`${bgClass} text-sm transition-colors`}>
-      <td className="px-4 py-3 whitespace-nowrap">
+    <tr key={release.version} className={`${styles.row} text-sm transition-colors`}>
+      <th className="px-4 py-3 whitespace-nowrap font-semibold">
         <div className="flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${statusColor}`}></div>
-          <span className="font-semibold text-[#2f3241] dark:text-white">{release.version}</span>
+          <div className={`w-3 h-3 rounded-full ${styles.status}`}></div>
+          <span>{release.version}</span>
         </div>
-      </td>
-      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
+      </th>
+      <td className="px-4 py-3 whitespace-nowrap">
         <FormatDate timeZone={timeZone}>{release.alphaDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap">
         <FormatDate timeZone={timeZone}>{release.betaDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap">
         <FormatDate timeZone={timeZone}>{release.stableDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap">
         <FormatDate timeZone={timeZone}>{release.eolDate}</FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap">
         <DependencyRelease
           href={`https://developer.chrome.com/blog/new-in-chrome-${release.chromiumVersion}`}
           release={release}
@@ -106,7 +107,7 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
           M{release.chromiumVersion}
         </DependencyRelease>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap text-gray-700 dark:text-gray-300">
+      <td className="px-4 py-3 whitespace-nowrap">
         <DependencyRelease
           href={`https://nodejs.org/en/blog/release/v${release.nodeVersion}`}
           release={release}

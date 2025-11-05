@@ -45,11 +45,3 @@
         color-mix(in srgb, theme(colors.yellow.500) 12%, transparent) 10px,
         color-mix(in srgb, theme(colors.yellow.500) 12%, transparent) 20px);
 }
-
-.bg-release-eol {
-    @apply opacity-50 bg-gray-100 dark:bg-gray-900/30;
-}
-
-.bg-release-eol:hover {
-    @apply bg-gray-200 dark:bg-gray-700/50;
-}
