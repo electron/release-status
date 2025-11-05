@@ -39,9 +39,7 @@ function DependencyRelease({
   release: MajorReleaseSchedule;
   children: React.ReactNode;
 }) {
-  if (release.status === 'prerelease') {
-    return <span>{children}</span>;
-  } else {
+  if (release.status === 'stable' || release.status === 'eol') {
     return (
       <a
         href={href}
@@ -53,6 +51,8 @@ function DependencyRelease({
         <ArrowUpRight className="w-4 h-4 inline-block ml-0.5" />
       </a>
     );
+  } else {
+    return <span>{children}</span>;
   }
 }
 
@@ -65,12 +65,16 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZone: string }) {
   const styles = {
+    nightly: {
+      row: 'bg-release-nightly text-purple-900 dark:text-purple-100',
+      status: 'bg-purple-500',
+    },
     prerelease: {
       row: 'bg-release-prerelease text-yellow-900 dark:text-yellow-100',
       status: 'bg-yellow-500',
     },
-    active: {
-      row: 'bg-release-active text-green-900 dark:text-green-100',
+    stable: {
+      row: 'bg-release-stable text-green-900 dark:text-green-100',
       status: 'bg-green-500',
     },
     eol: {
@@ -153,6 +157,10 @@ export default function Schedule() {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
             <span className="text-sm text-gray-700 dark:text-gray-300">Prerelease</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+            <span className="text-sm text-gray-700 dark:text-gray-300">Nightly</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-slate-500"></div>

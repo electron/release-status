@@ -13,7 +13,7 @@ export interface MajorReleaseSchedule {
   eolDate: string; // YYYY-MM-DD
   chromiumVersion: number; // milestone, aka major version
   nodeVersion: string; // full semver
-  status: 'active' | 'prerelease' | 'eol';
+  status: 'stable' | 'prerelease' | 'nightly' | 'eol';
 }
 
 type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
@@ -217,8 +217,21 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
 
   const schedule: MajorReleaseSchedule[] = absoluteData.map((entry) => {
     const major = parseInt(entry.version.split('.')[0], 10);
-    const status =
-      major > latestStableMajor ? 'prerelease' : major >= minActiveMajor ? 'active' : 'eol';
+
+    let status: MajorReleaseSchedule['status'];
+    if (major > latestStableMajor) {
+      const hasNonNightlyRelease = allReleases.find(
+        (release) =>
+          release.version.startsWith(`${major}.`) &&
+          getPrereleaseType(release.version) !== 'nightly',
+      );
+      status = hasNonNightlyRelease ? 'prerelease' : 'nightly';
+    } else if (major >= minActiveMajor) {
+      status = 'stable';
+    } else {
+      status = 'eol';
+    }
+
     return { ...entry, status };
   });
 
