@@ -9266,7 +9266,7 @@ __metadata:
     semver: "npm:^7.7.1"
     tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5.1.6"
-    vite: "npm:^6.3.6"
+    vite: "npm:^6.4.1"
     vite-tsconfig-paths: "npm:^4.2.1"
     vitest: "npm:^3.1.2"
     vitest-fetch-mock: "npm:^0.4.5"
@@ -11226,9 +11226,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.3.6":
-  version: 6.4.0
-  resolution: "vite@npm:6.4.0"
+"vite@npm:^6.4.1":
+  version: 6.4.1
+  resolution: "vite@npm:6.4.1"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.4"
@@ -11277,7 +11277,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/08480f3589b42d6820cce4b24c94f9d1fb8abc8a80302d83fba0b96c85a7b194764c540b8881d90110f27e0b3a184e5e19d971947329b4ebeb1886f6961fe9b0
+  checksum: 10c0/77bb4c5b10f2a185e7859cc9a81c789021bc18009b02900347d1583b453b58e4b19ff07a5e5a5b522b68fc88728460bb45a63b104d969e8c6a6152aea3b849f7
   languageName: node
   linkType: hard
 
