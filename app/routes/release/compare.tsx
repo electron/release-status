@@ -142,6 +142,16 @@ export default function CompareReleases() {
             <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white">
               Release Comparison
             </h2>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              <a
+                href={`https://github.com/electron/electron/compare/v${fromVersion}...v${toVersion}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                View full commit log
+              </a>
+            </div>
           </div>
         </div>
 
