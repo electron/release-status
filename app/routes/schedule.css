@@ -1,0 +1,79 @@
+.bg-release-stable {
+    background-color: color-mix(in srgb, theme(colors.green.500) 12%, transparent);
+}
+
+.bg-release-stable:hover {
+    background-color: color-mix(in srgb, theme(colors.green.500) 18%, transparent);
+}
+
+.dark .bg-release-stable {
+    background-color: color-mix(in srgb, theme(colors.green.500) 10%, transparent);
+}
+
+.dark .bg-release-stable:hover {
+    background-color: color-mix(in srgb, theme(colors.green.500) 15%, transparent);
+}
+
+.bg-release-prerelease {
+    background-image: repeating-linear-gradient(45deg,
+        color-mix(in srgb, theme(colors.yellow.500) 8%, transparent),
+        color-mix(in srgb, theme(colors.yellow.500) 8%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 14%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 14%, transparent) 20px);
+}
+
+.bg-release-prerelease:hover {
+    background-image: repeating-linear-gradient(45deg,
+        color-mix(in srgb, theme(colors.yellow.500) 12%, transparent),
+        color-mix(in srgb, theme(colors.yellow.500) 12%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 18%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 18%, transparent) 20px);
+}
+
+.dark .bg-release-prerelease {
+    background-image: repeating-linear-gradient(45deg,
+        color-mix(in srgb, theme(colors.yellow.500) 5%, transparent),
+        color-mix(in srgb, theme(colors.yellow.500) 5%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 8%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 8%, transparent) 20px);
+}
+
+.dark .bg-release-prerelease:hover {
+    background-image: repeating-linear-gradient(45deg,
+        color-mix(in srgb, theme(colors.yellow.500) 8%, transparent),
+        color-mix(in srgb, theme(colors.yellow.500) 8%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 12%, transparent) 10px,
+        color-mix(in srgb, theme(colors.yellow.500) 12%, transparent) 20px);
+}
+
+.bg-release-nightly {
+    background-image: repeating-linear-gradient(45deg,
+            color-mix(in srgb, theme(colors.purple.500) 8%, transparent),
+            color-mix(in srgb, theme(colors.purple.500) 8%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 14%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 14%, transparent) 20px);
+}
+
+.bg-release-nightly:hover {
+    background-image: repeating-linear-gradient(45deg,
+            color-mix(in srgb, theme(colors.purple.500) 12%, transparent),
+            color-mix(in srgb, theme(colors.purple.500) 12%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 18%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 18%, transparent) 20px);
+}
+
+.dark .bg-release-nightly {
+    background-image: repeating-linear-gradient(45deg,
+            color-mix(in srgb, theme(colors.purple.500) 5%, transparent),
+            color-mix(in srgb, theme(colors.purple.500) 5%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 8%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 8%, transparent) 20px);
+}
+
+.dark .bg-release-nightly:hover {
+    background-image: repeating-linear-gradient(45deg,
+            color-mix(in srgb, theme(colors.purple.500) 8%, transparent),
+            color-mix(in srgb, theme(colors.purple.500) 8%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 12%, transparent) 10px,
+            color-mix(in srgb, theme(colors.purple.500) 12%, transparent) 20px);
+}
