@@ -23,7 +23,7 @@
     "@keyvhq/memoize": "patch:@keyvhq/memoize@npm%3A2.1.11#~/.yarn/patches/@keyvhq-memoize-npm-2.1.11-a8a4b45386.patch",
     "@keyvhq/redis": "^2.1.8",
     "@octokit/rest": "^21.1.1",
-    "@remix-run/node": "^2.16.5",
+    "@remix-run/node": "^2.17.2",
     "@remix-run/react": "^2.16.5",
     "@remix-run/serve": "^2.16.5",
     "cookie": "^1.0.2",

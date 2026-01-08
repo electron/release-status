@@ -1976,7 +1976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/node@npm:2.17.1, @remix-run/node@npm:^2.16.5":
+"@remix-run/node@npm:2.17.1":
   version: 2.17.1
   resolution: "@remix-run/node@npm:2.17.1"
   dependencies:
@@ -1993,6 +1993,26 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/13609b698768261bf8adcc5b0228d61bc9d4de273100182dfa11fac149e4341bbcb667965c730dcfe12debd548d157e9e1c71b104fde26e75e5cbc9a70821376
+  languageName: node
+  linkType: hard
+
+"@remix-run/node@npm:^2.17.2":
+  version: 2.17.2
+  resolution: "@remix-run/node@npm:2.17.2"
+  dependencies:
+    "@remix-run/server-runtime": "npm:2.17.2"
+    "@remix-run/web-fetch": "npm:^4.4.2"
+    "@web3-storage/multipart-parser": "npm:^1.0.0"
+    cookie-signature: "npm:^1.1.0"
+    source-map-support: "npm:^0.5.21"
+    stream-slice: "npm:^0.1.2"
+    undici: "npm:^6.21.2"
+  peerDependencies:
+    typescript: ^5.1.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/fcdb8617c77e73559fa9b1ba666351389bb6d50d171d0fdff9526f9b295a9baa6f03e3534fa61fc547441f1dabec62fdf2c9fe24fe9094e6f73b7cffc30c49c7
   languageName: node
   linkType: hard
 
@@ -2073,6 +2093,26 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/f92a696fedb0bab62091ef23edeb6413cfb08b9b6972e21936b5a56873007b4134405c141e0b893b8bf72c7d890627f48ac7f351c0f5513e1de24932945a9d4d
+  languageName: node
+  linkType: hard
+
+"@remix-run/server-runtime@npm:2.17.2":
+  version: 2.17.2
+  resolution: "@remix-run/server-runtime@npm:2.17.2"
+  dependencies:
+    "@remix-run/router": "npm:1.23.0"
+    "@types/cookie": "npm:^0.6.0"
+    "@web3-storage/multipart-parser": "npm:^1.0.0"
+    cookie: "npm:^0.7.2"
+    set-cookie-parser: "npm:^2.4.8"
+    source-map: "npm:^0.7.3"
+    turbo-stream: "npm:2.4.1"
+  peerDependencies:
+    typescript: ^5.1.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/45357fa2e910d5927728c6e8177bd9bdf7cf299c7919dd8cdbd8b322be145ce71ab4b56b1739ba7f86c6cb93a1d8424ee973ff9a47f316a3647549d5a7add1f7
   languageName: node
   linkType: hard
 
@@ -9227,7 +9267,7 @@ __metadata:
     "@keyvhq/redis": "npm:^2.1.8"
     "@octokit/rest": "npm:^21.1.1"
     "@remix-run/dev": "npm:^2.16.5"
-    "@remix-run/node": "npm:^2.16.5"
+    "@remix-run/node": "npm:^2.17.2"
     "@remix-run/react": "npm:^2.16.5"
     "@remix-run/route-config": "npm:^2.16.5"
     "@remix-run/serve": "npm:^2.16.5"
