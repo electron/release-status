@@ -13,6 +13,7 @@ export default [
   // API routes
   route('releases.json', 'api/releases.ts'),
   route('active.json', 'api/active.ts'),
+  route('schedule.json', 'api/schedule.ts'),
   // Redirects
   redirect('releases', 'redirects/releases.tsx'),
   redirect('releases/:channel', 'redirects/releases.tsx'),
