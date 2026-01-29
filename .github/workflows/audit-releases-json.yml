@@ -14,15 +14,11 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Setup Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version: '22.15.0'
       - run: npm install @actions/core
       - id: audit
         run: |
           npx zx@~8.1.9 <<'EOF'
-          const core = require("@actions/core");
+          const core = await import('${{ github.workspace }}/node_modules/@actions/core/lib/core.js');
 
           const LIMIT = 2000;
 
