@@ -5,6 +5,7 @@ export const makeMD = (opts: {
   tailwindLists: boolean;
   md?: MarkdownIt;
   inlineCodeSmall?: boolean;
+  levelShift?: number;
 }) => {
   const md =
     opts.md ||
@@ -21,15 +22,19 @@ export const makeMD = (opts: {
 
   // Headings
   const headingSizes = {
-    '1': 'text-xl font-bold mb-3',
-    '2': 'text-xl font-semibold mb-3',
-    '3': 'text-xl font-semibold mb-3',
-    '4': 'text-xl font-semibold mb-3',
-    '5': 'text-lg font-medium mb-2',
-    '6': 'text-base font-medium mb-1',
+    '1': 'text-xl font-bold my-3',
+    '2': 'text-xl font-semibold my-3',
+    '3': 'text-lg font-semibold my-3',
+    '4': 'text-lg font-semibold my-3',
+    '5': 'text-base font-medium my-2',
+    '6': 'text-base font-medium my-1',
   } as const;
   md.renderer.rules.heading_open = (tokens, idx) => {
-    const level = tokens[idx].tag.slice(1) as '1' | '2' | '3' | '4' | '5' | '6';
+    let level = tokens[idx].tag.slice(1) as '1' | '2' | '3' | '4' | '5' | '6';
+    if (opts.levelShift) {
+      const newLevel = Math.min(Math.max(parseInt(level) + opts.levelShift, 1), 6);
+      level = newLevel.toString() as '1' | '2' | '3' | '4' | '5' | '6';
+    }
     return `<h${level} class="${headingSizes[level]} text-gray-900 dark:text-gray-100">`;
   };
 

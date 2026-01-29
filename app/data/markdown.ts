@@ -13,7 +13,7 @@ const titleMdIt = new MarkdownIt('zero', {
 });
 titleMdIt.inline.ruler.enable(['backticks']);
 const listMD = makeMD({ tailwindLists: true, inlineCodeSmall: true });
-const noListMD = makeMD({ tailwindLists: false, inlineCodeSmall: true });
+const noListMD = makeMD({ tailwindLists: false, inlineCodeSmall: true, levelShift: 2 });
 const titleMD = makeMD({
   tailwindLists: false,
   md: titleMdIt,
@@ -50,7 +50,7 @@ export const renderGroupedReleaseNotes = (versions: { version: string; content: 
     groups[key] = [];
   }
   for (const { version, content } of versions) {
-    const headers = content.split(/^## ([A-Za-z ]+)\n/gm).slice(1);
+    const headers = content.split(/^## ([A-Za-z ]+)(?:\r\n|\n)/gm).slice(1);
     for (let i = 0; i < headers.length; i += 2) {
       const groupName = headers[i];
       const groupContent = headers[i + 1];

@@ -79,22 +79,21 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return redirect('/release');
   }
 
-  const grouped = renderGroupedReleaseNotes(
-    versionsForNotes.map((version, i) => {
-      let releaseNotes = githubReleaseNotes[i]!;
-      const parsed = semverParse(version);
-      if (parsed?.prerelease.length) {
-        releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
-      }
-      releaseNotes =
-        releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') ||
-        'Missing...';
-      return {
-        version,
-        content: releaseNotes,
-      };
-    }),
-  );
+  const rawGroupedNotes = versionsForNotes.map((version, i) => {
+    let releaseNotes = githubReleaseNotes[i]!;
+    const parsed = semverParse(version);
+    if (parsed?.prerelease.length) {
+      releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
+    }
+    releaseNotes =
+      releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') || 'Missing...';
+    return {
+      version,
+      content: releaseNotes,
+    };
+  });
+
+  const grouped = renderGroupedReleaseNotes(rawGroupedNotes);
 
   args.context.cacheControl = 'private, max-age=300';
 
