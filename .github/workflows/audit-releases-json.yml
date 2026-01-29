@@ -15,9 +15,10 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - run: npm install @actions/core
-      - run: |
+      - id: audit
+        run: |
           npx zx@~8.1.9 <<'EOF'
-          const core = require("@actions/core");
+          const core = await import('${{ github.workspace }}/node_modules/@actions/core/lib/core.js');
 
           const LIMIT = 2000;
 
@@ -71,6 +72,7 @@ jobs:
             ]);
 
             // Set this as failed so it's easy to scan runs to find failures
+            core.setOutput('errorsFound', true);
             process.exitCode = 1;
           } else {
             core.summary.addRaw('🎉 No missing releases');
@@ -79,7 +81,7 @@ jobs:
           await core.summary.write();
           EOF
       - name: Send Slack message if releases are missing
-        if: failure()
+        if: ${{ always() && steps.audit.outputs.errorsFound == 'true' && github.ref == 'refs/heads/main' }}
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         with:
           webhook: ${{ secrets.RELEASES_JSON_SLACK_WEBHOOK_URL }} 
