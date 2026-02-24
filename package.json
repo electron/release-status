@@ -24,7 +24,7 @@
     "@keyvhq/redis": "^2.1.8",
     "@octokit/rest": "^21.1.1",
     "@remix-run/node": "^2.17.2",
-    "@remix-run/react": "^2.17.2",
+    "@remix-run/react": "^2.17.3",
     "@remix-run/serve": "^2.17.2",
     "cookie": "^1.0.2",
     "cross-env": "^7.0.3",
