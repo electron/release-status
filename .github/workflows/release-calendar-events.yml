@@ -85,7 +85,8 @@ jobs:
             }
 
             await fs.writeFile(`e${major}-calendar-events.csv`, events.flatMap((row) => row.join(',')).join('\n'));
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: Calendar Events E${{ github.event.inputs.major }}
           path: e${{ github.event.inputs.major }}-calendar-events.csv
+          archive: false
