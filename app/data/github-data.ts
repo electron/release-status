@@ -60,9 +60,9 @@ export const getGitHubReleaseNotes = memoize(
   },
   getKeyvCache('github-release'),
   {
-    // Cache for 10 seconds
+    // Cache for 10 minutes
     ttl: 10 * 60 * 1_000,
-    // At 9 seconds, refetch but serve stale data
+    // In the last second, refetch but serve stale data
     staleTtl: 1_000,
   },
 );
@@ -114,9 +114,9 @@ export const getRecentPRs = memoize(
   },
   getKeyvCache('github-recent-prs'),
   {
-    // Cache for 10 seconds
+    // Cache for 10 minutes
     ttl: 10 * 60 * 1_000,
-    // At 9 seconds, refetch but serve stale data
+    // In the last second, refetch but serve stale data
     staleTtl: 1_000,
   },
 );
