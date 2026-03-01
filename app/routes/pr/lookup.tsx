@@ -24,7 +24,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       ...pr,
       createdAt: prettyDateString(pr.createdAt, guessTimeZoneFromRequest(args.request)),
     }));
-    args.context.cacheControl = 'private, max-age=60';
+    args.context.cacheControl = 'public, max-age=60, s-maxage=120, stale-while-revalidate=60';
   }
   return recentPRs ?? [];
 };

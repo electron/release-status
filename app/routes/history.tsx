@@ -86,7 +86,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       calendarData[month][day].stable.push(release.version);
     }
   }
-  args.context.cacheControl = 'private, max-age=120';
+  args.context.cacheControl = 'public, max-age=120, s-maxage=300, stale-while-revalidate=120';
 
   const currentMonth = currentDate.getMonth();
   const currentDayOfMonth = currentDate.getDate();

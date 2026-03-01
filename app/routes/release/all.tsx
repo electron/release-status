@@ -77,7 +77,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const timeZone = guessTimeZoneFromRequest(args.request);
 
-  args.context.cacheControl = 'private, max-age=30';
+  args.context.cacheControl = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
   return {
     releases: page > maxPage ? [undefined] : inChannel.slice(start, end),
     maxPage,
