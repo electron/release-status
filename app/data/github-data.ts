@@ -174,7 +174,19 @@ const trackBackports = async (prNumber: number, prLabels: { name: string }[]) =>
           let backportReleasedIn: string | null = null;
           let backportPRNumber: number | null = null;
           if (backportComment) {
-            backportPRNumber = parseInt(backportComment.body!.split('#')[1], 10);
+            const prNumberMatch = backportComment.body!.match(/#(\d+)/);
+            backportPRNumber = prNumberMatch ? parseInt(prNumberMatch[1], 10) : null;
+            if (backportPRNumber === null || isNaN(backportPRNumber)) {
+              return {
+                targetBranch,
+                state,
+                pendingReason,
+                backportPRNumber: null,
+                mergedAt: null,
+                releasedAt: null,
+                releasedIn: null,
+              };
+            }
             pr = (
               await (
                 await getOctokit()
