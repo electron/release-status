@@ -340,7 +340,7 @@ export default function ReleaseHistory() {
                     return (
                       <Link
                         key={`day-${day}`}
-                        to={`/history/${year}-${monthIndex < 10 ? 0 : ''}${
+                        to={`/history/${year}-${monthIndex + 1 < 10 ? 0 : ''}${
                           monthIndex + 1
                         }-${day < 10 ? 0 : ''}${day}`}
                         className={`h-9 flex items-center justify-center rounded border ${bgColor} ${borderColor} relative cursor-pointer`}

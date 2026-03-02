@@ -136,18 +136,27 @@ export const getReleaseForVersion = async (version: string) => {
 
 export const getLatestReleases = async () => {
   const allReleases = await getReleasesOrUpdate();
-  const lastNightly = allReleases.find((r) => semverParse(r.version)!.prerelease[0] === 'nightly')!;
+  const lastNightly = allReleases.find((r) => semverParse(r.version)?.prerelease[0] === 'nightly');
   let lastPreRelease = allReleases.find(
     (r) =>
-      semverParse(r.version)!.prerelease[0] === 'beta' ||
-      semverParse(r.version)!.prerelease[0] === 'alpha',
+      semverParse(r.version)?.prerelease[0] === 'beta' ||
+      semverParse(r.version)?.prerelease[0] === 'alpha',
   );
-  const lastStable = allReleases.find((r) => semverParse(r.version)!.prerelease.length === 0);
-  const stableMajor = semverParse(lastStable!.version)!.major;
+  const lastStable = allReleases.find((r) => semverParse(r.version)?.prerelease.length === 0);
+
+  if (!lastNightly || !lastStable) {
+    return {
+      latestSupported: [],
+      lastPreRelease: undefined,
+      lastNightly: lastNightly,
+    };
+  }
+
+  const stableMajor = semverParse(lastStable.version)!.major;
   const latestSupported = [stableMajor, stableMajor - 1, stableMajor - 2].map((major) =>
-    allReleases.find((r) => semverParse(r.version)!.major === major),
+    allReleases.find((r) => semverParse(r.version)?.major === major),
   );
-  if (semverParse(lastPreRelease!.version)!.major <= stableMajor) {
+  if (lastPreRelease && semverParse(lastPreRelease.version)!.major <= stableMajor) {
     lastPreRelease = undefined;
   }
   return {
