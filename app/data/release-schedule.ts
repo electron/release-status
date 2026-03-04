@@ -255,7 +255,7 @@ export const getAbsoluteSchedule = memoize(
   {
     // Cache for 2 hours
     ttl: 2 * 60 * 60 * 1000,
-    // At 10 mineutes, refetch but serve stale data
+    // At 10 minutes, refetch but serve stale data
     staleTtl: 10 * 60 * 1000,
   },
 );
