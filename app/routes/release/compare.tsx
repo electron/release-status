@@ -96,7 +96,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     }),
   );
 
-  args.context.cacheControl = 'private, max-age=300';
+  args.context.cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
 
   return {
     fromElectronRelease,

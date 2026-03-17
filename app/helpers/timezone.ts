@@ -19,13 +19,20 @@ function isValidTimezone(tz: string): boolean {
 export const guessTimeZoneFromRequest = (request: Request): string => {
   const cookies = parse(request.headers.get('Cookie') || '');
   if (cookies.tz && isValidTimezone(cookies.tz)) {
-    // TODO: Check it's a valid timezone
     return cookies.tz;
+  }
+  // CF-Connecting-IP is the real client IP when behind Cloudflare,
+  // x-forwarded-for may contain Cloudflare edge IPs which would
+  // resolve to the data center's location instead of the user's.
+  const clientIp = request.headers.get('cf-connecting-ip');
+  if (clientIp) {
+    const geo = lookup(clientIp.trim());
+    return geo?.timezone ?? DEFAULT_TIMEZONE;
   }
   const forwardedIps = request.headers.get('x-forwarded-for');
   if (forwardedIps) {
     const allIps = forwardedIps.split(',');
-    const ip = allIps[allIps.length - 1].trim();
+    const ip = allIps[0].trim();
     const geo = lookup(ip);
     return geo?.timezone ?? DEFAULT_TIMEZONE;
   }

@@ -67,7 +67,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       createdAt: prettyDateString(pr.createdAt, timeZone),
       mergedAt: pr.mergedAt ? prettyDateString(pr.mergedAt, timeZone) : null,
     };
-    args.context.cacheControl = 'private, max-age=60';
+    args.context.cacheControl = 'public, max-age=60, s-maxage=120, stale-while-revalidate=60';
   }
   return pr;
 };
