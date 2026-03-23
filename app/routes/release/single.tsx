@@ -66,7 +66,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const isLatestStable = latestReleases.latestSupported[0]?.version === version.substr(1);
   const isLatestPreRelease = latestReleases.lastPreRelease?.version === version.substr(1);
 
-  args.context.cacheControl = 'private, max-age=300';
+  args.context.cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
   return {
     allVersionsInMajor,
     electronRelease,
