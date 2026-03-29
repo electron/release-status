@@ -9207,6 +9207,7 @@ __metadata:
     semver: "npm:^7.7.1"
     tailwindcss: "npm:^3.4.4"
     typescript: "npm:^5.1.6"
+    undici: "npm:^6.24.1"
     vite: "npm:^7.3.1"
     vite-tsconfig-paths: "npm:^4.2.1"
     vitest: "npm:^3.1.2"
@@ -10676,7 +10677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^6.21.2":
+"undici@npm:^6.21.2, undici@npm:^6.24.1":
   version: 6.24.1
   resolution: "undici@npm:6.24.1"
   checksum: 10c0/53fdbaa357139a2c12deed34f67d67fc6ad269630ba85a1507e7717f53ad2d3a02c95fbd17d3ab321e34c60b6f0a716cdc2f7e2eca1e07178702dc89cc3a73c4

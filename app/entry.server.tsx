@@ -10,7 +10,12 @@ import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
+import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
 import { startDataRefreshTimer } from './data/fresh-interval';
+
+if (process.env.HTTP_PROXY || process.env.HTTPS_PROXY || process.env.http_proxy || process.env.https_proxy) {
+  setGlobalDispatcher(new EnvHttpProxyAgent());
+}
 
 export const streamTimeout = 10_000;
 
