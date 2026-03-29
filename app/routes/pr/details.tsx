@@ -20,6 +20,7 @@ import {
 import { PageHeader } from '~/components/PageHeader';
 import { SemverBlock } from '~/components/SemverBlock';
 import { NoBackports } from '~/components/NoBackports';
+import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 import { prettyDateString } from '~/helpers/time';
 
@@ -45,6 +46,57 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   let pr = await getPRDetails(parseInt(number, 10));
+
+  if (wantsTextPlain(args.request)) {
+    if (!pr) {
+      return textPlainResponse(`# PR #${number}\n\nNot found.\n`, 'private, max-age=60');
+    }
+    const state = pr.merged ? 'merged' : pr.state;
+    const lines = [
+      `# PR #${pr.number}: ${pr.rawTitle}`,
+      '',
+      `- State: ${state}`,
+      `- Author: ${pr.author}`,
+      `- Created: ${pr.createdAt}`,
+    ];
+    if (pr.mergedAt) lines.push(`- Merged: ${pr.mergedAt}`);
+    lines.push(`- Target branch: ${pr.targetBranch}`);
+    if (pr.semver) lines.push(`- Semver impact: ${pr.semver}`);
+    if (pr.releasedIn) lines.push(`- Released in: v${pr.releasedIn}`);
+    lines.push(`- URL: ${pr.url}`, '');
+
+    if (pr.backportOf) {
+      const parentState = pr.backportOf.merged ? 'merged' : pr.backportOf.state;
+      lines.push(
+        '## Backport Of',
+        '',
+        `- PR: #${pr.backportOf.number}: ${pr.backportOf.rawTitle}`,
+        `- Author: ${pr.backportOf.author}`,
+        `- State: ${parentState}`,
+      );
+      if (pr.backportOf.mergedAt) lines.push(`- Merged: ${pr.backportOf.mergedAt}`);
+      lines.push(`- URL: ${pr.backportOf.url}`, '');
+    }
+
+    if (pr.backports) {
+      lines.push('## Backports', '');
+      if (pr.backports.length === 0) {
+        lines.push('No backports.', '');
+      } else {
+        lines.push('| Branch | State | PR | Released In |', '| --- | --- | --- | --- |');
+        for (const bp of pr.backports) {
+          const prRef = bp.backportPRNumber ? `#${bp.backportPRNumber}` : '';
+          const released = bp.releasedIn ? `v${bp.releasedIn}` : '';
+          lines.push(`| ${bp.targetBranch} | ${bp.state} | ${prRef} | ${released} |`);
+        }
+        lines.push('');
+      }
+    }
+
+    lines.push('## Description', '', pr.rawBody.trim(), '');
+    return textPlainResponse(lines.join('\n'), 'private, max-age=60');
+  }
+
   if (pr) {
     const timeZone = guessTimeZoneFromRequest(args.request);
 

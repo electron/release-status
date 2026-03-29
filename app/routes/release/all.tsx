@@ -8,6 +8,7 @@ import { Pagination } from '~/components/Pagination';
 import { ReleaseTable } from '~/components/ReleaseTable';
 import { Select } from '~/components/Select';
 import { getReleasesOrUpdate } from '~/data/release-data';
+import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = () => {
@@ -73,6 +74,27 @@ export const loader = async (args: LoaderFunctionArgs) => {
   const maxPage = Math.ceil(inChannel.length / PER_PAGE);
   if (page > maxPage && page !== 1) {
     return redirect(`/release?channel=${encodeURIComponent(channel)}`);
+  }
+
+  if (wantsTextPlain(args.request)) {
+    const channelName =
+      channel === 'stable' ? 'Stable' : channel === 'pre' ? 'Pre-release' : 'Nightly';
+    const majorSuffix = major !== null ? ` (v${major})` : '';
+    const lines = [
+      `# Electron Releases — ${channelName}${majorSuffix}`,
+      '',
+      `Page ${page} of ${Math.max(maxPage, 1)}`,
+      '',
+      '| Version | Date | Chromium | Node.js | V8 |',
+      '| --- | --- | --- | --- | --- |',
+    ];
+    for (const release of inChannel.slice(start, end)) {
+      lines.push(
+        `| v${release.version} | ${release.fullDate} | ${release.chrome} | ${release.node} | ${release.v8} |`,
+      );
+    }
+    lines.push('');
+    return textPlainResponse(lines.join('\n'), 'private, max-age=30');
   }
 
   const timeZone = guessTimeZoneFromRequest(args.request);
