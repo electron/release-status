@@ -120,7 +120,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
         lines.push(`#### v${version}`, '', content, '');
       }
     }
-    return textPlainResponse(lines.join('\n'), 'private, max-age=300');
+    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=300');
   }
 
   const grouped = renderGroupedReleaseNotes(processedNotes);

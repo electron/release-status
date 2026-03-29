@@ -91,7 +91,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       releaseNotes.trim(),
       '',
     ];
-    return textPlainResponse(lines.join('\n'), 'private, max-age=300');
+    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=300');
   }
 
   args.context.cacheControl = 'private, max-age=300';

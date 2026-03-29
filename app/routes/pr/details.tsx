@@ -49,7 +49,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   if (wantsTextPlain(args.request)) {
     if (!pr) {
-      return textPlainResponse(`# PR #${number}\n\nNot found.\n`, 'private, max-age=60');
+      return textPlainResponse(args.context, `# PR #${number}\n\nNot found.\n`, 'private, max-age=60');
     }
     const state = pr.merged ? 'merged' : pr.state;
     const lines = [
@@ -94,7 +94,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     }
 
     lines.push('## Description', '', pr.rawBody.trim(), '');
-    return textPlainResponse(lines.join('\n'), 'private, max-age=60');
+    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=60');
   }
 
   if (pr) {

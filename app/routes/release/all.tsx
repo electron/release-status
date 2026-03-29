@@ -94,7 +94,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       );
     }
     lines.push('');
-    return textPlainResponse(lines.join('\n'), 'private, max-age=30');
+    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=30');
   }
 
   const timeZone = guessTimeZoneFromRequest(args.request);
