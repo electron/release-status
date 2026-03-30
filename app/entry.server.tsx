@@ -1,11 +1,21 @@
 import { PassThrough } from 'node:stream';
 
-import type { ActionFunctionArgs, EntryContext, LoaderFunctionArgs } from '@remix-run/node';
+import type {
+  ActionFunctionArgs,
+  AppLoadContext,
+  EntryContext,
+  LoaderFunctionArgs,
+} from '@remix-run/node';
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
+import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
 import { startDataRefreshTimer } from './data/fresh-interval';
+
+if (process.env.HTTP_PROXY || process.env.HTTPS_PROXY || process.env.http_proxy || process.env.https_proxy) {
+  setGlobalDispatcher(new EnvHttpProxyAgent());
+}
 
 export const streamTimeout = 10_000;
 
@@ -14,7 +24,19 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  loadContext: AppLoadContext,
 ) {
+  if (typeof loadContext.textPlainBody === 'string') {
+    responseHeaders.set('Content-Type', 'text/plain; charset=utf-8');
+    if (loadContext.cacheControl) {
+      responseHeaders.set('Cache-Control', loadContext.cacheControl as string);
+    }
+    return new Response(loadContext.textPlainBody, {
+      status: responseStatusCode,
+      headers: responseHeaders,
+    });
+  }
+
   return isbot(request.headers.get('user-agent') || '')
     ? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext)
     : handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext);

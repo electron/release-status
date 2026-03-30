@@ -18,7 +18,8 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { getGitHubReleaseNotes } from '~/data/github-data';
 import { getAllVersionsInMajor, getReleaseForVersion, VersionFilter } from '~/data/release-data';
-import { renderGroupedReleaseNotes } from '~/data/markdown';
+import { groupReleaseNotes, renderGroupedReleaseNotes } from '~/data/markdown';
+import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { VersionInfo } from '~/components/VersionInfo';
 import { useCallback } from 'react';
@@ -79,22 +80,50 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return redirect('/release');
   }
 
-  const grouped = renderGroupedReleaseNotes(
-    versionsForNotes.map((version, i) => {
-      let releaseNotes = githubReleaseNotes[i]!;
-      const parsed = semverParse(version);
-      if (parsed?.prerelease.length) {
-        releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
+  const processedNotes = versionsForNotes.map((version, i) => {
+    let releaseNotes = githubReleaseNotes[i]!;
+    const parsed = semverParse(version);
+    if (parsed?.prerelease.length) {
+      releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
+    }
+    releaseNotes =
+      releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') || 'Missing...';
+    return {
+      version,
+      content: releaseNotes,
+    };
+  });
+
+  if (wantsTextPlain(args.request)) {
+    const dep = (name: string, from: string, to: string) =>
+      from === to ? `- ${name}: ${from}` : `- ${name}: ${from} → ${to}`;
+    const lines = [
+      `# Electron Release Comparison: ${fromVersion} → ${toVersion}`,
+      '',
+      `${toVersion} includes changes from ${versionsBetween.length + 1} version${
+        versionsBetween.length ? 's' : ''
+      } since ${fromVersion}.`,
+      '',
+      '## Dependency Changes',
+      '',
+      dep('Chromium', fromElectronRelease.chrome, toElectronRelease.chrome),
+      dep('Node.js', fromElectronRelease.node, toElectronRelease.node),
+      dep('V8', fromElectronRelease.v8, toElectronRelease.v8),
+      '',
+      '## Combined Release Notes',
+      '',
+    ];
+    const rawGrouped = groupReleaseNotes(processedNotes);
+    for (const groupName of Object.keys(rawGrouped)) {
+      lines.push(`### ${groupName}`, '');
+      for (const { version, content } of rawGrouped[groupName]) {
+        lines.push(`#### v${version}`, '', content, '');
       }
-      releaseNotes =
-        releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') ||
-        'Missing...';
-      return {
-        version,
-        content: releaseNotes,
-      };
-    }),
-  );
+    }
+    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=300');
+  }
+
+  const grouped = renderGroupedReleaseNotes(processedNotes);
 
   args.context.cacheControl = 'private, max-age=300';
 
