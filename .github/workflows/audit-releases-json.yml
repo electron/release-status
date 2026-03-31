@@ -5,7 +5,8 @@ on:
   schedule:
     - cron: '0 18 * * *'
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   audit_releases_json:
@@ -14,10 +15,18 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - run: npm install @actions/core
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: 22
+      - name: Install
+        run: yarn install --immutable
       - id: audit
         run: |
-          npx zx@~8.1.9 <<'EOF'
+          yarn zx <<'EOF'
           const core = await import('${{ github.workspace }}/node_modules/@actions/core/lib/core.js');
 
           const LIMIT = 2000;
