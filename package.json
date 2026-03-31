@@ -74,7 +74,7 @@
     "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^3.1.2",
     "vitest-fetch-mock": "^0.4.5",
-    "zx": "~8.1.9"
+    "zx": "~8.8.5"
   },
   "engines": {
     "node": ">=20.0.0"
