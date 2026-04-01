@@ -20,7 +20,7 @@ import { getGitHubReleaseNotes } from '~/data/github-data';
 import { getAllVersionsInMajor, getReleaseForVersion, VersionFilter } from '~/data/release-data';
 import { groupReleaseNotes, renderGroupedReleaseNotes } from '~/data/markdown';
 import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
-import { ArrowDown, ArrowRight } from 'lucide-react';
+import { ArrowDown, ArrowRight, ExternalLink } from 'lucide-react';
 import { VersionInfo } from '~/components/VersionInfo';
 import { useCallback } from 'react';
 import { VersionTimeline } from '~/components/VersionTimeline';
@@ -267,6 +267,17 @@ export default function CompareReleases() {
                   {versionsBetween.length ? 's' : ''} since{' '}
                   <Link to={`/release/${fromVersion}`}>{fromVersion}</Link>
                 </span>
+              </div>
+              <div className="text-center mt-2">
+                <a
+                  href={`https://github.com/electron/electron/compare/${fromVersion}...${toVersion}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  View full commit log on GitHub
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
             </div>
 
