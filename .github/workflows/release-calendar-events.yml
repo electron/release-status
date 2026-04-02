@@ -16,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        env:
+          MAJOR: ${{ github.event.inputs.major }}
         with:
           script: |
             const fs = require('node:fs/promises');
 
             const INITIAL_MILESTONE = 64;
-            const major = ${{ github.event.inputs.major }};
+            const major = parseInt(process.env.MAJOR);
             const milestone = INITIAL_MILESTONE + major*2;
 
             const events = [['Subject', 'Start Date', 'End Date', 'All Day Event']];
