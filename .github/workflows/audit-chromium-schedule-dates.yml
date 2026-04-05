@@ -18,13 +18,14 @@ jobs:
         with:
           node-version: '22.15.0'
       - name: Restore previous run data
-        uses: dawidd6/action-download-artifact@20319c5641d495c8a52e688b7dc5fada6c3a9fbc # v8
-        with:
-          name: data
-          branch: main
-          if_no_artifact_found: ignore
-          workflow_conclusion: 'completed'
-          search_artifacts: true
+        run: |
+          RUN_ID=$(gh run list --workflow audit-chromium-schedule-dates.yml --branch main --status completed --limit 1 --json databaseId --jq '.[0].databaseId')
+          if [ -n "$RUN_ID" ]; then
+            gh run download "$RUN_ID" --name data
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
       - run: npm install @electron/fiddle-core@2.0.1
       - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         id: audit-chromium-schedule
