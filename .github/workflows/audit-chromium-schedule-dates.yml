@@ -117,12 +117,12 @@ jobs:
         if: ${{ always() && steps.audit-chromium-schedule.outputs.changesDetected && github.ref == 'refs/heads/main' }}
         uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
         with:
+          webhook: ${{ secrets.CHROMIUM_DATES_SLACK_WEBHOOK_URL }} 
+          webhook-type: webhook-trigger
           payload: |
             {
               "link": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.CHROMIUM_DATES_SLACK_WEBHOOK_URL }}
       - name: Persist data
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         if: ${{ !cancelled() }}
