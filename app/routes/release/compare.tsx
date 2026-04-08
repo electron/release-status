@@ -1,13 +1,6 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { parse as semverParse, lt as semverLessThan, gt as semverGreaterThan } from 'semver';
-import {
-  Link,
-  redirect,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-  useParams,
-} from '@remix-run/react';
+import { Link, redirect, useLoaderData, useNavigate, useNavigation, useParams } from 'react-router';
 import {
   SiGooglechrome,
   SiGooglechromeHex,

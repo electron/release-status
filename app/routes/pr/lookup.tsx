@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, useLoaderData, useNavigate, useNavigation } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Link, useLoaderData, useNavigate, useNavigation } from 'react-router';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import { getRecentPRs } from '~/data/github-data';
 import { useCallback, useState } from 'react';
