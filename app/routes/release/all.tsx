@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { redirect, useLoaderData, useNavigation, useSearchParams } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { redirect, useLoaderData, useNavigation, useSearchParams } from 'react-router';
 import { LoaderCircle } from 'lucide-react';
 import { useCallback } from 'react';
 import { parse as semverParse } from 'semver';

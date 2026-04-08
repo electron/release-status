@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, redirect, useLoaderData, useParams } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Link, redirect, useLoaderData, useParams } from 'react-router';
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import { getPRDetails } from '~/data/github-data';
 import {
@@ -49,7 +49,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   if (wantsTextPlain(args.request)) {
     if (!pr) {
-      return textPlainResponse(args.context, `# PR #${number}\n\nNot found.\n`, 'private, max-age=60');
+      return textPlainResponse(
+        args.context,
+        `# PR #${number}\n\nNot found.\n`,
+        'private, max-age=60',
+      );
     }
     const state = pr.merged ? 'merged' : pr.state;
     const lines = [

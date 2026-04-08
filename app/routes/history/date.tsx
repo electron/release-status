@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { redirect, useLoaderData, useParams } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { redirect, useLoaderData, useParams } from 'react-router';
 import { Calendar } from 'lucide-react';
 import { parse as semverParse, compare as semverCompare } from 'semver';
 import { ReleaseTable } from '~/components/ReleaseTable';

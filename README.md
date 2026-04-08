@@ -5,15 +5,15 @@ the [Electron](https://github.com/electron/electron) project.
 
 ## Getting started
 
-The website is built using [Remix](https://remix.run/).
+The website is built using [React Router](https://reactrouter.com/).
 
 ### Installation
 
 To run the app locally, install dependencies and run the `dev` script:
 
 ```
-npm install
-npm run dev
+yarn install
+yarn dev
 ```
 
 ### GitHub Authentication

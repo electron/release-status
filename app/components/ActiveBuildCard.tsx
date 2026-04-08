@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { SudowoodoRelease } from '~/data/release-data';
 
 type ActiveBuildCardProps = {
