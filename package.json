@@ -52,7 +52,6 @@
     "autoprefixer": "^10.4.19",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
-    "jiti": "^2.4.2",
     "lint-staged": "^16.4.0",
     "oxfmt": "^0.44.0",
     "oxlint": "^1.59.0",
