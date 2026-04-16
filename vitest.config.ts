@@ -1,13 +1,11 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     coverage: {
       provider: 'v8',
-      reporter: ['html-spa']
+      reporter: ['html-spa'],
     },
-    setupFiles: [
-      "./vitest.setup.ts"
-    ]
-  }
-})
+    setupFiles: ['./vitest.setup.ts'],
+  },
+});
