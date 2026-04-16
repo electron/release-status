@@ -210,4 +210,38 @@ describe('renderGroupedReleaseNotes', () => {
       }
     `);
   });
+
+  test('renders version grouped release notes correctly with CRLF line endings', () => {
+    const releaseNotes = [
+      {
+        version: 'v1.0.0',
+        content: '\r\n## New Feature\r\n\r\n* Added new feature\r\n',
+      },
+      {
+        version: 'v1.1.0',
+        content: '\r\n## New Feature\r\n\r\n* Added another feature\r\n',
+      },
+    ];
+
+    expect(renderGroupedReleaseNotes(releaseNotes)).toMatchInlineSnapshot(`
+      {
+        "New Feature": [
+          {
+            "content": "<ul>
+      <li><p class="mb-2 text-base text-gray-800 dark:text-gray-200">Added another feature</p></li>
+      </ul>
+      ",
+            "version": "v1.1.0",
+          },
+          {
+            "content": "<ul>
+      <li><p class="mb-2 text-base text-gray-800 dark:text-gray-200">Added new feature</p></li>
+      </ul>
+      ",
+            "version": "v1.0.0",
+          },
+        ],
+      }
+    `);
+  });
 });
