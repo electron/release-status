@@ -48,7 +48,7 @@
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@types/semver": "^7.7.0",
-    "@vitest/coverage-v8": "^3.1.2",
+    "@vitest/coverage-v8": "^4.1.4",
     "autoprefixer": "^10.4.19",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
@@ -61,7 +61,7 @@
     "typescript": "^6.0.2",
     "vite": "^7.3.2",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^3.1.2",
+    "vitest": "^4.1.4",
     "vitest-fetch-mock": "^0.4.5",
     "zx": "~8.8.5"
   },
