@@ -7,6 +7,7 @@ import { getKeyvCache } from './cache';
 
 export interface MajorReleaseSchedule {
   version: string; // `${major}.0.0`
+  branch: string; // release branch name
   alphaDate: string | null; // YYYY-MM-DD -- some old versions didn't have alpha releases
   betaDate: string; // YYYY-MM-DD
   stableDate: string; // YYYY-MM-DD
@@ -33,6 +34,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '2.0.0',
     {
+      branch: '2-0-x',
       betaDate: '2018-02-21',
       stableDate: '2018-05-01',
     },
@@ -40,6 +42,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '3.0.0',
     {
+      branch: '3-0-x',
       betaDate: '2018-06-21',
       stableDate: '2018-09-18',
     },
@@ -47,6 +50,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '4.0.0',
     {
+      branch: '4-0-x',
       betaDate: '2018-10-11',
       stableDate: '2018-12-20',
     },
@@ -54,6 +58,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '5.0.0',
     {
+      branch: '5-0-x',
       betaDate: '2019-01-22',
       stableDate: '2019-04-23',
     },
@@ -61,7 +66,14 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '6.0.0',
     {
+      branch: '6-0-x',
       betaDate: '2019-04-25',
+    },
+  ],
+  [
+    '7.0.0',
+    {
+      branch: '7-0-x',
     },
   ],
   [
@@ -208,6 +220,7 @@ export const getAbsoluteSchedule = memoize(
 
       const entry: AbsoluteMajorReleaseSchedule = {
         version: `${major}.0.0`,
+        branch: `${major}-x-y`,
         alphaDate,
         betaDate,
         stableDate: chromiumSchedule.stableDate,
@@ -280,6 +293,7 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
   const schedule: MajorReleaseSchedule[] = absoluteData.map((entry) => {
     const major = parseInt(entry.version.split('.')[0], 10);
 
+    let branch = entry.branch;
     let status: MajorReleaseSchedule['status'];
     if (major > latestStableMajor) {
       const hasNonNightlyRelease = allReleases.find(
@@ -288,13 +302,14 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
           getPrereleaseType(release.version) !== 'nightly',
       );
       status = hasNonNightlyRelease ? 'prerelease' : 'nightly';
+      branch = status === 'nightly' ? 'main' : branch;
     } else if (major >= minActiveMajor) {
       status = 'stable';
     } else {
       status = 'eol';
     }
 
-    return { ...entry, status };
+    return { ...entry, branch, status };
   });
 
   // Sort descending by major version
