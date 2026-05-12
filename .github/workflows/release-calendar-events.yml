@@ -23,8 +23,13 @@ jobs:
             const fs = require('node:fs/promises');
 
             const INITIAL_MILESTONE = 64;
+            // Starting with Electron 44, Electron uses every 4th Chromium milestone (instead of every 2nd)
+            const BIWEEKLY_CADENCE_ELECTRON_START = 45;
+            const MILESTONE_BEFORE_BIWEEKLY_START = 152; // Chromium milestone for Electron 44
             const major = parseInt(process.env.MAJOR);
-            const milestone = INITIAL_MILESTONE + major*2;
+            const milestone = major < BIWEEKLY_CADENCE_ELECTRON_START
+              ? INITIAL_MILESTONE + major * 2
+              : MILESTONE_BEFORE_BIWEEKLY_START + (major - (BIWEEKLY_CADENCE_ELECTRON_START - 1)) * 4;
 
             const events = [['Subject', 'Start Date', 'End Date', 'All Day Event']];
 

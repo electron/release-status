@@ -116,6 +116,20 @@ const getSupportWindow = (major: number): number => {
   return major >= 12 && major <= 15 ? 4 : 3;
 };
 
+// Chromium milestones per Electron major: 4 starting with v45, 2 for all prior versions
+const getMilestonesPerMajor = (major: number): number => {
+  return major >= 45 ? 4 : 2;
+};
+
+// Sum of Chromium milestone steps from fromMajor (exclusive) to toMajor (inclusive)
+const calculateMilestoneOffset = (fromMajor: number, toMajor: number): number => {
+  let offset = 0;
+  for (let m = fromMajor + 1; m <= toMajor; m++) {
+    offset += getMilestonesPerMajor(m);
+  }
+  return offset;
+};
+
 const offsetDays = (dateStr: string, days: number): string => {
   const date = new Date(dateStr + 'T00:00:00');
   date.setDate(date.getDate() + days);
@@ -164,7 +178,7 @@ export const getAbsoluteSchedule = memoize(
         const milestone = extractChromiumMilestone(group.firstStable.chrome);
         milestoneMap.set(major, milestone);
       } else {
-        // Estimate: M(V) = M(V-1) + 2
+        // Estimate: M(V) = M(V-1) + getMilestonesPerMajor(V)
         const prevMajor = major - 1;
         const prevMilestone = milestoneMap.get(prevMajor);
 
@@ -174,7 +188,7 @@ export const getAbsoluteSchedule = memoize(
           );
         }
 
-        milestoneMap.set(major, prevMilestone + 2);
+        milestoneMap.set(major, prevMilestone + getMilestonesPerMajor(major));
       }
     }
 
@@ -255,7 +269,7 @@ export const getAbsoluteSchedule = memoize(
         // Extrapolate for future versions
         const maxMajor = Math.max(...Array.from(schedule.keys()));
         const maxEntry = schedule.get(maxMajor)!;
-        const milestone = maxEntry.chromiumVersion + (eolMajor - maxMajor) * 2; // 2 milestones per major
+        const milestone = maxEntry.chromiumVersion + calculateMilestoneOffset(maxMajor, eolMajor);
         const eolSchedule = await getMilestoneSchedule(milestone);
         entry.eolDate = eolSchedule.stableDate;
       }
