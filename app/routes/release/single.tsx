@@ -39,6 +39,7 @@ function escapeRegExp(s: string) {
 }
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
   const version = args.params.version!;
   const [githubReleaseNotes, allVersionsInMajor, electronRelease, latestReleases] =
     await Promise.all([
@@ -91,10 +92,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
       releaseNotes.trim(),
       '',
     ];
-    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=300');
+    return textPlainResponse(args.context, lines.join('\n'), cacheControl);
   }
 
-  args.context.cacheControl = 'private, max-age=300';
+  args.context.cacheControl = cacheControl;
   return {
     allVersionsInMajor,
     electronRelease,

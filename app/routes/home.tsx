@@ -18,7 +18,7 @@ export const meta: MetaFunction = () => {
 export const loader = async (args: LoaderFunctionArgs) => {
   const [releases, active] = await Promise.all([getLatestReleases(), getActiveReleasesOrUpdate()]);
   const timeZone = guessTimeZoneFromRequest(args.request);
-  args.context.cacheControl = 'private, max-age=30';
+  args.context.cacheControl = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
   return { releases, active, timeZone };
 };
 

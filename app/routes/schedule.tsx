@@ -59,7 +59,7 @@ function DependencyRelease({
 export const loader = async (args: LoaderFunctionArgs) => {
   const timeZone = guessTimeZoneFromRequest(args.request);
   const releases = await getRelativeSchedule();
-  args.context.cacheControl = 'private, max-age=120';
+  args.context.cacheControl = 'public, max-age=120, s-maxage=300, stale-while-revalidate=120';
   return { releases, timeZone };
 };
 

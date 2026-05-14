@@ -34,7 +34,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     isSameDay(new Date(r.fullDate), new Date(year, month - 1, day)),
   );
 
-  args.context.cacheControl = 'private, max-age=120';
+  args.context.cacheControl = 'public, max-age=120, s-maxage=300, stale-while-revalidate=120';
 
   const timeZone = guessTimeZoneFromRequest(args.request);
 
