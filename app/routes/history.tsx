@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, PrefetchPageLinks, useLoaderData, useSearchParams } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Link, PrefetchPageLinks, useLoaderData, useSearchParams } from 'react-router';
 import { ArrowLeft, ArrowRight, Calendar, Clock, Info, MoonIcon } from 'lucide-react';
 import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';

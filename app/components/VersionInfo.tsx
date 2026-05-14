@@ -1,5 +1,5 @@
 import { IconType } from '@icons-pack/react-simple-icons';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 
 type VersionInfoProps = {

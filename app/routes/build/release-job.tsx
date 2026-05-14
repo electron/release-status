@@ -6,8 +6,8 @@ import {
   SiGithubactions,
   SiGithubactionsHex,
 } from '@icons-pack/react-simple-icons';
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { Link, useLoaderData, useParams } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Link, useLoaderData, useParams } from 'react-router';
 import { Check, Clock, ExternalLink, GitBranch, X } from 'lucide-react';
 import { getSudowoodoRelease, SudowoodoRelease } from '~/data/release-data';
 import { prettyDateString } from '~/helpers/time';

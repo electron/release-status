@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { ElectronRelease } from '~/data/release-data';
 import { humanFriendlyDaysSince, prettyReleaseDate } from '~/helpers/time';
 

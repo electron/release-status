@@ -94,7 +94,7 @@ export type SudowoodoRelease = {
 
 export const getActiveReleasesOrUpdate = memoize(
   async () => {
-    const response = await fetch('https://electron-sudowoodo.herokuapp.com/release/active');
+    const response = await fetch('https://sudowoodo.electronjs.org/release/active');
     if (response.status !== 200) {
       return {
         currentlyRunning: [],
@@ -114,7 +114,7 @@ export const getActiveReleasesOrUpdate = memoize(
 
 export const getSudowoodoRelease = memoize(
   async (id: string) => {
-    const response = await fetch(`https://electron-sudowoodo.herokuapp.com/release/history/${id}`);
+    const response = await fetch(`https://sudowoodo.electronjs.org/release/history/${id}`);
     if (response.status !== 200) {
       return null;
     }

@@ -274,6 +274,7 @@ export const getPRDetails = memoize(
           backportOf = {
             number: parentPR.number,
             title: renderPRTitleMarkdownSafely(parentPR.title),
+            rawTitle: parentPR.title,
             author: parentPR.user?.login || 'Unknown User',
             authorAvatar: parentPR.user?.avatar_url || null,
             authorUrl: parentPR.user?.html_url || null,
@@ -290,7 +291,9 @@ export const getPRDetails = memoize(
       return {
         number: pr.number,
         title: renderPRTitleMarkdownSafely(pr.title),
+        rawTitle: pr.title,
         body: styleHtmlContent((pr as unknown as Record<string, string>).body_html),
+        rawBody: pr.body || '',
         url: pr.html_url,
         state: pr.state,
         createdAt: pr.created_at,
@@ -328,7 +331,7 @@ export const getPRDetails = memoize(
       return null;
     }
   },
-  getKeyvCache('github-pr-details'),
+  getKeyvCache('github-pr-details-v2'),
   {
     // Cache for 10 minutes
     ttl: 10 * 60 * 1_000,

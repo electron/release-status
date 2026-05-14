@@ -1,5 +1,4 @@
-import { LoaderFunctionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/react';
+import { LoaderFunctionArgs, redirect } from 'react-router';
 
 const channelsMap: Record<string, string | undefined> = {
   stable: 'stable',

@@ -1,4 +1,4 @@
-import { type RouteConfig, index, route } from '@remix-run/route-config';
+import { type RouteConfig, index, route } from '@react-router/dev/routes';
 
 const redirect = (path: string, file: string) => {
   return {

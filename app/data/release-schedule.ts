@@ -7,6 +7,7 @@ import { getKeyvCache } from './cache';
 
 export interface MajorReleaseSchedule {
   version: string; // `${major}.0.0`
+  branch: string; // release branch name
   alphaDate: string | null; // YYYY-MM-DD -- some old versions didn't have alpha releases
   betaDate: string; // YYYY-MM-DD
   stableDate: string; // YYYY-MM-DD
@@ -33,6 +34,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '2.0.0',
     {
+      branch: '2-0-x',
       betaDate: '2018-02-21',
       stableDate: '2018-05-01',
     },
@@ -40,6 +42,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '3.0.0',
     {
+      branch: '3-0-x',
       betaDate: '2018-06-21',
       stableDate: '2018-09-18',
     },
@@ -47,6 +50,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '4.0.0',
     {
+      branch: '4-0-x',
       betaDate: '2018-10-11',
       stableDate: '2018-12-20',
     },
@@ -54,6 +58,7 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '5.0.0',
     {
+      branch: '5-0-x',
       betaDate: '2019-01-22',
       stableDate: '2019-04-23',
     },
@@ -61,7 +66,14 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
   [
     '6.0.0',
     {
+      branch: '6-0-x',
       betaDate: '2019-04-25',
+    },
+  ],
+  [
+    '7.0.0',
+    {
+      branch: '7-0-x',
     },
   ],
   [
@@ -102,6 +114,20 @@ const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = n
 // Determine support window: 4 for v12-15, 3 for the rest
 const getSupportWindow = (major: number): number => {
   return major >= 12 && major <= 15 ? 4 : 3;
+};
+
+// Chromium milestones per Electron major: 4 starting with v45, 2 for all prior versions
+const getMilestonesPerMajor = (major: number): number => {
+  return major >= 45 ? 4 : 2;
+};
+
+// Sum of Chromium milestone steps from fromMajor (exclusive) to toMajor (inclusive)
+const calculateMilestoneOffset = (fromMajor: number, toMajor: number): number => {
+  let offset = 0;
+  for (let m = fromMajor + 1; m <= toMajor; m++) {
+    offset += getMilestonesPerMajor(m);
+  }
+  return offset;
 };
 
 const offsetDays = (dateStr: string, days: number): string => {
@@ -152,7 +178,7 @@ export const getAbsoluteSchedule = memoize(
         const milestone = extractChromiumMilestone(group.firstStable.chrome);
         milestoneMap.set(major, milestone);
       } else {
-        // Estimate: M(V) = M(V-1) + 2
+        // Estimate: M(V) = M(V-1) + getMilestonesPerMajor(V)
         const prevMajor = major - 1;
         const prevMilestone = milestoneMap.get(prevMajor);
 
@@ -162,7 +188,7 @@ export const getAbsoluteSchedule = memoize(
           );
         }
 
-        milestoneMap.set(major, prevMilestone + 2);
+        milestoneMap.set(major, prevMilestone + getMilestonesPerMajor(major));
       }
     }
 
@@ -208,6 +234,7 @@ export const getAbsoluteSchedule = memoize(
 
       const entry: AbsoluteMajorReleaseSchedule = {
         version: `${major}.0.0`,
+        branch: `${major}-x-y`,
         alphaDate,
         betaDate,
         stableDate: chromiumSchedule.stableDate,
@@ -242,7 +269,7 @@ export const getAbsoluteSchedule = memoize(
         // Extrapolate for future versions
         const maxMajor = Math.max(...Array.from(schedule.keys()));
         const maxEntry = schedule.get(maxMajor)!;
-        const milestone = maxEntry.chromiumVersion + (eolMajor - maxMajor) * 2; // 2 milestones per major
+        const milestone = maxEntry.chromiumVersion + calculateMilestoneOffset(maxMajor, eolMajor);
         const eolSchedule = await getMilestoneSchedule(milestone);
         entry.eolDate = eolSchedule.stableDate;
       }
@@ -280,6 +307,7 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
   const schedule: MajorReleaseSchedule[] = absoluteData.map((entry) => {
     const major = parseInt(entry.version.split('.')[0], 10);
 
+    let branch = entry.branch;
     let status: MajorReleaseSchedule['status'];
     if (major > latestStableMajor) {
       const hasNonNightlyRelease = allReleases.find(
@@ -288,13 +316,14 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
           getPrereleaseType(release.version) !== 'nightly',
       );
       status = hasNonNightlyRelease ? 'prerelease' : 'nightly';
+      branch = status === 'nightly' ? 'main' : branch;
     } else if (major >= minActiveMajor) {
       status = 'stable';
     } else {
       status = 'eol';
     }
 
-    return { ...entry, status };
+    return { ...entry, branch, status };
   });
 
   // Sort descending by major version

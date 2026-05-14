@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { useLoaderData } from 'react-router';
 import { ArrowUpRight, Calendar, Info } from 'lucide-react';
 import React from 'react';
 import { getRelativeSchedule, type MajorReleaseSchedule } from '~/data/release-schedule';

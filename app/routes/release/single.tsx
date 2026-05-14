@@ -1,6 +1,6 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/node';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { parse as semverParse } from 'semver';
-import { redirect, useLoaderData, useNavigate, useNavigation, useParams } from '@remix-run/react';
+import { redirect, useLoaderData, useNavigate, useNavigation, useParams } from 'react-router';
 import {
   SiGooglechrome,
   SiGooglechromeHex,
@@ -18,6 +18,7 @@ import {
   VersionFilter,
 } from '~/data/release-data';
 import { renderMarkdownSafely } from '~/data/markdown';
+import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { VersionInfo } from '~/components/VersionInfo';
 import { useCallback } from 'react';
 import { PageHeader } from '~/components/PageHeader';
@@ -65,6 +66,37 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const isLatestStable = latestReleases.latestSupported[0]?.version === version.substr(1);
   const isLatestPreRelease = latestReleases.lastPreRelease?.version === version.substr(1);
+
+  if (wantsTextPlain(args.request)) {
+    const tags: string[] = [];
+    if (isLatestStable) tags.push('Latest Stable');
+    if (isLatestPreRelease) tags.push('Latest Pre Release');
+    const lines = [
+      `# Electron ${version}${tags.length ? ` (${tags.join(', ')})` : ''}`,
+      '',
+      '## Install',
+      '',
+      '```',
+      `npm install --save-dev electron@${version.substring(1)}`,
+      '```',
+      '',
+      '## Dependencies',
+      '',
+      `- Chromium: ${electronRelease.chrome}`,
+      `- Node.js: ${electronRelease.node}`,
+      `- V8: ${electronRelease.v8}`,
+      '',
+      '## Release Notes',
+      '',
+      releaseNotes.trim(),
+      '',
+    ];
+    return textPlainResponse(
+      args.context,
+      lines.join('\n'),
+      'public, max-age=300, s-maxage=600, stale-while-revalidate=300',
+    );
+  }
 
   args.context.cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
   return {

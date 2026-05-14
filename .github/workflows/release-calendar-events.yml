@@ -15,14 +15,21 @@ jobs:
     name: Generate Calendar Events
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          MAJOR: ${{ github.event.inputs.major }}
         with:
           script: |
             const fs = require('node:fs/promises');
 
             const INITIAL_MILESTONE = 64;
-            const major = ${{ github.event.inputs.major }};
-            const milestone = INITIAL_MILESTONE + major*2;
+            // Starting with Electron 44, Electron uses every 4th Chromium milestone (instead of every 2nd)
+            const BIWEEKLY_CADENCE_ELECTRON_START = 45;
+            const MILESTONE_BEFORE_BIWEEKLY_START = 152; // Chromium milestone for Electron 44
+            const major = parseInt(process.env.MAJOR);
+            const milestone = major < BIWEEKLY_CADENCE_ELECTRON_START
+              ? INITIAL_MILESTONE + major * 2
+              : MILESTONE_BEFORE_BIWEEKLY_START + (major - (BIWEEKLY_CADENCE_ELECTRON_START - 1)) * 4;
 
             const events = [['Subject', 'Start Date', 'End Date', 'All Day Event']];
 
@@ -85,7 +92,8 @@ jobs:
             }
 
             await fs.writeFile(`e${major}-calendar-events.csv`, events.flatMap((row) => row.join(',')).join('\n'));
-      - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: Calendar Events E${{ github.event.inputs.major }}
           path: e${{ github.event.inputs.major }}-calendar-events.csv
+          archive: false

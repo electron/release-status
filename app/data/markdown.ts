@@ -44,20 +44,20 @@ const knownSections = [
   'Unknown',
 ];
 
-export const renderGroupedReleaseNotes = (versions: { version: string; content: string }[]) => {
+export const groupReleaseNotes = (versions: { version: string; content: string }[]) => {
   const groups: Record<string, { version: string; content: string }[]> = Object.create(null);
   for (const key of knownSections) {
     groups[key] = [];
   }
   for (const { version, content } of versions) {
-    const headers = content.split(/^## ([A-Za-z ]+)\n/gm).slice(1);
+    const headers = content.split(/^## ([A-Za-z ]+)\r?\n/gm).slice(1);
     for (let i = 0; i < headers.length; i += 2) {
       const groupName = headers[i];
       const groupContent = headers[i + 1];
       groups[groupName] = groups[groupName] || [];
       groups[groupName].unshift({
         version,
-        content: DOMPurify.sanitize(noListMD.render(groupContent.trim())),
+        content: groupContent.trim(),
       });
     }
   }
@@ -68,5 +68,16 @@ export const renderGroupedReleaseNotes = (versions: { version: string; content: 
     }
   }
 
+  return groups;
+};
+
+export const renderGroupedReleaseNotes = (versions: { version: string; content: string }[]) => {
+  const groups = groupReleaseNotes(versions);
+  for (const key of Object.keys(groups)) {
+    groups[key] = groups[key].map(({ version, content }) => ({
+      version,
+      content: DOMPurify.sanitize(noListMD.render(content)),
+    }));
+  }
   return groups;
 };
