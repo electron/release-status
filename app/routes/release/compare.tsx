@@ -36,6 +36,7 @@ function escapeRegExp(s: string) {
 }
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
   const fromVersion = args.params.fromVersion!;
   const toVersion = args.params.toVersion!;
 
@@ -113,12 +114,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
         lines.push(`#### v${version}`, '', content, '');
       }
     }
-    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=300');
+    return textPlainResponse(args.context, lines.join('\n'), cacheControl);
   }
 
   const grouped = renderGroupedReleaseNotes(processedNotes);
 
-  args.context.cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
+  args.context.cacheControl = cacheControl;
 
   return {
     fromElectronRelease,

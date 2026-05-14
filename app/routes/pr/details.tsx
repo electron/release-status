@@ -35,6 +35,7 @@ export const meta: MetaFunction = (args) => {
 };
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const cacheControl = 'public, max-age=60, s-maxage=120, stale-while-revalidate=60';
   const { number } = args.params;
   if (
     !number ||
@@ -49,11 +50,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   if (wantsTextPlain(args.request)) {
     if (!pr) {
-      return textPlainResponse(
-        args.context,
-        `# PR #${number}\n\nNot found.\n`,
-        'private, max-age=60',
-      );
+      return textPlainResponse(args.context, `# PR #${number}\n\nNot found.\n`, cacheControl);
     }
     const state = pr.merged ? 'merged' : pr.state;
     const lines = [
@@ -98,7 +95,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     }
 
     lines.push('## Description', '', pr.rawBody.trim(), '');
-    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=60');
+    return textPlainResponse(args.context, lines.join('\n'), cacheControl);
   }
 
   if (pr) {
@@ -123,7 +120,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       createdAt: prettyDateString(pr.createdAt, timeZone),
       mergedAt: pr.mergedAt ? prettyDateString(pr.mergedAt, timeZone) : null,
     };
-    args.context.cacheControl = 'public, max-age=60, s-maxage=120, stale-while-revalidate=60';
+    args.context.cacheControl = cacheControl;
   }
   return pr;
 };

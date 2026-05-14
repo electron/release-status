@@ -25,6 +25,7 @@ const PER_PAGE = 10;
 const ALL_MAJORS = 'All Majors';
 
 export const loader = async (args: LoaderFunctionArgs) => {
+  const cacheControl = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
   const url = new URL(args.request.url);
   let channel = url.searchParams.get('channel') ?? 'stable';
   let page = parseInt(url.searchParams.get('page') ?? '1', 10);
@@ -94,12 +95,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
       );
     }
     lines.push('');
-    return textPlainResponse(args.context, lines.join('\n'), 'private, max-age=30');
+    return textPlainResponse(args.context, lines.join('\n'), cacheControl);
   }
 
   const timeZone = guessTimeZoneFromRequest(args.request);
 
-  args.context.cacheControl = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
+  args.context.cacheControl = cacheControl;
   return {
     releases: page > maxPage ? [undefined] : inChannel.slice(start, end),
     maxPage,
