@@ -19,16 +19,6 @@ describe('getReleasesOrUpdate', () => {
     expect(await getReleasesOrUpdate()).toEqual([]);
   });
 
-  test('should return empty array when upstream json file errors', async () => {
-    fetchMock.doMockOnce(
-      () =>
-        new Response('[1]', {
-          status: 500,
-        }),
-    );
-    expect(await getReleasesOrUpdate()).toEqual([]);
-  });
-
   test('should return upstream content under normal conditions', async () => {
     fetchMock.mockResponseOnce('[{"version":"1.2.3","v8":"10.0"}]');
     expect(await getReleasesOrUpdate()).toEqual([{ version: '1.2.3', v8: '10.0' }]);

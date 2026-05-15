@@ -19,7 +19,9 @@ export type ElectronRelease = {
 export const getReleasesOrUpdate = memoize(
   async () => {
     const response = await fetch('https://electronjs.org/headers/index.json');
-    if (response.status !== 200) return [];
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch releases');
+    }
     const releases = (await response.json()) as ElectronRelease[];
     return releases
       .sort((a, b) => {
