@@ -14,6 +14,61 @@ import * as path from 'node:path';
  */
 const GLOBAL_CACHE_VERSION = 4;
 
+// The local memory cache is bounded so that traffic hitting many distinct keys
+// (e.g. crawlers walking /pr/:number, /build/:id, /release/:version) can't grow
+// it without limit and OOM the process. memoize reads via store.get directly,
+// bypassing Keyv's expiry-eviction, so without this an entry fetched once would
+// live forever regardless of its TTL.
+const LOCAL_CACHE_MAX_ENTRIES = 5_000;
+// Hard ceiling so one-off keys still expire by time even if never re-read.
+const LOCAL_CACHE_MAX_TTL_MS = 60 * 60 * 1_000;
+
+// LRU + TTL bounded store. Map preserves insertion order, so the first key is
+// the least-recently-used; touching a key on read re-inserts it as newest.
+export class BoundedCache<V> {
+  private entries = new Map<string, { value: V; expiresAt: number }>();
+
+  constructor(private maxEntries: number) {}
+
+  get(key: string): V | undefined {
+    const entry = this.entries.get(key);
+    if (entry === undefined) return undefined;
+    if (Date.now() > entry.expiresAt) {
+      this.entries.delete(key);
+      return undefined;
+    }
+    // Mark as most-recently-used.
+    this.entries.delete(key);
+    this.entries.set(key, entry);
+    return entry.value;
+  }
+
+  has(key: string): boolean {
+    return this.get(key) !== undefined;
+  }
+
+  set(key: string, value: V, ttl?: number): void {
+    const expiresAt =
+      Date.now() +
+      Math.min(typeof ttl === 'number' ? ttl : LOCAL_CACHE_MAX_TTL_MS, LOCAL_CACHE_MAX_TTL_MS);
+    this.entries.delete(key);
+    this.entries.set(key, { value, expiresAt });
+    while (this.entries.size > this.maxEntries) {
+      const oldest = this.entries.keys().next().value;
+      if (oldest === undefined) break;
+      this.entries.delete(oldest);
+    }
+  }
+
+  delete(key: string): boolean {
+    return this.entries.delete(key);
+  }
+
+  clear(): void {
+    this.entries.clear();
+  }
+}
+
 // Read through and dual write local and remote caches
 // v. fast memory cache for local
 // not quite as fast redis cache for remote
@@ -21,14 +76,14 @@ const GLOBAL_CACHE_VERSION = 4;
 // on local we still use this code path but "remote" is just a file store
 class MultiCache implements Store<any> {
   private remote: Store<any> | Map<string, any>;
-  private local: Store<any> | Map<string, any>;
+  private local: BoundedCache<any>;
 
   constructor({
     remote,
     local,
   }: {
     remote: Store<any> | Map<string, any>;
-    local: Store<any> | Map<string, any>;
+    local: BoundedCache<any>;
   }) {
     this.remote = remote;
     this.local = local;
@@ -39,7 +94,7 @@ class MultiCache implements Store<any> {
   }
 
   async get(key: string) {
-    let res = await this.local.get(key);
+    let res = this.local.get(key);
 
     if (res === undefined) {
       const data = await this.remote.get(key);
@@ -54,26 +109,24 @@ class MultiCache implements Store<any> {
   }
 
   async has(key: string) {
-    let res = await this.local.has(key);
-    if (res === false) {
-      res = await this.remote.has(key);
-    }
-    return res;
+    return this.local.has(key) || (await this.remote.has(key));
   }
 
-  async set(key: string, value: any) {
-    await Promise.all([this.local.set(key, value), this.remote.set(key, value)]);
+  async set(key: string, value: any, ttl?: number) {
+    this.local.set(key, value, ttl);
+    await this.remote.set(key, value);
     return true;
   }
 
   async delete(key: string) {
-    await Promise.all([this.local.delete(key), this.remote.delete(key)]);
-
+    this.local.delete(key);
+    await this.remote.delete(key);
     return true;
   }
 
   async clear() {
-    await Promise.all([this.local.clear(), this.remote.clear()]);
+    this.local.clear();
+    await this.remote.clear();
   }
 }
 
@@ -115,12 +168,12 @@ const dataStore = (() => {
       },
     };
     return new MultiCache({
-      local: new Map(),
+      local: new BoundedCache(LOCAL_CACHE_MAX_ENTRIES),
       remote: redisCacheWithoutTTL,
     });
   } else {
     return new MultiCache({
-      local: new Map(),
+      local: new BoundedCache(LOCAL_CACHE_MAX_ENTRIES),
       remote: new KeyvFile(path.resolve(import.meta.dirname, '../../.kvcache')),
     });
   }
