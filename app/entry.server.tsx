@@ -22,6 +22,10 @@ if (
   setGlobalDispatcher(new EnvHttpProxyAgent());
 }
 
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled promise rejection:', reason);
+});
+
 export const streamTimeout = 10_000;
 
 export default function handleRequest(
