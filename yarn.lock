@@ -2628,15 +2628,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "dompurify@npm:3.4.0"
+"dompurify@npm:^3.4.9":
+  version: 3.4.9
+  resolution: "dompurify@npm:3.4.9"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10c0/5593ac44ee20b9aa521c2120884effc98927fb9128c548183c75e79e0a04357c62ee913a049a267c8f396cb8c9d520ecf72562826c5524c46d4fe03c12063638
+  checksum: 10c0/e03d88d5959dcaae172357002d74e47e66fc6685cac8928fe4b02982f7b4051e2b8ff70279e4e6fb13be112c0e5cae11439ab960c06c487cb91a3c1a18baed49
   languageName: node
   linkType: hard
 
@@ -4651,7 +4651,7 @@ __metadata:
     autoprefixer: "npm:^10.4.19"
     cookie: "npm:^1.0.2"
     cross-env: "npm:^7.0.3"
-    dompurify: "npm:^3.4.0"
+    dompurify: "npm:^3.4.9"
     geoip-lite: "npm:^1.4.10"
     globals: "npm:^16.0.0"
     husky: "npm:^9.1.7"
