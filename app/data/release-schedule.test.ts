@@ -119,6 +119,25 @@ describe('getRelativeSchedule eolGracePeriod', () => {
     expect(findMajor(schedule, 33).status).toBe('eol');
   });
 
+  test('the maximum grace period (365 days) is honored at the grace boundary', async () => {
+    // The API loader caps `eolGracePeriod` at 365 days (rather than letting a
+    // huge value overflow the Date math into NaN), so the data layer must still
+    // apply grace correctly at that maximum. On the final day it is stable, one
+    // day later it is EOL.
+    const schedule = await getRelativeSchedule();
+    const eolDate = new Date(findMajor(schedule, 33).eolDate + 'T00:00:00');
+
+    const lastDayOfGrace = new Date(eolDate);
+    lastDayOfGrace.setDate(lastDayOfGrace.getDate() + 365);
+    const gracedAtBoundary = await getRelativeSchedule(365, lastDayOfGrace);
+    expect(findMajor(gracedAtBoundary, 33).status).toBe('stable');
+
+    const pastGrace = new Date(eolDate);
+    pastGrace.setDate(pastGrace.getDate() + 366);
+    const gracedPastBoundary = await getRelativeSchedule(365, pastGrace);
+    expect(findMajor(gracedPastBoundary, 33).status).toBe('eol');
+  });
+
   test('supported and prerelease/nightly majors are unaffected by grace period', async () => {
     const now = new Date('2030-01-01T00:00:00');
     const withGrace = await getRelativeSchedule(365, now);
