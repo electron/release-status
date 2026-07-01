@@ -137,6 +137,21 @@ const offsetDays = (dateStr: string, days: number): string => {
 };
 
 /**
+ * Determine whether an entry that would otherwise be EOL is still within a
+ * requested grace window. Returns true only when a positive grace period is set,
+ * the entry has a known `eolDate`, and `now` is at or before
+ * `eolDate + gracePeriodDays`.
+ */
+const isWithinEolGracePeriod = (eolDate: string, gracePeriodDays: number, now: Date): boolean => {
+  if (gracePeriodDays <= 0 || !eolDate) {
+    return false;
+  }
+  const graceEnd = new Date(eolDate + 'T00:00:00');
+  graceEnd.setDate(graceEnd.getDate() + gracePeriodDays);
+  return now.getTime() <= graceEnd.getTime();
+};
+
+/**
  * Get absolute schedule data (cacheable, not time-dependent).
  */
 export const getAbsoluteSchedule = memoize(
@@ -289,8 +304,19 @@ export const getAbsoluteSchedule = memoize(
 
 /**
  * Get relative schedule data (time-dependent, includes status and EOL).
+ *
+ * @param eolGracePeriodDays - Optional number of days to extend the `stable`
+ *   status past a major's `eolDate`. When greater than 0, a major that would
+ *   otherwise be classified as `eol` keeps reporting `stable` until
+ *   `eolDate + eolGracePeriodDays` has passed. Defaults to 0 (unchanged
+ *   behavior). Callers that omit this get the exact prior behavior.
+ * @param now - Reference point for the grace period comparison. Defaults to the
+ *   current time; injectable for testing.
  */
-export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
+export async function getRelativeSchedule(
+  eolGracePeriodDays = 0,
+  now: Date = new Date(),
+): Promise<MajorReleaseSchedule[]> {
   // Find latest major version
   const allReleases = await getReleasesOrUpdate();
   const latestStableMajor = parseInt(
@@ -318,6 +344,9 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
       status = hasNonNightlyRelease ? 'prerelease' : 'nightly';
       branch = status === 'nightly' ? 'main' : branch;
     } else if (major >= minActiveMajor) {
+      status = 'stable';
+    } else if (isWithinEolGracePeriod(entry.eolDate, eolGracePeriodDays, now)) {
+      // Within the requested grace window past EOL: keep reporting `stable`.
       status = 'stable';
     } else {
       status = 'eol';
