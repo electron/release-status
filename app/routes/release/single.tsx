@@ -18,7 +18,7 @@ import {
   VersionFilter,
 } from '~/data/release-data';
 import { renderMarkdownSafely } from '~/data/markdown';
-import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
+import { cacheControlContext, textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { VersionInfo } from '~/components/VersionInfo';
 import { useCallback } from 'react';
 import { PageHeader } from '~/components/PageHeader';
@@ -95,7 +95,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return textPlainResponse(args.context, lines.join('\n'), cacheControl);
   }
 
-  args.context.cacheControl = cacheControl;
+  args.context.set(cacheControlContext, cacheControl);
   return {
     allVersionsInMajor,
     electronRelease,

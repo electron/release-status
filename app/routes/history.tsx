@@ -5,6 +5,7 @@ import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';
 import { parse as semverParse } from 'semver';
 import { Select } from '~/components/Select';
+import { cacheControlContext } from '~/helpers/request';
 
 export const meta: MetaFunction = () => {
   return [
@@ -86,7 +87,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
       calendarData[month][day].stable.push(release.version);
     }
   }
-  args.context.cacheControl = 'public, max-age=120, s-maxage=300, stale-while-revalidate=120';
+  args.context.set(
+    cacheControlContext,
+    'public, max-age=120, s-maxage=300, stale-while-revalidate=120',
+  );
 
   const currentMonth = currentDate.getMonth();
   const currentDayOfMonth = currentDate.getDate();

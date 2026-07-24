@@ -13,7 +13,7 @@ export const InstallCommand = ({ name, prefix, version }: InstallCommandProps) =
 
   const [recentlyCopied, setDidRecentlyCopy] = useState(false);
 
-  const timerRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const copyCommand = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();

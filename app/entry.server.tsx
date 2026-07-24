@@ -2,9 +2,9 @@ import { PassThrough } from 'node:stream';
 
 import type {
   ActionFunctionArgs,
-  AppLoadContext,
   EntryContext,
   LoaderFunctionArgs,
+  RouterContextProvider,
 } from 'react-router';
 import { createReadableStreamFromReadable } from '@react-router/node';
 import { ServerRouter } from 'react-router';
@@ -12,6 +12,7 @@ import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
 import { startDataRefreshTimer } from './data/fresh-interval';
+import { cacheControlContext, textPlainBodyContext } from './helpers/request';
 
 if (
   process.env.HTTP_PROXY ||
@@ -33,14 +34,16 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   routerContext: EntryContext,
-  loadContext: AppLoadContext,
+  loadContext: Readonly<RouterContextProvider>,
 ) {
-  if (typeof loadContext.textPlainBody === 'string') {
+  const textPlainBody = loadContext.get(textPlainBodyContext);
+  if (typeof textPlainBody === 'string') {
     responseHeaders.set('Content-Type', 'text/plain; charset=utf-8');
-    if (loadContext.cacheControl) {
-      responseHeaders.set('Cache-Control', loadContext.cacheControl as string);
+    const cacheControl = loadContext.get(cacheControlContext);
+    if (cacheControl) {
+      responseHeaders.set('Cache-Control', cacheControl);
     }
-    return new Response(loadContext.textPlainBody, {
+    return new Response(textPlainBody, {
       status: responseStatusCode,
       headers: responseHeaders,
     });
@@ -141,8 +144,9 @@ export function handleDataRequest(
   response: Response,
   { context }: LoaderFunctionArgs | ActionFunctionArgs,
 ) {
-  if (context.cacheControl) {
-    response.headers.set('Cache-Control', context.cacheControl as string);
+  const cacheControl = context.get(cacheControlContext);
+  if (cacheControl) {
+    response.headers.set('Cache-Control', cacheControl);
   }
   return response;
 }
