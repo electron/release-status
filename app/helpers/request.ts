@@ -1,4 +1,7 @@
-import type { AppLoadContext } from 'react-router';
+import { createContext, type RouterContextProvider } from 'react-router';
+
+export const cacheControlContext = createContext<string | null>(null);
+export const textPlainBodyContext = createContext<string | null>(null);
 
 export function wantsTextPlain(request: Request) {
   const accept = request.headers.get('accept');
@@ -10,12 +13,12 @@ export function wantsTextPlain(request: Request) {
 }
 
 export function textPlainResponse(
-  context: AppLoadContext,
+  context: Readonly<RouterContextProvider>,
   body: string,
   cacheControl: string,
 ): Response {
-  context.textPlainBody = body;
-  context.cacheControl = cacheControl;
+  context.set(textPlainBodyContext, body);
+  context.set(cacheControlContext, cacheControl);
   // entry.server.tsx short-circuits before rendering when textPlainBody is set.
   return new Response(null, { status: 200 });
 }

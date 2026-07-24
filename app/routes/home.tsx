@@ -4,6 +4,7 @@ import { ActiveBuildCard } from '~/components/ActiveBuildCard';
 import { StabilitySection } from '~/components/StabilitySection';
 import { getActiveReleasesOrUpdate, getLatestReleases } from '~/data/release-data';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
+import { cacheControlContext } from '~/helpers/request';
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,7 +19,10 @@ export const meta: MetaFunction = () => {
 export const loader = async (args: LoaderFunctionArgs) => {
   const [releases, active] = await Promise.all([getLatestReleases(), getActiveReleasesOrUpdate()]);
   const timeZone = guessTimeZoneFromRequest(args.request);
-  args.context.cacheControl = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
+  args.context.set(
+    cacheControlContext,
+    'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
+  );
   return { releases, active, timeZone };
 };
 

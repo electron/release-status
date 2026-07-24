@@ -12,6 +12,7 @@ import { Check, Clock, ExternalLink, GitBranch, X } from 'lucide-react';
 import { getSudowoodoRelease, SudowoodoRelease } from '~/data/release-data';
 import { prettyDateString } from '~/helpers/time';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
+import { cacheControlContext } from '~/helpers/request';
 
 export const meta: MetaFunction = (args) => {
   return [
@@ -30,7 +31,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
     // Guess at three hours for the build time
     const estimatedCompletion = new Date(started.getTime() + 1_000 * 60 * 60 * 3);
     const timeZone = guessTimeZoneFromRequest(args.request);
-    args.context.cacheControl = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
+    args.context.set(
+      cacheControlContext,
+      'public, max-age=30, s-maxage=30, stale-while-revalidate=60',
+    );
     return {
       ...build,
       started: prettyDateString(build.started, timeZone),
