@@ -87,8 +87,18 @@ jobs:
             core.summary.addRaw('🎉 No missing releases');
           }
 
+          require('fs').writeFileSync('audit-results.md', core.summary.stringify());
           await core.summary.write();
           EOF
+      # Step summaries are not API-readable; this artifact lets agents fetch the findings
+      - name: Upload audit results artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: audit-results
+          path: audit-results.md
+          if-no-files-found: warn
+          archive: false
       - name: Send Slack message if releases are missing
         if: ${{ always() && steps.audit.outputs.errorsFound == 'true' && github.ref == 'refs/heads/main' }}
         uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
