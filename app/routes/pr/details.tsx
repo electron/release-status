@@ -20,7 +20,7 @@ import {
 import { PageHeader } from '~/components/PageHeader';
 import { SemverBlock } from '~/components/SemverBlock';
 import { NoBackports } from '~/components/NoBackports';
-import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
+import { cacheControlContext, textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 import { prettyDateString } from '~/helpers/time';
 
@@ -120,7 +120,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       createdAt: prettyDateString(pr.createdAt, timeZone),
       mergedAt: pr.mergedAt ? prettyDateString(pr.mergedAt, timeZone) : null,
     };
-    args.context.cacheControl = cacheControl;
+    args.context.set(cacheControlContext, cacheControl);
   }
   return pr;
 };

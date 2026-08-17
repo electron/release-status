@@ -7,6 +7,7 @@ import { prettyReleaseDate } from '~/helpers/time';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 import './schedule.css';
+import { cacheControlContext } from '~/helpers/request';
 
 export const meta: MetaFunction = () => [
   { title: 'Schedule | Electron Releases' },
@@ -59,7 +60,10 @@ function DependencyRelease({
 export const loader = async (args: LoaderFunctionArgs) => {
   const timeZone = guessTimeZoneFromRequest(args.request);
   const releases = await getRelativeSchedule();
-  args.context.cacheControl = 'public, max-age=120, s-maxage=300, stale-while-revalidate=120';
+  args.context.set(
+    cacheControlContext,
+    'public, max-age=120, s-maxage=300, stale-while-revalidate=120',
+  );
   return { releases, timeZone };
 };
 

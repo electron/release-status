@@ -5,6 +5,7 @@ import { parse as semverParse, compare as semverCompare } from 'semver';
 import { ReleaseTable } from '~/components/ReleaseTable';
 import { getReleasesOrUpdate } from '~/data/release-data';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
+import { cacheControlContext } from '~/helpers/request';
 
 export const meta: MetaFunction = (args) => {
   return [
@@ -34,7 +35,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
     isSameDay(new Date(r.fullDate), new Date(year, month - 1, day)),
   );
 
-  args.context.cacheControl = 'public, max-age=120, s-maxage=300, stale-while-revalidate=120';
+  args.context.set(
+    cacheControlContext,
+    'public, max-age=120, s-maxage=300, stale-while-revalidate=120',
+  );
 
   const timeZone = guessTimeZoneFromRequest(args.request);
 

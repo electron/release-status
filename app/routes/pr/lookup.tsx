@@ -6,6 +6,7 @@ import { useCallback, useState } from 'react';
 import { ExternalLink, Search } from 'lucide-react';
 import { prettyDateString } from '~/helpers/time';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
+import { cacheControlContext } from '~/helpers/request';
 
 export const meta: MetaFunction = () => {
   return [
@@ -24,7 +25,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
       ...pr,
       createdAt: prettyDateString(pr.createdAt, guessTimeZoneFromRequest(args.request)),
     }));
-    args.context.cacheControl = 'public, max-age=60, s-maxage=120, stale-while-revalidate=60';
+    args.context.set(
+      cacheControlContext,
+      'public, max-age=60, s-maxage=120, stale-while-revalidate=60',
+    );
   }
   return recentPRs ?? [];
 };

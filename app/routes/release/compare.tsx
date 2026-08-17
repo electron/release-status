@@ -12,7 +12,7 @@ import {
 import { getGitHubReleaseNotes } from '~/data/github-data';
 import { getAllVersionsInMajor, getReleaseForVersion, VersionFilter } from '~/data/release-data';
 import { groupReleaseNotes, renderGroupedReleaseNotes } from '~/data/markdown';
-import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
+import { cacheControlContext, textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { VersionInfo } from '~/components/VersionInfo';
 import { useCallback } from 'react';
@@ -119,7 +119,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const grouped = renderGroupedReleaseNotes(processedNotes);
 
-  args.context.cacheControl = cacheControl;
+  args.context.set(cacheControlContext, cacheControl);
 
   return {
     fromElectronRelease,

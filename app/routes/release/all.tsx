@@ -8,7 +8,7 @@ import { Pagination } from '~/components/Pagination';
 import { ReleaseTable } from '~/components/ReleaseTable';
 import { Select } from '~/components/Select';
 import { getReleasesOrUpdate } from '~/data/release-data';
-import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
+import { cacheControlContext, textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = () => {
@@ -100,7 +100,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const timeZone = guessTimeZoneFromRequest(args.request);
 
-  args.context.cacheControl = cacheControl;
+  args.context.set(cacheControlContext, cacheControl);
   return {
     releases: page > maxPage ? [undefined] : inChannel.slice(start, end),
     maxPage,
