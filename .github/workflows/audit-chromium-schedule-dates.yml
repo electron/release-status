@@ -115,7 +115,7 @@ jobs:
             await core.summary.write();
       - name: Send Slack message if dates changed
         if: ${{ always() && steps.audit-chromium-schedule.outputs.changesDetected && github.ref == 'refs/heads/main' }}
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         with:
           webhook: ${{ secrets.CHROMIUM_DATES_SLACK_WEBHOOK_URL }} 
           webhook-type: webhook-trigger
