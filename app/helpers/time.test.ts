@@ -1,5 +1,10 @@
 import { describe, expect, test } from 'vitest';
-import { humanFriendlyDaysSince, prettyDateString, prettyReleaseDate } from './time';
+import {
+  fullDateString,
+  humanFriendlyDaysSince,
+  prettyDateString,
+  prettyReleaseDate,
+} from './time';
 
 describe('humanFriendlyDaysSince', () => {
   test('should return "Today" for today\'s date', () => {
@@ -84,5 +89,18 @@ describe('prettyDateString', () => {
     expect(prettyDateString('2020-01-31T23:59:59Z', 'UTC')).toBe('Jan 31, 2020, 11:59:59 PM');
     expect(prettyDateString('2020-12-31T00:00:00Z', 'UTC')).toBe('Dec 31, 2020, 12:00:00 AM');
     expect(prettyDateString('2020-02-29T12:00:00Z', 'UTC')).toBe('Feb 29, 2020, 12:00:00 PM');
+  });
+});
+
+describe('fullDateString', () => {
+  test('should format date correctly', () => {
+    expect(fullDateString('2020-02-02T12:00:00Z', 'UTC')).toBe('Feb 2, 2020, 12:00 PM UTC');
+    expect(fullDateString('2020-12-31T00:00:00Z', 'UTC')).toBe('Dec 31, 2020, 12:00 AM UTC');
+  });
+
+  test('should respect the given timezone', () => {
+    expect(fullDateString('2020-02-02T12:00:00Z', 'America/Los_Angeles')).toBe(
+      'Feb 2, 2020, 4:00 AM PST',
+    );
   });
 });

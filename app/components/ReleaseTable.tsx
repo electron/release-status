@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { ElectronRelease } from '~/data/release-data';
-import { humanFriendlyDaysSince, prettyReleaseDate } from '~/helpers/time';
+import { fullDateString, humanFriendlyDaysSince, prettyReleaseDate } from '~/helpers/time';
 
 type ReleaseTableProps = {
   releases: (ElectronRelease | undefined)[];
@@ -90,7 +90,10 @@ export const ReleaseTable = ({
                           className="px-6 py-4 flex-1"
                           prefetch="intent"
                         >
-                          <span className="flex items-center gap-2">
+                          <span
+                            className="flex items-center gap-2"
+                            title={fullDateString(release.fullDate, timeZone)}
+                          >
                             <span>{humanFriendlyDaysSince(release)}</span>
                             <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full">
                               {prettyReleaseDate(release, timeZone)}

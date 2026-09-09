@@ -57,3 +57,27 @@ export function prettyDateString(date: string, timeZone: string) {
     timeZone,
   });
 }
+
+/**
+ * This function requires a timezone, do not call it from inside a memoized or cached
+ * data function. Return a date string from those functions and in the loader apply
+ * the timezone with this function
+ *
+ * Intended for `title` attributes on abbreviated or relative dates
+ *
+ * @param date A date string from an ElectronRelease, or any parseable date string
+ * @returns The date formatted like Sep 9, 2026, 10:16 AM PDT
+ */
+export function fullDateString(date: string, timeZone: string) {
+  const d = new Date(date);
+  return d.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZoneName: 'short',
+    timeZone,
+  });
+}

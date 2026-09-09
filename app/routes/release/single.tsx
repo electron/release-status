@@ -9,6 +9,7 @@ import {
   SiV8,
   SiV8Hex,
 } from '@icons-pack/react-simple-icons';
+import { Calendar } from 'lucide-react';
 import { InstallCommand } from '~/components/InstallCommand';
 import { getGitHubReleaseNotes } from '~/data/github-data';
 import {
@@ -19,6 +20,8 @@ import {
 } from '~/data/release-data';
 import { renderMarkdownSafely } from '~/data/markdown';
 import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
+import { fullDateString, humanFriendlyDaysSince, prettyReleaseDate } from '~/helpers/time';
+import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 import { VersionInfo } from '~/components/VersionInfo';
 import { useCallback } from 'react';
 import { PageHeader } from '~/components/PageHeader';
@@ -75,6 +78,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
     const lines = [
       `# Electron ${version}${tags.length ? ` (${tags.join(', ')})` : ''}`,
       '',
+      `Released: ${electronRelease.fullDate}`,
+      '',
       '## Install',
       '',
       '```',
@@ -102,6 +107,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     releaseNotesHTML: renderMarkdownSafely(releaseNotes),
     isLatestStable,
     isLatestPreRelease,
+    timeZone: guessTimeZoneFromRequest(args.request),
   };
 };
 
@@ -135,6 +141,18 @@ export default function SingleRelease() {
             )
           }
           title={`Electron ${version}`}
+          subtitle={
+            <div
+              className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+              title={fullDateString(data.electronRelease.fullDate, data.timeZone)}
+            >
+              <Calendar className="w-4 h-4" />
+              <span>Released {prettyReleaseDate(data.electronRelease, data.timeZone)}</span>
+              <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full">
+                {humanFriendlyDaysSince(data.electronRelease)}
+              </span>
+            </div>
+          }
           titleTags={[
             data.isLatestStable ? (
               <span
