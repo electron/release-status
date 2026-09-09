@@ -61,7 +61,7 @@
     "typescript": "^6.0.2",
     "vite": "^7.3.6",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^4.1.4",
+    "vitest": "^4.1.11",
     "vitest-fetch-mock": "^0.4.5",
     "zx": "~8.8.5"
   },
