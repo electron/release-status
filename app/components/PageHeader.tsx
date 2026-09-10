@@ -9,10 +9,17 @@ type PageHeaderProps = {
   };
   title?: string;
   titleTags?: React.ReactNode[];
+  subtitle?: React.ReactNode;
   actionButton?: React.ReactNode;
 };
 
-export const PageHeader = ({ backTo, actionButton, title, titleTags }: PageHeaderProps) => {
+export const PageHeader = ({
+  backTo,
+  actionButton,
+  title,
+  titleTags,
+  subtitle,
+}: PageHeaderProps) => {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
       {backTo ? (
@@ -28,11 +35,14 @@ export const PageHeader = ({ backTo, actionButton, title, titleTags }: PageHeade
         </div>
       ) : null}
       {title ? (
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white">{title}</h2>
-            {titleTags}
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white">{title}</h2>
+              {titleTags}
+            </div>
           </div>
+          {subtitle}
         </div>
       ) : null}
       {actionButton ? <div className="flex items-center gap-2">{actionButton}</div> : null}
