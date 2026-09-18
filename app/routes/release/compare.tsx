@@ -10,6 +10,7 @@ import {
   SiV8Hex,
 } from '@icons-pack/react-simple-icons';
 import { getGitHubReleaseNotes } from '~/data/github-data';
+import { processReleaseNotes } from '~/data/release-notes';
 import { getAllVersionsInMajor, getReleaseForVersion, VersionFilter } from '~/data/release-data';
 import { groupReleaseNotes, renderGroupedReleaseNotes } from '~/data/markdown';
 import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
@@ -30,10 +31,6 @@ export const meta: MetaFunction = ({ params }) => {
     },
   ];
 };
-
-function escapeRegExp(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
@@ -74,19 +71,10 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return redirect('/release');
   }
 
-  const processedNotes = versionsForNotes.map((version, i) => {
-    let releaseNotes = githubReleaseNotes[i]!;
-    const parsed = semverParse(version);
-    if (parsed?.prerelease.length) {
-      releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version)}\`?.`))[1];
-    }
-    releaseNotes =
-      releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') || 'Missing...';
-    return {
-      version,
-      content: releaseNotes,
-    };
-  });
+  const processedNotes = versionsForNotes.map((version, i) => ({
+    version,
+    content: processReleaseNotes(version, githubReleaseNotes[i]!),
+  }));
 
   if (wantsTextPlain(args.request)) {
     const dep = (name: string, from: string, to: string) =>

@@ -49,10 +49,7 @@ export const getGitHubReleaseNotes = memoize(
         repo: version.includes('nightly') ? 'nightlies' : 'electron',
         tag: version,
       });
-      if (!data.body) {
-        return 'Missing release notes';
-      }
-      return data.body;
+      return data.body || '';
     } catch (e) {
       console.error(e);
       return null;
