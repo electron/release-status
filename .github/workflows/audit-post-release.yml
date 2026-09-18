@@ -7,6 +7,10 @@ on:
         description: 'Audit releases published in the last N days'
         required: false
         default: '14'
+      grace_hours:
+        description: 'Defer checks for releases published in the last N hours'
+        required: false
+        default: '24'
   schedule:
     - cron: '0 18 * * *'
 
@@ -17,6 +21,11 @@ jobs:
   audit_post_release:
     name: Audit Post-Release
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      # Needed to restore the previous run's report artifact
+      actions: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -27,10 +36,23 @@ jobs:
           node-version: 22
       - name: Install
         run: yarn install --immutable
+      # The previous report lets the script tell new findings from ones it has
+      # already reported ("since <date>" in Slack). Missing is fine (first run,
+      # or the previous run produced no report).
+      - name: Restore previous run's report
+        run: |
+          RUN_ID=$(gh run list --workflow audit-post-release.yml --branch main --status completed --limit 1 --json databaseId --jq '.[0].databaseId')
+          if [ -n "$RUN_ID" ]; then
+            gh run download "$RUN_ID" --name audit-results || echo "No previous report to restore"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
       - id: audit
         run: yarn zx .github/scripts/audit-post-release.mjs
         env:
           AUDIT_WINDOW_DAYS: ${{ inputs.window_days || '14' }}
+          AUDIT_GRACE_HOURS: ${{ inputs.grace_hours || '24' }}
       # Step summaries are not API-readable; this artifact lets agents fetch the findings
       - name: Upload audit results artifact
         if: ${{ always() }}
@@ -42,8 +64,10 @@ jobs:
             audit-post-release.json
           if-no-files-found: warn
           archive: false
+      # Posts when drift was found *or* the audit could not run; the script
+      # only sets slackText in those two cases.
       - name: Send Slack message if drift was found
-        if: ${{ always() && steps.audit.outputs.errorsFound == 'true' && github.ref == 'refs/heads/main' }}
+        if: ${{ always() && steps.audit.outputs.slackText != '' && github.ref == 'refs/heads/main' }}
         uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
         with:
           webhook: ${{ secrets.POST_RELEASE_AUDIT_SLACK_WEBHOOK_URL }}
