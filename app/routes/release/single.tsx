@@ -1,5 +1,4 @@
 import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
-import { parse as semverParse } from 'semver';
 import { redirect, useLoaderData, useNavigate, useNavigation, useParams } from 'react-router';
 import {
   SiGooglechrome,
@@ -12,6 +11,7 @@ import {
 import { Calendar } from 'lucide-react';
 import { InstallCommand } from '~/components/InstallCommand';
 import { getGitHubReleaseNotes } from '~/data/github-data';
+import { processReleaseNotes } from '~/data/release-notes';
 import {
   getAllVersionsInMajor,
   getLatestReleases,
@@ -37,10 +37,6 @@ export const meta: MetaFunction = ({ params }) => {
   ];
 };
 
-function escapeRegExp(s: string) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
 export const loader = async (args: LoaderFunctionArgs) => {
   const cacheControl = 'public, max-age=300, s-maxage=600, stale-while-revalidate=300';
   const version = args.params.version!;
@@ -60,13 +56,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return redirect('/release');
   }
 
-  let releaseNotes = githubReleaseNotes;
-  const parsed = semverParse(version);
-  if (parsed?.prerelease.length) {
-    releaseNotes = releaseNotes?.split(new RegExp(`@${escapeRegExp(version.slice(1))}\`?.`))[1];
-  }
-  releaseNotes =
-    releaseNotes?.replace(/# Release Notes for [^\r\n]+(?:(?:\n)|(?:\r\n))/i, '') || 'Missing...';
+  const releaseNotes = processReleaseNotes(version, githubReleaseNotes);
 
   const isLatestStable = latestReleases.latestSupported[0]?.version === version.substr(1);
   const isLatestPreRelease = latestReleases.lastPreRelease?.version === version.substr(1);
