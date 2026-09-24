@@ -1,7 +1,7 @@
 import { parse as parseSemver } from 'semver';
 import memoize from '@keyvhq/memoize';
 import { ElectronRelease, getReleasesOrUpdate } from './release-data';
-import { extractChromiumMilestone, getPrereleaseType } from '~/helpers/version';
+import { extractChromiumMilestone, getPrereleaseType } from '../helpers/version';
 import { getMilestoneSchedule } from './dash/chromium-schedule';
 import { getKeyvCache } from './cache';
 import historicalSchedule from './historical-schedule.json';
