@@ -4,6 +4,7 @@ import { ElectronRelease, getReleasesOrUpdate } from './release-data';
 import { extractChromiumMilestone, getPrereleaseType } from '~/helpers/version';
 import { getMilestoneSchedule } from './dash/chromium-schedule';
 import { getKeyvCache } from './cache';
+import historicalSchedule from './historical-schedule.json';
 
 export interface MajorReleaseSchedule {
   version: string; // `${major}.0.0`
@@ -19,6 +20,10 @@ export interface MajorReleaseSchedule {
 
 type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
 
+// Schedules for EOL majors, which no longer change. These are used as-is instead of
+// being recalculated, and are updated by the `update-historical-schedule` workflow.
+const HISTORICAL_SCHEDULE: AbsoluteMajorReleaseSchedule[] = historicalSchedule;
+
 interface MajorReleaseGroup {
   major: number;
   releases: ElectronRelease[];
@@ -30,6 +35,7 @@ interface MajorReleaseGroup {
 // - v6-v14: Transition to modern release process
 // - v15: Introduction of alpha releases
 // - v16+: Minor adjustments from Chromium schedule predictions
+// Majors in the historical schedule skip calculation, so these don't apply to them.
 const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = new Map([
   [
     '2.0.0',
@@ -143,6 +149,11 @@ export const getAbsoluteSchedule = memoize(
   async (): Promise<AbsoluteMajorReleaseSchedule[]> => {
     const allReleases = await getReleasesOrUpdate();
 
+    const schedule = new Map<number, AbsoluteMajorReleaseSchedule>();
+    for (const entry of HISTORICAL_SCHEDULE) {
+      schedule.set(parseInt(entry.version.split('.')[0], 10), { ...entry });
+    }
+
     // Group releases by major version (filter to >= 2)
     const majorGroups = new Map<number, MajorReleaseGroup>();
 
@@ -172,8 +183,11 @@ export const getAbsoluteSchedule = memoize(
 
     for (const major of sortedMajors) {
       const group = majorGroups.get(major)!;
+      const historical = schedule.get(major);
 
-      if (group.firstStable) {
+      if (historical) {
+        milestoneMap.set(major, historical.chromiumVersion);
+      } else if (group.firstStable) {
         // Use actual Chromium version from stable release
         const milestone = extractChromiumMilestone(group.firstStable.chrome);
         milestoneMap.set(major, milestone);
@@ -192,10 +206,10 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // Build absolute schedule data for each major
-    const schedule = new Map<number, AbsoluteMajorReleaseSchedule>();
-
+    // Build absolute schedule data for each major not in the historical schedule
     for (const major of sortedMajors) {
+      if (schedule.has(major)) continue;
+
       const milestone = milestoneMap.get(major)!;
       const chromiumSchedule = await getMilestoneSchedule(milestone);
 
@@ -275,8 +289,9 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // NB: `Map.values()` iterates in insertion order (ascending major)
-    return Array.from(schedule.values());
+    return Array.from(schedule.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([, entry]) => entry);
   },
   getKeyvCache('absolute-schedule'),
   {

@@ -1,0 +1,402 @@
+[
+  {
+    "version": "2.0.0",
+    "branch": "2-0-x",
+    "alphaDate": null,
+    "betaDate": "2018-02-21",
+    "stableDate": "2018-05-01",
+    "chromiumVersion": 61,
+    "nodeVersion": "8.9.3",
+    "eolDate": "2019-04-23"
+  },
+  {
+    "version": "3.0.0",
+    "branch": "3-0-x",
+    "alphaDate": null,
+    "betaDate": "2018-06-21",
+    "stableDate": "2018-09-18",
+    "chromiumVersion": 66,
+    "nodeVersion": "10.2.0",
+    "eolDate": "2019-07-30"
+  },
+  {
+    "version": "4.0.0",
+    "branch": "4-0-x",
+    "alphaDate": null,
+    "betaDate": "2018-10-11",
+    "stableDate": "2018-12-20",
+    "chromiumVersion": 69,
+    "nodeVersion": "10.11.0",
+    "eolDate": "2019-10-22"
+  },
+  {
+    "version": "5.0.0",
+    "branch": "5-0-x",
+    "alphaDate": null,
+    "betaDate": "2019-01-22",
+    "stableDate": "2019-04-23",
+    "chromiumVersion": 73,
+    "nodeVersion": "12.0.0",
+    "eolDate": "2020-02-04"
+  },
+  {
+    "version": "6.0.0",
+    "branch": "6-0-x",
+    "alphaDate": null,
+    "betaDate": "2019-04-25",
+    "stableDate": "2019-07-30",
+    "chromiumVersion": 76,
+    "nodeVersion": "12.4.0",
+    "eolDate": "2020-05-19"
+  },
+  {
+    "version": "7.0.0",
+    "branch": "7-0-x",
+    "alphaDate": null,
+    "betaDate": "2019-08-01",
+    "stableDate": "2019-10-22",
+    "chromiumVersion": 78,
+    "nodeVersion": "12.8.1",
+    "eolDate": "2020-08-25"
+  },
+  {
+    "version": "8.0.0",
+    "branch": "8-x-y",
+    "alphaDate": null,
+    "betaDate": "2019-10-24",
+    "stableDate": "2020-02-04",
+    "chromiumVersion": 80,
+    "nodeVersion": "12.13.0",
+    "eolDate": "2020-11-17"
+  },
+  {
+    "version": "9.0.0",
+    "branch": "9-x-y",
+    "alphaDate": null,
+    "betaDate": "2020-02-06",
+    "stableDate": "2020-05-19",
+    "chromiumVersion": 83,
+    "nodeVersion": "12.14.1",
+    "eolDate": "2021-03-02"
+  },
+  {
+    "version": "10.0.0",
+    "branch": "10-x-y",
+    "alphaDate": null,
+    "betaDate": "2020-05-21",
+    "stableDate": "2020-08-25",
+    "chromiumVersion": 85,
+    "nodeVersion": "12.16.3",
+    "eolDate": "2021-05-25"
+  },
+  {
+    "version": "11.0.0",
+    "branch": "11-x-y",
+    "alphaDate": null,
+    "betaDate": "2020-08-27",
+    "stableDate": "2020-11-17",
+    "chromiumVersion": 87,
+    "nodeVersion": "12.18.3",
+    "eolDate": "2021-08-31"
+  },
+  {
+    "version": "12.0.0",
+    "branch": "12-x-y",
+    "alphaDate": null,
+    "betaDate": "2020-11-19",
+    "stableDate": "2021-03-02",
+    "chromiumVersion": 89,
+    "nodeVersion": "14.16.0",
+    "eolDate": "2021-11-16"
+  },
+  {
+    "version": "13.0.0",
+    "branch": "13-x-y",
+    "alphaDate": null,
+    "betaDate": "2021-03-04",
+    "stableDate": "2021-05-25",
+    "chromiumVersion": 91,
+    "nodeVersion": "14.16.0",
+    "eolDate": "2022-02-01"
+  },
+  {
+    "version": "14.0.0",
+    "branch": "14-x-y",
+    "alphaDate": null,
+    "betaDate": "2021-05-27",
+    "stableDate": "2021-08-31",
+    "chromiumVersion": 93,
+    "nodeVersion": "14.17.0",
+    "eolDate": "2022-03-29"
+  },
+  {
+    "version": "15.0.0",
+    "branch": "15-x-y",
+    "alphaDate": "2021-07-20",
+    "betaDate": "2021-09-01",
+    "stableDate": "2021-09-21",
+    "chromiumVersion": 94,
+    "nodeVersion": "16.5.0",
+    "eolDate": "2022-05-24"
+  },
+  {
+    "version": "16.0.0",
+    "branch": "16-x-y",
+    "alphaDate": "2021-09-23",
+    "betaDate": "2021-10-20",
+    "stableDate": "2021-11-16",
+    "chromiumVersion": 96,
+    "nodeVersion": "16.9.1",
+    "eolDate": "2022-05-24"
+  },
+  {
+    "version": "17.0.0",
+    "branch": "17-x-y",
+    "alphaDate": "2021-11-18",
+    "betaDate": "2022-01-04",
+    "stableDate": "2022-02-01",
+    "chromiumVersion": 98,
+    "nodeVersion": "16.13.0",
+    "eolDate": "2022-08-02"
+  },
+  {
+    "version": "18.0.0",
+    "branch": "18-x-y",
+    "alphaDate": "2022-02-03",
+    "betaDate": "2022-03-01",
+    "stableDate": "2022-03-29",
+    "chromiumVersion": 100,
+    "nodeVersion": "16.13.2",
+    "eolDate": "2022-09-27"
+  },
+  {
+    "version": "19.0.0",
+    "branch": "19-x-y",
+    "alphaDate": "2022-03-31",
+    "betaDate": "2022-04-26",
+    "stableDate": "2022-05-24",
+    "chromiumVersion": 102,
+    "nodeVersion": "16.14.2",
+    "eolDate": "2022-11-29"
+  },
+  {
+    "version": "20.0.0",
+    "branch": "20-x-y",
+    "alphaDate": "2022-05-26",
+    "betaDate": "2022-06-21",
+    "stableDate": "2022-08-02",
+    "chromiumVersion": 104,
+    "nodeVersion": "16.15.0",
+    "eolDate": "2023-02-07"
+  },
+  {
+    "version": "21.0.0",
+    "branch": "21-x-y",
+    "alphaDate": "2022-08-04",
+    "betaDate": "2022-08-30",
+    "stableDate": "2022-09-27",
+    "chromiumVersion": 106,
+    "nodeVersion": "16.16.0",
+    "eolDate": "2023-04-04"
+  },
+  {
+    "version": "22.0.0",
+    "branch": "22-x-y",
+    "alphaDate": "2022-09-29",
+    "betaDate": "2022-10-25",
+    "stableDate": "2022-11-29",
+    "chromiumVersion": 108,
+    "nodeVersion": "16.17.1",
+    "eolDate": "2023-10-10"
+  },
+  {
+    "version": "23.0.0",
+    "branch": "23-x-y",
+    "alphaDate": "2022-12-01",
+    "betaDate": "2023-01-10",
+    "stableDate": "2023-02-07",
+    "chromiumVersion": 110,
+    "nodeVersion": "18.12.1",
+    "eolDate": "2023-08-15"
+  },
+  {
+    "version": "24.0.0",
+    "branch": "24-x-y",
+    "alphaDate": "2023-02-09",
+    "betaDate": "2023-03-07",
+    "stableDate": "2023-04-04",
+    "chromiumVersion": 112,
+    "nodeVersion": "18.14.0",
+    "eolDate": "2023-10-10"
+  },
+  {
+    "version": "25.0.0",
+    "branch": "25-x-y",
+    "alphaDate": "2023-04-06",
+    "betaDate": "2023-05-02",
+    "stableDate": "2023-05-30",
+    "chromiumVersion": 114,
+    "nodeVersion": "18.15.0",
+    "eolDate": "2023-12-05"
+  },
+  {
+    "version": "26.0.0",
+    "branch": "26-x-y",
+    "alphaDate": "2023-06-01",
+    "betaDate": "2023-07-18",
+    "stableDate": "2023-08-15",
+    "chromiumVersion": 116,
+    "nodeVersion": "18.16.1",
+    "eolDate": "2024-02-20"
+  },
+  {
+    "version": "27.0.0",
+    "branch": "27-x-y",
+    "alphaDate": "2023-08-17",
+    "betaDate": "2023-09-12",
+    "stableDate": "2023-10-10",
+    "chromiumVersion": 118,
+    "nodeVersion": "18.17.1",
+    "eolDate": "2024-04-16"
+  },
+  {
+    "version": "28.0.0",
+    "branch": "28-x-y",
+    "alphaDate": "2023-10-11",
+    "betaDate": "2023-11-06",
+    "stableDate": "2023-12-05",
+    "chromiumVersion": 120,
+    "nodeVersion": "18.18.2",
+    "eolDate": "2024-06-11"
+  },
+  {
+    "version": "29.0.0",
+    "branch": "29-x-y",
+    "alphaDate": "2023-12-07",
+    "betaDate": "2024-01-23",
+    "stableDate": "2024-02-20",
+    "chromiumVersion": 122,
+    "nodeVersion": "20.9.0",
+    "eolDate": "2024-08-20"
+  },
+  {
+    "version": "30.0.0",
+    "branch": "30-x-y",
+    "alphaDate": "2024-02-22",
+    "betaDate": "2024-03-19",
+    "stableDate": "2024-04-16",
+    "chromiumVersion": 124,
+    "nodeVersion": "20.11.1",
+    "eolDate": "2024-10-15"
+  },
+  {
+    "version": "31.0.0",
+    "branch": "31-x-y",
+    "alphaDate": "2024-04-18",
+    "betaDate": "2024-05-14",
+    "stableDate": "2024-06-11",
+    "chromiumVersion": 126,
+    "nodeVersion": "20.14.0",
+    "eolDate": "2025-01-14"
+  },
+  {
+    "version": "32.0.0",
+    "branch": "32-x-y",
+    "alphaDate": "2024-06-14",
+    "betaDate": "2024-07-23",
+    "stableDate": "2024-08-20",
+    "chromiumVersion": 128,
+    "nodeVersion": "20.16.0",
+    "eolDate": "2025-03-04"
+  },
+  {
+    "version": "33.0.0",
+    "branch": "33-x-y",
+    "alphaDate": "2024-08-22",
+    "betaDate": "2024-09-17",
+    "stableDate": "2024-10-15",
+    "chromiumVersion": 130,
+    "nodeVersion": "20.18.0",
+    "eolDate": "2025-04-29"
+  },
+  {
+    "version": "34.0.0",
+    "branch": "34-x-y",
+    "alphaDate": "2024-10-17",
+    "betaDate": "2024-11-12",
+    "stableDate": "2025-01-14",
+    "chromiumVersion": 132,
+    "nodeVersion": "20.18.1",
+    "eolDate": "2025-06-24"
+  },
+  {
+    "version": "35.0.0",
+    "branch": "35-x-y",
+    "alphaDate": "2025-01-16",
+    "betaDate": "2025-02-04",
+    "stableDate": "2025-03-04",
+    "chromiumVersion": 134,
+    "nodeVersion": "22.14.0",
+    "eolDate": "2025-09-02"
+  },
+  {
+    "version": "36.0.0",
+    "branch": "36-x-y",
+    "alphaDate": "2025-03-06",
+    "betaDate": "2025-04-01",
+    "stableDate": "2025-04-29",
+    "chromiumVersion": 136,
+    "nodeVersion": "22.14.0",
+    "eolDate": "2025-10-28"
+  },
+  {
+    "version": "37.0.0",
+    "branch": "37-x-y",
+    "alphaDate": "2025-05-01",
+    "betaDate": "2025-05-27",
+    "stableDate": "2025-06-24",
+    "chromiumVersion": 138,
+    "nodeVersion": "22.16.0",
+    "eolDate": "2026-01-13"
+  },
+  {
+    "version": "38.0.0",
+    "branch": "38-x-y",
+    "alphaDate": "2025-06-26",
+    "betaDate": "2025-08-05",
+    "stableDate": "2025-09-02",
+    "chromiumVersion": 140,
+    "nodeVersion": "22.18.0",
+    "eolDate": "2026-03-10"
+  },
+  {
+    "version": "39.0.0",
+    "branch": "39-x-y",
+    "alphaDate": "2025-09-04",
+    "betaDate": "2025-09-30",
+    "stableDate": "2025-10-28",
+    "chromiumVersion": 142,
+    "nodeVersion": "22.20.0",
+    "eolDate": "2026-05-05"
+  },
+  {
+    "version": "40.0.0",
+    "branch": "40-x-y",
+    "alphaDate": "2025-10-30",
+    "betaDate": "2025-12-02",
+    "stableDate": "2026-01-13",
+    "chromiumVersion": 144,
+    "nodeVersion": "24.11.1",
+    "eolDate": "2026-06-30"
+  },
+  {
+    "version": "41.0.0",
+    "branch": "41-x-y",
+    "alphaDate": "2026-01-15",
+    "betaDate": "2026-02-10",
+    "stableDate": "2026-03-10",
+    "chromiumVersion": 146,
+    "nodeVersion": "24.14.0",
+    "eolDate": "2026-08-25"
+  }
+]
