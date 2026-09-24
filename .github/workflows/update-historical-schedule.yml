@@ -11,13 +11,19 @@ jobs:
   update_historical_schedule:
     name: Update Historical Schedule
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
+    environment:
+      name: auto-updater
+      deployment: false
     steps:
+      - name: Generate GitHub App token (updater app)
+        uses: electron/github-app-auth-action@5f70a3726af01b612f29aac96d05aa524389c9e9 # v2.1.0
+        id: generate-token
+        with:
+          creds: ${{ secrets.GH_APP_CREDS }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          token: ${{ steps.generate-token.outputs.token }}
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -48,24 +54,24 @@ jobs:
           historical.sort((a, b) => major(a) - major(b));
           await writeFile(FILE, JSON.stringify(historical, null, 2) + '\n');
           EOF
-      - name: Open pull request
+          git add app/data/historical-schedule.json
+      - name: Commit changes to historical schedule
+        id: commit-changes
+        uses: dsanders11/github-app-commit-action@2bbcd331016d8c950b05a24b56e7eb9cb50d545e # v2.1.0
+        with:
+          fail-on-no-changes: false
+          message: 'chore: update historical release schedule'
+          ref: "chore/update-historical-schedule-${{ hashFiles('app/data/historical-schedule.json') }}"
+          token: ${{ steps.generate-token.outputs.token }}
+      - name: Create pull request
+        if: ${{ steps.commit-changes.outputs.sha }}
+        shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
-          BRANCH: update-historical-schedule
-          TITLE: 'chore: update historical release schedule'
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          BRANCH: "chore/update-historical-schedule-${{ hashFiles('app/data/historical-schedule.json') }}"
         run: |
-          if git diff --quiet; then
-            echo "No newly EOL majors"
-            exit 0
-          fi
-
-          gh auth setup-git
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git switch -C "$BRANCH"
-          git commit -am "$TITLE"
-          git push --force origin "$BRANCH"
-
-          if [ -z "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
-            gh pr create --head "$BRANCH" --title "$TITLE" --body 'Adds newly EOL majors from https://releases.electronjs.org/schedule.json to the historical schedule.'
-          fi
+          gh pr create \
+            --title "chore: update historical release schedule" \
+            --body "Automated PR to add newly EOL majors to historical-schedule.json" \
+            --head "$BRANCH" \
+            --base main

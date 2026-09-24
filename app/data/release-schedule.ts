@@ -20,8 +20,9 @@ export interface MajorReleaseSchedule {
 
 type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
 
-// Schedules for EOL majors, which no longer change. These are used as-is instead of
-// being recalculated, and are updated by the `update-historical-schedule` workflow.
+// Schedules for EOL majors, which no longer change, including any deviations from the
+// calculated estimates (e.g. v22's extended EOL). These are used as-is instead of being
+// recalculated, and are updated by the `update-historical-schedule` workflow.
 const HISTORICAL_SCHEDULE: AbsoluteMajorReleaseSchedule[] = historicalSchedule;
 
 interface MajorReleaseGroup {
@@ -29,93 +30,6 @@ interface MajorReleaseGroup {
   releases: ElectronRelease[];
   firstStable?: ElectronRelease; // Only used for Chromium milestone extraction
 }
-
-// Schedule overrides for dates that deviate from calculated estimates:
-// - v2-v5: Pre-Chromium alignment era (before standardized release cadence afaik)
-// - v6-v14: Transition to modern release process
-// - v15: Introduction of alpha releases
-// - v16+: Minor adjustments from Chromium schedule predictions
-// Majors in the historical schedule skip calculation, so these don't apply to them.
-const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = new Map([
-  [
-    '2.0.0',
-    {
-      branch: '2-0-x',
-      betaDate: '2018-02-21',
-      stableDate: '2018-05-01',
-    },
-  ],
-  [
-    '3.0.0',
-    {
-      branch: '3-0-x',
-      betaDate: '2018-06-21',
-      stableDate: '2018-09-18',
-    },
-  ],
-  [
-    '4.0.0',
-    {
-      branch: '4-0-x',
-      betaDate: '2018-10-11',
-      stableDate: '2018-12-20',
-    },
-  ],
-  [
-    '5.0.0',
-    {
-      branch: '5-0-x',
-      betaDate: '2019-01-22',
-      stableDate: '2019-04-23',
-    },
-  ],
-  [
-    '6.0.0',
-    {
-      branch: '6-0-x',
-      betaDate: '2019-04-25',
-    },
-  ],
-  [
-    '7.0.0',
-    {
-      branch: '7-0-x',
-    },
-  ],
-  [
-    '15.0.0',
-    {
-      alphaDate: '2021-07-20',
-      betaDate: '2021-09-01',
-    },
-  ],
-  [
-    '16.0.0',
-    {
-      betaDate: '2021-10-20',
-    },
-  ],
-  [
-    '22.0.0',
-    {
-      // Policy exception: extended EOL to support extended end-of-life for Windows 7/8/8.1
-      eolDate: '2023-10-10',
-    },
-  ],
-  [
-    '28.0.0',
-    {
-      alphaDate: '2023-10-11',
-      betaDate: '2023-11-06',
-    },
-  ],
-  [
-    '32.0.0',
-    {
-      alphaDate: '2024-06-14',
-    },
-  ],
-]);
 
 // Determine support window: 4 for v12-15, 3 for the rest
 const getSupportWindow = (major: number): number => {
@@ -217,7 +131,7 @@ export const getAbsoluteSchedule = memoize(
       // | ------- | ------------------ | ------------------------- |
       // | Version | Alpha              | Beta                      |
       // | ------- | ------------------ | ------------------------- |
-      // | v2-5    | None               | History (overrides)       |
+      // | v2-5    | None               | Historical schedule       |
       // | v6-14   | None               | Prev stable + 2 days      |
       // | v15+    | Prev stable + 2    | Chromium dates + offset   |
       // | ------- | ------------------ | ------------------------- |
@@ -225,7 +139,7 @@ export const getAbsoluteSchedule = memoize(
       let betaDate: string;
       if (major < 6) {
         // (no alpha)
-        betaDate = ''; // Will be set by override
+        betaDate = ''; // Only known from the historical schedule
       } else {
         const prevStablePlus2 = offsetDays(schedule.get(major - 1)!.stableDate, 2);
 
@@ -257,19 +171,13 @@ export const getAbsoluteSchedule = memoize(
         eolDate: '', // Placeholder, will be calculated
       };
 
-      // Apply overrides early so they cascade to dependent calculations (e.g. EOL)
-      const override = SCHEDULE_OVERRIDES.get(entry.version);
-      if (override) {
-        Object.assign(entry, override);
-      }
-
       schedule.set(major, entry);
     }
 
     // Calculate EOL dates
     for (const entry of schedule.values()) {
       if (entry.eolDate !== '') {
-        // Already set via override
+        // Already set by the historical schedule
         continue;
       }
 

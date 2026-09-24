@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { getMilestoneSchedule } from './dash/chromium-schedule';
 
@@ -75,5 +76,30 @@ describe('getAbsoluteSchedule historical data', () => {
 
     expect(schedule.find((entry) => entry.version === '30.0.0')).toEqual(v30);
     expect(schedule.find((entry) => entry.version === '31.0.0')!.alphaDate).toBe('2030-01-03');
+  });
+});
+
+describe('historical-schedule.json', () => {
+  const entries: Awaited<ReturnType<typeof getAbsoluteSchedule>> = JSON.parse(
+    readFileSync(new URL('./historical-schedule.json', import.meta.url), 'utf8'),
+  );
+
+  test('has contiguous majors in ascending order', () => {
+    expect(entries.map((entry) => entry.version)).toEqual(entries.map((_, i) => `${i + 2}.0.0`));
+  });
+
+  test('has complete and ordered dates', () => {
+    const date = /^\d{4}-\d{2}-\d{2}$/;
+    for (const entry of entries) {
+      if (entry.alphaDate !== null) {
+        expect(entry.alphaDate).toMatch(date);
+        expect(entry.alphaDate <= entry.betaDate).toBe(true);
+      }
+      for (const value of [entry.betaDate, entry.stableDate, entry.eolDate]) {
+        expect(value).toMatch(date);
+      }
+      expect(entry.betaDate <= entry.stableDate).toBe(true);
+      expect(entry.stableDate < entry.eolDate).toBe(true);
+    }
   });
 });
