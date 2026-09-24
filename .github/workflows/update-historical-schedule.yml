@@ -61,6 +61,15 @@ jobs:
               .sort((a, b) => new Date(a.fullDate) - new Date(b.fullDate));
             return first ? toPacificDate(first.fullDate) : null;
           };
+          const lastReleaseDate = (major) => {
+            const [last] = releases
+              .filter(
+                ({ version, fullDate }) =>
+                  version.startsWith(`${major}.`) && !version.includes('-nightly.') && fullDate,
+              )
+              .sort((a, b) => new Date(b.fullDate) - new Date(a.fullDate));
+            return last ? toPacificDate(last.fullDate) : null;
+          };
 
           const historical = JSON.parse(await readFile(FILE, 'utf8'));
           const known = new Set(historical.map(major));
@@ -74,10 +83,16 @@ jobs:
             entry.betaDate = releaseDate(version, 'beta') ?? entry.betaDate;
             entry.stableDate = releaseDate(version) ?? entry.stableDate;
 
-            // EOL is when the major whose planned stable date is this major's planned
-            // EOL date was actually released, falling back to the planned EOL date
+            // EOL is the later of when the major that ended support (the one whose
+            // planned stable date is this major's planned EOL date) was actually
+            // released and the last release on this line, since the final release
+            // sometimes lands days after the next stable. Falls back to the planned date
             const eolMajor = schedule.find(({ stableDate }) => stableDate === entry.eolDate);
-            entry.eolDate = (eolMajor && releaseDate(eolMajor.version)) ?? entry.eolDate;
+            const eolDates = [
+              eolMajor && releaseDate(eolMajor.version),
+              lastReleaseDate(major(entry)),
+            ];
+            entry.eolDate = eolDates.filter(Boolean).sort().at(-1) ?? entry.eolDate;
 
             historical.push(entry);
           }

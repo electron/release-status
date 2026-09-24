@@ -21,9 +21,10 @@ export interface MajorReleaseSchedule {
 type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
 
 // Schedules for EOL majors, which no longer change. Dates are actual release dates in
-// Pacific time rather than the calculated estimates (EOL is the actual release date of
-// the major that ended support, e.g. v27 for v22's extended EOL). These are used as-is
-// instead of being recalculated, and are updated by the `update-historical-schedule` workflow.
+// Pacific time rather than the calculated estimates. EOL is the later of the actual
+// release date of the major that ended support (e.g. v27 for v22's extended EOL) and the
+// last release on the line. These are used as-is instead of being recalculated, and are
+// updated by the `update-historical-schedule` workflow.
 const HISTORICAL_SCHEDULE: AbsoluteMajorReleaseSchedule[] = historicalSchedule;
 
 // Schedule overrides for calculated (non-historical) majors whose dates deviate from the
