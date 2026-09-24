@@ -26,6 +26,10 @@ type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
 // instead of being recalculated, and are updated by the `update-historical-schedule` workflow.
 const HISTORICAL_SCHEDULE: AbsoluteMajorReleaseSchedule[] = historicalSchedule;
 
+// Schedule overrides for calculated (non-historical) majors whose dates deviate from the
+// calculated estimates. Historical majors come from `historical-schedule.json` instead.
+const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = new Map();
+
 interface MajorReleaseGroup {
   major: number;
   releases: ElectronRelease[];
@@ -172,13 +176,19 @@ export const getAbsoluteSchedule = memoize(
         eolDate: '', // Placeholder, will be calculated
       };
 
+      // Apply overrides early so they cascade to dependent calculations (e.g. EOL)
+      const override = SCHEDULE_OVERRIDES.get(entry.version);
+      if (override) {
+        Object.assign(entry, override);
+      }
+
       schedule.set(major, entry);
     }
 
     // Calculate EOL dates
     for (const entry of schedule.values()) {
       if (entry.eolDate !== '') {
-        // Already set by the historical schedule
+        // Already set by the historical schedule or an override
         continue;
       }
 
