@@ -20,11 +20,12 @@ export interface MajorReleaseSchedule {
 
 type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
 
-// Schedules for EOL majors, which no longer change. Dates are actual release dates in
-// Pacific time rather than the calculated estimates. EOL is the later of the actual
-// release date of the major that ended support (e.g. v27 for v22's extended EOL) and the
-// last release on the line. These are used as-is instead of being recalculated, and are
-// updated by the `update-historical-schedule` workflow.
+// Schedules for EOL majors, which no longer change. These are used as-is instead of being
+// recalculated. Majors 2-41 hold actual release dates in Pacific time, with EOL being the
+// later of the actual release date of the major that ended support (e.g. v27 for v22's
+// extended EOL) and the last release on the line. Later majors are added by the
+// `update-historical-schedule` workflow exactly as served by /schedule.json once they
+// have been EOL for a week.
 const HISTORICAL_SCHEDULE: AbsoluteMajorReleaseSchedule[] = historicalSchedule;
 
 // Schedule overrides for calculated (non-historical) majors whose dates deviate from the
@@ -37,10 +38,8 @@ interface MajorReleaseGroup {
   firstStable?: ElectronRelease; // Only used for Chromium milestone extraction
 }
 
-// Determine support window: 4 for v12-15, 3 for the rest
-const getSupportWindow = (major: number): number => {
-  return major >= 12 && major <= 15 ? 4 : 3;
-};
+// Number of supported stable majors
+const SUPPORT_WINDOW = 3;
 
 // Chromium milestones per Electron major: 4 starting with v45, 2 for all prior versions
 const getMilestonesPerMajor = (major: number): number => {
@@ -70,16 +69,21 @@ export const getAbsoluteSchedule = memoize(
     const allReleases = await getReleasesOrUpdate();
 
     const schedule = new Map<number, AbsoluteMajorReleaseSchedule>();
+    const milestoneMap = new Map<number, number>();
     for (const entry of HISTORICAL_SCHEDULE) {
-      schedule.set(parseInt(entry.version.split('.')[0], 10), { ...entry });
+      const major = parseInt(entry.version.split('.')[0], 10);
+      schedule.set(major, { ...entry });
+      milestoneMap.set(major, entry.chromiumVersion);
     }
+    // Every major after the newest historical one is calculated
+    const lastHistoricalMajor = Math.max(...schedule.keys());
 
-    // Group releases by major version (filter to >= 2)
+    // Group releases of calculated (non-historical) majors by major version
     const majorGroups = new Map<number, MajorReleaseGroup>();
 
     for (const release of allReleases) {
       const major = parseSemver(release.version)?.major;
-      if (!major || major < 2) continue;
+      if (!major || major <= lastHistoricalMajor) continue;
 
       if (!majorGroups.has(major)) {
         majorGroups.set(major, { major, releases: [] });
@@ -97,17 +101,13 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // Build milestone map in forward pass
-    const milestoneMap = new Map<number, number>();
+    // Build milestone map in forward pass, continuing from the historical majors
     const sortedMajors = Array.from(majorGroups.keys()).sort((a, b) => a - b);
 
     for (const major of sortedMajors) {
       const group = majorGroups.get(major)!;
-      const historical = schedule.get(major);
 
-      if (historical) {
-        milestoneMap.set(major, historical.chromiumVersion);
-      } else if (group.firstStable) {
+      if (group.firstStable) {
         // Use actual Chromium version from stable release
         const milestone = extractChromiumMilestone(group.firstStable.chrome);
         milestoneMap.set(major, milestone);
@@ -126,42 +126,15 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // Build absolute schedule data for each major not in the historical schedule
+    // Build absolute schedule data for each calculated major
     for (const major of sortedMajors) {
-      if (schedule.has(major)) continue;
-
       const milestone = milestoneMap.get(major)!;
       const chromiumSchedule = await getMilestoneSchedule(milestone);
 
-      // Alpha/Beta pattern:
-      // | ------- | ------------------ | ------------------------- |
-      // | Version | Alpha              | Beta                      |
-      // | ------- | ------------------ | ------------------------- |
-      // | v2-5    | None               | Historical schedule       |
-      // | v6-14   | None               | Prev stable + 2 days      |
-      // | v15+    | Prev stable + 2    | Chromium dates + offset   |
-      // | ------- | ------------------ | ------------------------- |
-      let alphaDate: string | null = null;
-      let betaDate: string;
-      if (major < 6) {
-        // (no alpha)
-        betaDate = ''; // Only known from the historical schedule
-      } else {
-        const prevStablePlus2 = offsetDays(schedule.get(major - 1)!.stableDate, 2);
-
-        if (major < 15) {
-          // (no alpha)
-          betaDate = prevStablePlus2;
-        } else {
-          alphaDate = prevStablePlus2;
-
-          // Chromium beta offset pattern:
-          // - M113 and below: beta on Thursdays, offset -2 to Tuesday
-          // - M114 and above: beta on Wednesdays, offset -1 to Tuesday
-          const betaOffset = milestone <= 113 ? -2 : -1;
-          betaDate = offsetDays(chromiumSchedule.earliestBeta, betaOffset);
-        }
-      }
+      // Alpha is two days after the previous major's stable. Beta follows Chromium's
+      // earliest beta (a Wednesday), offset by -1 to land on Tuesday
+      const alphaDate = offsetDays(schedule.get(major - 1)!.stableDate, 2);
+      const betaDate = offsetDays(chromiumSchedule.earliestBeta, -1);
 
       const group = majorGroups.get(major)!;
       const latestRelease = group.releases[0];
@@ -194,7 +167,7 @@ export const getAbsoluteSchedule = memoize(
       }
 
       const major = parseInt(entry.version.split('.')[0], 10);
-      const eolMajor = major + getSupportWindow(major);
+      const eolMajor = major + SUPPORT_WINDOW;
       const eolEntry = schedule.get(eolMajor);
 
       if (eolEntry) {
@@ -236,8 +209,7 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
   );
 
   const absoluteData = await getAbsoluteSchedule();
-  const supportWindow = getSupportWindow(latestStableMajor);
-  const minActiveMajor = latestStableMajor - supportWindow + 1;
+  const minActiveMajor = latestStableMajor - SUPPORT_WINDOW + 1;
 
   const schedule: MajorReleaseSchedule[] = absoluteData.map((entry) => {
     const major = parseInt(entry.version.split('.')[0], 10);
