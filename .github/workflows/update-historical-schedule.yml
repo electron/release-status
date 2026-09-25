@@ -3,7 +3,8 @@ name: Update Historical Schedule
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 18 * * 1'
+    - cron: '0 13 * * 1'
+      timezone: 'America/Los_Angeles'
 
 permissions: {}
 
