@@ -38,8 +38,10 @@ interface MajorReleaseGroup {
   firstStable?: ElectronRelease; // Only used for Chromium milestone extraction
 }
 
-// Number of supported stable majors
-const SUPPORT_WINDOW = 3;
+// Number of supported stable majors, keyed off the major in case it changes again
+const getSupportWindow = (_major: number): number => {
+  return 3;
+};
 
 // Chromium milestones per Electron major: 4 starting with v45, 2 for all prior versions
 const getMilestonesPerMajor = (major: number): number => {
@@ -167,7 +169,7 @@ export const getAbsoluteSchedule = memoize(
       }
 
       const major = parseInt(entry.version.split('.')[0], 10);
-      const eolMajor = major + SUPPORT_WINDOW;
+      const eolMajor = major + getSupportWindow(major);
       const eolEntry = schedule.get(eolMajor);
 
       if (eolEntry) {
@@ -209,7 +211,8 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
   );
 
   const absoluteData = await getAbsoluteSchedule();
-  const minActiveMajor = latestStableMajor - SUPPORT_WINDOW + 1;
+  const supportWindow = getSupportWindow(latestStableMajor);
+  const minActiveMajor = latestStableMajor - supportWindow + 1;
 
   const schedule: MajorReleaseSchedule[] = absoluteData.map((entry) => {
     const major = parseInt(entry.version.split('.')[0], 10);
