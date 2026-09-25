@@ -15,16 +15,16 @@ jobs:
     environment:
       name: auto-updater
       deployment: false
+    permissions:
+      id-token: write # for secret service access
     steps:
-      - name: Generate GitHub App token (updater app)
-        uses: electron/github-app-auth-action@5f70a3726af01b612f29aac96d05aa524389c9e9 # v2.1.0
-        id: generate-token
-        with:
-          creds: ${{ secrets.GH_APP_CREDS }}
+      - name: Get GitHub token (schedule updater)
+        id: secret-service
+        uses: electron/secret-service-action@3476425e8b30555aac15b1b7096938e254b0e155 # v1.0.0
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ fromJSON(steps.secret-service.outputs.secrets || '{}').SCHEDULE_UPDATER_GH_TOKEN }}
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -70,12 +70,12 @@ jobs:
           fail-on-no-changes: false
           message: 'chore: update historical release schedule'
           ref: "chore/update-historical-schedule-${{ hashFiles('app/data/historical-schedule.json') }}"
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ fromJSON(steps.secret-service.outputs.secrets || '{}').SCHEDULE_UPDATER_GH_TOKEN }}
       - name: Create pull request
         if: ${{ steps.commit-changes.outputs.sha }}
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_TOKEN: ${{ fromJSON(steps.secret-service.outputs.secrets || '{}').SCHEDULE_UPDATER_GH_TOKEN }}
           BRANCH: "chore/update-historical-schedule-${{ hashFiles('app/data/historical-schedule.json') }}"
         run: |
           gh pr create \
