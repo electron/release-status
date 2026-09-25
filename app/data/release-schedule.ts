@@ -84,6 +84,9 @@ export const getAbsoluteSchedule = memoize(
     const majorGroups = new Map<number, MajorReleaseGroup>();
 
     for (const release of allReleases) {
+      // Most releases are of historical majors, so skip those before the costlier semver parse
+      if (parseInt(release.version, 10) <= lastHistoricalMajor) continue;
+
       const major = parseSemver(release.version)?.major;
       if (!major || major <= lastHistoricalMajor) continue;
 
