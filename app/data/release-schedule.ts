@@ -128,10 +128,29 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
+    // Fetch every Chromium milestone schedule the calculation needs concurrently, so an
+    // uncached calculation costs one round trip instead of one per milestone: one milestone per
+    // calculated major, plus those of the future majors that extrapolated EOL dates land on
+    const maxMajor = Math.max(lastHistoricalMajor, ...sortedMajors);
+    const milestones = new Set(sortedMajors.map((major) => milestoneMap.get(major)!));
+    for (const major of sortedMajors) {
+      const eolMajor = major + getSupportWindow(major);
+      if (eolMajor > maxMajor && !SCHEDULE_OVERRIDES.get(`${major}.0.0`)?.eolDate) {
+        milestones.add(milestoneMap.get(maxMajor)! + calculateMilestoneOffset(maxMajor, eolMajor));
+      }
+    }
+    const chromiumSchedules = new Map(
+      await Promise.all(
+        Array.from(milestones, async (milestone) => {
+          return [milestone, await getMilestoneSchedule(milestone)] as const;
+        }),
+      ),
+    );
+
     // Build absolute schedule data for each calculated major
     for (const major of sortedMajors) {
       const milestone = milestoneMap.get(major)!;
-      const chromiumSchedule = await getMilestoneSchedule(milestone);
+      const chromiumSchedule = chromiumSchedules.get(milestone)!;
 
       // Alpha is two days after the previous major's stable. Beta follows Chromium's
       // earliest beta (a Wednesday), offset by -1 to land on Tuesday
@@ -176,10 +195,11 @@ export const getAbsoluteSchedule = memoize(
         entry.eolDate = eolEntry.stableDate;
       } else {
         // Extrapolate for future versions
-        const maxMajor = Math.max(...Array.from(schedule.keys()));
         const maxEntry = schedule.get(maxMajor)!;
         const milestone = maxEntry.chromiumVersion + calculateMilestoneOffset(maxMajor, eolMajor);
-        const eolSchedule = await getMilestoneSchedule(milestone);
+        // Prefetched above, unless an override changed the newest major's Chromium version
+        const eolSchedule =
+          chromiumSchedules.get(milestone) ?? (await getMilestoneSchedule(milestone));
         entry.eolDate = eolSchedule.stableDate;
       }
     }
