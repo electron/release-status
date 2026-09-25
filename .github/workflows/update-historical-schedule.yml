@@ -27,7 +27,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version-file: '.nvmrc'
+          # Node.js 26 for the Temporal API
+          node-version: 26
       - name: Add newly EOL majors
         run: |
           node --input-type=module <<'EOF'
@@ -43,21 +44,16 @@ jobs:
 
           // Only record a major once it has been EOL for at least a week (in Pacific
           // time, the schedule's timezone), so late changes to its dates are captured
-          const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(
-            new Date(),
-          );
-          const weekAfter = (date) => {
-            const d = new Date(`${date}T00:00:00Z`);
-            d.setUTCDate(d.getUTCDate() + 7);
-            return d.toISOString().split('T')[0];
-          };
+          const today = Temporal.Now.plainDateISO('America/Los_Angeles');
+          const isWeekPastEol = ({ eolDate }) =>
+            Temporal.PlainDate.compare(today, Temporal.PlainDate.from(eolDate).add({ days: 7 })) >= 0;
 
           const historical = JSON.parse(await readFile(FILE, 'utf8'));
           const known = new Set(historical.map(major));
 
           // Only add new majors, existing entries are the source of truth
           for (const { status, ...entry } of await response.json()) {
-            if (status === 'eol' && !known.has(major(entry)) && today >= weekAfter(entry.eolDate)) {
+            if (status === 'eol' && !known.has(major(entry)) && isWeekPastEol(entry)) {
               historical.push(entry);
             }
           }
