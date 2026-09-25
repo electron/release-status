@@ -3,6 +3,14 @@ import Keyv, { Store } from '@keyvhq/core';
 import KeyvFile from '@keyvhq/file';
 import KeyvRedis from '@keyvhq/redis';
 import * as path from 'node:path';
+import {
+  expiresIn,
+  now,
+  since,
+  timedDeserialize,
+  timedSerialize,
+  timingLog,
+} from './schedule-timing';
 
 /**
  * If you made some changes to things in the cache that are not
@@ -39,17 +47,23 @@ class MultiCache implements Store<any> {
   }
 
   async get(key: string) {
+    const start = now();
     let res = await this.local.get(key);
+    let layer = res === undefined ? 'miss' : 'local';
 
     if (res === undefined) {
       const data = await this.remote.get(key);
 
       if (data) {
         res = data;
+        layer = 'remote';
         this.local.set(key, data);
       }
     }
 
+    timingLog(
+      `cache get key=${key} layer=${layer} expiresIn=${expiresIn(res)} took=${since(start)}`,
+    );
     return res;
   }
 
@@ -62,7 +76,18 @@ class MultiCache implements Store<any> {
   }
 
   async set(key: string, value: any) {
-    await Promise.all([this.local.set(key, value), this.remote.set(key, value)]);
+    const start = now();
+    const local = this.local.set(key, value);
+    const localDone = now();
+    // NB: the file store (local dev) rewrites the whole .kvcache synchronously on every set
+    const remote = this.remote.set(key, value);
+    const remoteSync = now();
+    await Promise.all([local, remote]);
+    timingLog(
+      `cache set key=${key} bytes=${typeof value === 'string' ? value.length : 'n/a'} ` +
+        `local=${(localDone - start).toFixed(1)}ms remoteSync=${(remoteSync - localDone).toFixed(1)}ms ` +
+        `total=${since(start)}`,
+    );
     return true;
   }
 
@@ -126,10 +151,15 @@ const dataStore = (() => {
   }
 })();
 
-export const getKeyvCache = (namespace: string) =>
-  process.env.NO_CACHE
-    ? new Keyv()
-    : new Keyv({
-        store: dataStore,
-        namespace: `cache-v${GLOBAL_CACHE_VERSION}:${namespace}`,
-      });
+export const getKeyvCache = (namespace: string) => {
+  if (process.env.NO_CACHE) return new Keyv();
+  const keyv = new Keyv({
+    store: dataStore,
+    namespace: `cache-v${GLOBAL_CACHE_VERSION}:${namespace}`,
+  });
+  // TEMPORARY [schedule-timing]: time (de)serialization of cached values
+  const timed = keyv as any;
+  timed.serialize = timedSerialize(namespace, timed.serialize);
+  timed.deserialize = timedDeserialize(namespace, timed.deserialize);
+  return keyv;
+};

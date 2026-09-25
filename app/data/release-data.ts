@@ -1,6 +1,7 @@
 import memoize from '@keyvhq/memoize';
 import { compare as semverCompare, eq as semverEq, parse as semverParse } from 'semver';
 import { getKeyvCache } from './cache';
+import { now, since, timingLog } from './schedule-timing';
 
 export type ElectronRelease = {
   version: string;
@@ -18,12 +19,21 @@ export type ElectronRelease = {
 
 export const getReleasesOrUpdate = memoize(
   async () => {
+    const start = now();
+    timingLog('releases fetch start');
     const response = await fetch('https://electronjs.org/headers/index.json');
+    timingLog(`releases fetch headers status=${response.status} ttfb=${since(start)}`);
     if (response.status !== 200) {
       throw new Error('Failed to fetch releases');
     }
-    const releases = (await response.json()) as ElectronRelease[];
-    return releases
+    const bodyStart = now();
+    const body = await response.text();
+    timingLog(`releases fetch body bytes=${body.length} took=${since(bodyStart)}`);
+    const parseStart = now();
+    const releases = JSON.parse(body) as ElectronRelease[];
+    timingLog(`releases JSON.parse count=${releases.length} took=${since(parseStart)}`);
+    const sortStart = now();
+    const sorted = releases
       .sort((a, b) => {
         const aParsed = semverParse(a.version);
         const bParsed = semverParse(b.version);
@@ -46,6 +56,8 @@ export const getReleasesOrUpdate = memoize(
         ...r,
         v8: r.v8.replace('-electron.0', ''),
       }));
+    timingLog(`releases sort+map took=${since(sortStart)} total=${since(start)}`);
+    return sorted;
   },
   getKeyvCache('electron-releases'),
   {
