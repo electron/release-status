@@ -1,0 +1,85 @@
+name: Update Historical Schedule
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 13 * * 1'
+      timezone: 'America/Los_Angeles'
+
+permissions: {}
+
+jobs:
+  update_historical_schedule:
+    name: Update Historical Schedule
+    runs-on: ubuntu-latest
+    environment:
+      name: schedule-updater
+      deployment: false
+    permissions:
+      id-token: write # for secret service access
+    steps:
+      - name: Get GitHub token (schedule updater)
+        id: secret-service
+        uses: electron/secret-service-action@3476425e8b30555aac15b1b7096938e254b0e155 # v1.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          token: ${{ fromJSON(steps.secret-service.outputs.secrets || '{}').SCHEDULE_UPDATER_GH_TOKEN }}
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          # Node.js 26 for the Temporal API
+          node-version: 26
+      - name: Add newly EOL majors
+        run: |
+          node --input-type=module <<'EOF'
+          import { readFile, writeFile } from 'node:fs/promises';
+
+          const FILE = 'app/data/historical-schedule.json';
+          const major = (entry) => parseInt(entry.version, 10);
+
+          const response = await fetch('https://releases.electronjs.org/schedule.json');
+          if (!response.ok) {
+            throw new Error(`Failed to fetch schedule: ${response.status}`);
+          }
+
+          // Only record a major once it has been EOL for at least a week (in Pacific
+          // time, the schedule's timezone), so late changes to its dates are captured
+          const today = Temporal.Now.plainDateISO('America/Los_Angeles');
+          const isWeekPastEol = ({ eolDate }) =>
+            Temporal.PlainDate.compare(today, Temporal.PlainDate.from(eolDate).add({ days: 7 })) >= 0;
+
+          const historical = JSON.parse(await readFile(FILE, 'utf8'));
+          const known = new Set(historical.map(major));
+
+          // Only add new majors, existing entries are the source of truth
+          for (const { status, ...entry } of await response.json()) {
+            if (status === 'eol' && !known.has(major(entry)) && isWeekPastEol(entry)) {
+              historical.push(entry);
+            }
+          }
+
+          historical.sort((a, b) => major(a) - major(b));
+          await writeFile(FILE, JSON.stringify(historical, null, 2) + '\n');
+          EOF
+          git add app/data/historical-schedule.json
+      - name: Commit changes to historical schedule
+        id: commit-changes
+        uses: dsanders11/github-app-commit-action@2bbcd331016d8c950b05a24b56e7eb9cb50d545e # v2.1.0
+        with:
+          fail-on-no-changes: false
+          message: 'chore: update historical release schedule'
+          ref: "chore/update-historical-schedule-${{ hashFiles('app/data/historical-schedule.json') }}"
+          token: ${{ fromJSON(steps.secret-service.outputs.secrets || '{}').SCHEDULE_UPDATER_GH_TOKEN }}
+      - name: Create pull request
+        if: ${{ steps.commit-changes.outputs.sha }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ fromJSON(steps.secret-service.outputs.secrets || '{}').SCHEDULE_UPDATER_GH_TOKEN }}
+          BRANCH: "chore/update-historical-schedule-${{ hashFiles('app/data/historical-schedule.json') }}"
+        run: |
+          gh pr create \
+            --title "chore: update historical release schedule" \
+            --body "Automated PR to add newly EOL majors to historical-schedule.json" \
+            --head "$BRANCH" \
+            --base main

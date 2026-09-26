@@ -1,9 +1,10 @@
 import { parse as parseSemver } from 'semver';
 import memoize from '@keyvhq/memoize';
 import { ElectronRelease, getReleasesOrUpdate } from './release-data';
-import { extractChromiumMilestone, getPrereleaseType } from '~/helpers/version';
+import { extractChromiumMilestone, getPrereleaseType } from '../helpers/version';
 import { getMilestoneSchedule } from './dash/chromium-schedule';
 import { getKeyvCache } from './cache';
+import historicalSchedule from './historical-schedule.json';
 
 export interface MajorReleaseSchedule {
   version: string; // `${major}.0.0`
@@ -19,101 +20,27 @@ export interface MajorReleaseSchedule {
 
 type AbsoluteMajorReleaseSchedule = Omit<MajorReleaseSchedule, 'status'>;
 
+// Schedules for EOL majors, which no longer change. These are used as-is instead of being
+// recalculated. Majors 2-41 hold actual release dates in Pacific time, with EOL being the
+// later of the actual release date of the major that ended support (e.g. v27 for v22's
+// extended EOL) and the last release on the line. Later majors are added by the
+// `update-historical-schedule` workflow exactly as served by /schedule.json once they
+// have been EOL for a week.
+const HISTORICAL_SCHEDULE: AbsoluteMajorReleaseSchedule[] = historicalSchedule;
+
+// Schedule overrides for calculated (non-historical) majors whose dates deviate from the
+// calculated estimates. Historical majors come from `historical-schedule.json` instead.
+const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = new Map();
+
 interface MajorReleaseGroup {
   major: number;
   releases: ElectronRelease[];
   firstStable?: ElectronRelease; // Only used for Chromium milestone extraction
 }
 
-// Schedule overrides for dates that deviate from calculated estimates:
-// - v2-v5: Pre-Chromium alignment era (before standardized release cadence afaik)
-// - v6-v14: Transition to modern release process
-// - v15: Introduction of alpha releases
-// - v16+: Minor adjustments from Chromium schedule predictions
-const SCHEDULE_OVERRIDES: Map<string, Partial<AbsoluteMajorReleaseSchedule>> = new Map([
-  [
-    '2.0.0',
-    {
-      branch: '2-0-x',
-      betaDate: '2018-02-21',
-      stableDate: '2018-05-01',
-    },
-  ],
-  [
-    '3.0.0',
-    {
-      branch: '3-0-x',
-      betaDate: '2018-06-21',
-      stableDate: '2018-09-18',
-    },
-  ],
-  [
-    '4.0.0',
-    {
-      branch: '4-0-x',
-      betaDate: '2018-10-11',
-      stableDate: '2018-12-20',
-    },
-  ],
-  [
-    '5.0.0',
-    {
-      branch: '5-0-x',
-      betaDate: '2019-01-22',
-      stableDate: '2019-04-23',
-    },
-  ],
-  [
-    '6.0.0',
-    {
-      branch: '6-0-x',
-      betaDate: '2019-04-25',
-    },
-  ],
-  [
-    '7.0.0',
-    {
-      branch: '7-0-x',
-    },
-  ],
-  [
-    '15.0.0',
-    {
-      alphaDate: '2021-07-20',
-      betaDate: '2021-09-01',
-    },
-  ],
-  [
-    '16.0.0',
-    {
-      betaDate: '2021-10-20',
-    },
-  ],
-  [
-    '22.0.0',
-    {
-      // Policy exception: extended EOL to support extended end-of-life for Windows 7/8/8.1
-      eolDate: '2023-10-10',
-    },
-  ],
-  [
-    '28.0.0',
-    {
-      alphaDate: '2023-10-11',
-      betaDate: '2023-11-06',
-    },
-  ],
-  [
-    '32.0.0',
-    {
-      alphaDate: '2024-06-14',
-    },
-  ],
-]);
-
-// Determine support window: 4 for v12-15, 3 for the rest
-const getSupportWindow = (major: number): number => {
-  return major >= 12 && major <= 15 ? 4 : 3;
+// Number of supported stable majors, keyed off the major in case it changes again
+const getSupportWindow = (_major: number): number => {
+  return 3;
 };
 
 // Chromium milestones per Electron major: 4 starting with v45, 2 for all prior versions
@@ -143,12 +70,22 @@ export const getAbsoluteSchedule = memoize(
   async (): Promise<AbsoluteMajorReleaseSchedule[]> => {
     const allReleases = await getReleasesOrUpdate();
 
-    // Group releases by major version (filter to >= 2)
+    const schedule = new Map<number, AbsoluteMajorReleaseSchedule>();
+    const milestoneMap = new Map<number, number>();
+    for (const entry of HISTORICAL_SCHEDULE) {
+      const major = parseInt(entry.version.split('.')[0], 10);
+      schedule.set(major, { ...entry });
+      milestoneMap.set(major, entry.chromiumVersion);
+    }
+    // Every major after the newest historical one is calculated
+    const lastHistoricalMajor = Math.max(...schedule.keys());
+
+    // Group releases of calculated (non-historical) majors by major version
     const majorGroups = new Map<number, MajorReleaseGroup>();
 
     for (const release of allReleases) {
       const major = parseSemver(release.version)?.major;
-      if (!major || major < 2) continue;
+      if (!major || major <= lastHistoricalMajor) continue;
 
       if (!majorGroups.has(major)) {
         majorGroups.set(major, { major, releases: [] });
@@ -166,8 +103,7 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // Build milestone map in forward pass
-    const milestoneMap = new Map<number, number>();
+    // Build milestone map in forward pass, continuing from the historical majors
     const sortedMajors = Array.from(majorGroups.keys()).sort((a, b) => a - b);
 
     for (const major of sortedMajors) {
@@ -192,42 +128,15 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // Build absolute schedule data for each major
-    const schedule = new Map<number, AbsoluteMajorReleaseSchedule>();
-
+    // Build absolute schedule data for each calculated major
     for (const major of sortedMajors) {
       const milestone = milestoneMap.get(major)!;
       const chromiumSchedule = await getMilestoneSchedule(milestone);
 
-      // Alpha/Beta pattern:
-      // | ------- | ------------------ | ------------------------- |
-      // | Version | Alpha              | Beta                      |
-      // | ------- | ------------------ | ------------------------- |
-      // | v2-5    | None               | History (overrides)       |
-      // | v6-14   | None               | Prev stable + 2 days      |
-      // | v15+    | Prev stable + 2    | Chromium dates + offset   |
-      // | ------- | ------------------ | ------------------------- |
-      let alphaDate: string | null = null;
-      let betaDate: string;
-      if (major < 6) {
-        // (no alpha)
-        betaDate = ''; // Will be set by override
-      } else {
-        const prevStablePlus2 = offsetDays(schedule.get(major - 1)!.stableDate, 2);
-
-        if (major < 15) {
-          // (no alpha)
-          betaDate = prevStablePlus2;
-        } else {
-          alphaDate = prevStablePlus2;
-
-          // Chromium beta offset pattern:
-          // - M113 and below: beta on Thursdays, offset -2 to Tuesday
-          // - M114 and above: beta on Wednesdays, offset -1 to Tuesday
-          const betaOffset = milestone <= 113 ? -2 : -1;
-          betaDate = offsetDays(chromiumSchedule.earliestBeta, betaOffset);
-        }
-      }
+      // Alpha is two days after the previous major's stable. Beta follows Chromium's
+      // earliest beta (a Wednesday), offset by -1 to land on Tuesday
+      const alphaDate = offsetDays(schedule.get(major - 1)!.stableDate, 2);
+      const betaDate = offsetDays(chromiumSchedule.earliestBeta, -1);
 
       const group = majorGroups.get(major)!;
       const latestRelease = group.releases[0];
@@ -255,7 +164,7 @@ export const getAbsoluteSchedule = memoize(
     // Calculate EOL dates
     for (const entry of schedule.values()) {
       if (entry.eolDate !== '') {
-        // Already set via override
+        // Already set by the historical schedule or an override
         continue;
       }
 
@@ -275,8 +184,9 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
-    // NB: `Map.values()` iterates in insertion order (ascending major)
-    return Array.from(schedule.values());
+    return Array.from(schedule.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([, entry]) => entry);
   },
   getKeyvCache('absolute-schedule'),
   {
