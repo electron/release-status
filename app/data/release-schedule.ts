@@ -5,6 +5,11 @@ import { extractChromiumMilestone, getPrereleaseType } from '../helpers/version'
 import { getMilestoneSchedule } from './dash/chromium-schedule';
 import { getKeyvCache } from './cache';
 import historicalSchedule from './historical-schedule.json';
+import { milestoneFetchedAt, now, since, timingLog } from './schedule-timing';
+
+// TEMPORARY [schedule-timing]: counts absolute schedule computations, to tell a cache hit
+// (no computation) from a stale hit (computation still running in the background)
+const absoluteComputes = { started: 0, finished: 0 };
 
 export interface MajorReleaseSchedule {
   version: string; // `${major}.0.0`
@@ -68,7 +73,11 @@ const offsetDays = (dateStr: string, days: number): string => {
  */
 export const getAbsoluteSchedule = memoize(
   async (): Promise<AbsoluteMajorReleaseSchedule[]> => {
+    const calcStart = now();
+    absoluteComputes.started++;
+    timingLog('getAbsoluteSchedule compute start');
     const allReleases = await getReleasesOrUpdate();
+    timingLog(`getAbsoluteSchedule getReleasesOrUpdate took=${since(calcStart)}`);
 
     const schedule = new Map<number, AbsoluteMajorReleaseSchedule>();
     const milestoneMap = new Map<number, number>();
@@ -84,6 +93,9 @@ export const getAbsoluteSchedule = memoize(
     const majorGroups = new Map<number, MajorReleaseGroup>();
 
     for (const release of allReleases) {
+      // Most releases are of historical majors, so skip those before the costlier semver parse
+      if (parseInt(release.version, 10) <= lastHistoricalMajor) continue;
+
       const major = parseSemver(release.version)?.major;
       if (!major || major <= lastHistoricalMajor) continue;
 
@@ -128,10 +140,40 @@ export const getAbsoluteSchedule = memoize(
       }
     }
 
+    // Fetch every Chromium milestone schedule the calculation needs concurrently, so an
+    // uncached calculation costs one round trip instead of one per milestone: one milestone per
+    // calculated major, plus those of the future majors that extrapolated EOL dates land on
+    const maxMajor = Math.max(lastHistoricalMajor, ...sortedMajors);
+    const milestones = new Set(sortedMajors.map((major) => milestoneMap.get(major)!));
+    for (const major of sortedMajors) {
+      const eolMajor = major + getSupportWindow(major);
+      if (eolMajor > maxMajor && !SCHEDULE_OVERRIDES.get(`${major}.0.0`)?.eolDate) {
+        milestones.add(milestoneMap.get(maxMajor)! + calculateMilestoneOffset(maxMajor, eolMajor));
+      }
+    }
+    const prefetchStart = now();
+    timingLog(`getAbsoluteSchedule prefetch start milestones=${Array.from(milestones).join(',')}`);
+    const chromiumSchedules = new Map(
+      await Promise.all(
+        Array.from(milestones, async (milestone) => {
+          const lookupStart = now();
+          const result = await getMilestoneSchedule(milestone);
+          const source =
+            (milestoneFetchedAt.get(milestone) ?? -1) >= lookupStart ? 'network' : 'cache';
+          timingLog(
+            `chromium M${milestone} lookup start=+${(lookupStart - calcStart).toFixed(1)}ms ` +
+              `end=+${(now() - calcStart).toFixed(1)}ms took=${since(lookupStart)} source=${source}`,
+          );
+          return [milestone, result] as const;
+        }),
+      ),
+    );
+    timingLog(`getAbsoluteSchedule prefetch Promise.all took=${since(prefetchStart)}`);
+
     // Build absolute schedule data for each calculated major
     for (const major of sortedMajors) {
       const milestone = milestoneMap.get(major)!;
-      const chromiumSchedule = await getMilestoneSchedule(milestone);
+      const chromiumSchedule = chromiumSchedules.get(milestone)!;
 
       // Alpha is two days after the previous major's stable. Beta follows Chromium's
       // earliest beta (a Wednesday), offset by -1 to land on Tuesday
@@ -176,17 +218,21 @@ export const getAbsoluteSchedule = memoize(
         entry.eolDate = eolEntry.stableDate;
       } else {
         // Extrapolate for future versions
-        const maxMajor = Math.max(...Array.from(schedule.keys()));
         const maxEntry = schedule.get(maxMajor)!;
         const milestone = maxEntry.chromiumVersion + calculateMilestoneOffset(maxMajor, eolMajor);
-        const eolSchedule = await getMilestoneSchedule(milestone);
+        // Prefetched above, unless an override changed the newest major's Chromium version
+        const eolSchedule =
+          chromiumSchedules.get(milestone) ?? (await getMilestoneSchedule(milestone));
         entry.eolDate = eolSchedule.stableDate;
       }
     }
 
-    return Array.from(schedule.entries())
+    const result = Array.from(schedule.entries())
       .sort(([a], [b]) => a - b)
       .map(([, entry]) => entry);
+    absoluteComputes.finished++;
+    timingLog(`getAbsoluteSchedule compute done took=${since(calcStart)}`);
+    return result;
   },
   getKeyvCache('absolute-schedule'),
   {
@@ -201,8 +247,10 @@ export const getAbsoluteSchedule = memoize(
  * Get relative schedule data (time-dependent, includes status and EOL).
  */
 export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
+  const start = now();
   // Find latest major version
   const allReleases = await getReleasesOrUpdate();
+  timingLog(`getRelativeSchedule getReleasesOrUpdate took=${since(start)}`);
   const latestStableMajor = parseInt(
     allReleases
       .find((release) => getPrereleaseType(release.version) === 'stable')
@@ -210,7 +258,18 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
     10,
   );
 
+  const absoluteStart = now();
+  const { started, finished } = absoluteComputes;
   const absoluteData = await getAbsoluteSchedule();
+  const cacheState =
+    absoluteComputes.finished > finished
+      ? 'miss (computed)'
+      : absoluteComputes.started > started
+        ? 'stale (served cached, recomputing in background)'
+        : 'hit';
+  timingLog(
+    `getRelativeSchedule getAbsoluteSchedule took=${since(absoluteStart)} cache=${cacheState}`,
+  );
   const supportWindow = getSupportWindow(latestStableMajor);
   const minActiveMajor = latestStableMajor - supportWindow + 1;
 
@@ -237,9 +296,11 @@ export async function getRelativeSchedule(): Promise<MajorReleaseSchedule[]> {
   });
 
   // Sort descending by major version
-  return schedule.sort((a, b) => {
+  const sorted = schedule.sort((a, b) => {
     const aMajor = parseInt(a.version.split('.')[0], 10);
     const bMajor = parseInt(b.version.split('.')[0], 10);
     return bMajor - aMajor;
   });
+  timingLog(`getRelativeSchedule total took=${since(start)}`);
+  return sorted;
 }

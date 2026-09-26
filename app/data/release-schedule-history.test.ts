@@ -117,6 +117,36 @@ describe('getAbsoluteSchedule', () => {
     expect(find(schedule, 46).branch).toBe('46-x-y');
   });
 
+  test('looks up each Chromium milestone once, all concurrently', async () => {
+    const lookup = vi.mocked(getMilestoneSchedule).getMockImplementation()!;
+    let inFlight = 0;
+    let maxInFlight = 0;
+    vi.mocked(getMilestoneSchedule)
+      .mockClear()
+      .mockImplementation(async (milestone) => {
+        maxInFlight = Math.max(maxInFlight, ++inFlight);
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        inFlight--;
+        return lookup(milestone);
+      });
+
+    try {
+      await getAbsoluteSchedule();
+    } finally {
+      vi.mocked(getMilestoneSchedule).mockImplementation(lookup);
+    }
+
+    const milestones = vi.mocked(getMilestoneSchedule).mock.calls.map(([milestone]) => milestone);
+    // v42-v46, plus v47-v49 for the extrapolated EOL dates of v44-v46
+    expect([...milestones].sort((a, b) => a - b)).toEqual([148, 150, 152, 156, 160, 164, 168, 172]);
+    expect(maxInFlight).toBe(milestones.length);
+  });
+
+  test('propagates Chromium milestone lookup failures', async () => {
+    vi.mocked(getMilestoneSchedule).mockRejectedValueOnce(new Error('chromiumdash is down'));
+    await expect(getAbsoluteSchedule()).rejects.toThrow('chromiumdash is down');
+  });
+
   test('extrapolates EOL dates past the newest known major', async () => {
     const schedule = await getAbsoluteSchedule();
     // v44 EOL is v47 stable: milestone 160 (v46) + 4

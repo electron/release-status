@@ -1,5 +1,6 @@
 import memoize from '@keyvhq/memoize';
 import { getKeyvCache } from '../cache';
+import { milestoneFetchedAt, now, since, timingLog } from '../schedule-timing';
 
 export interface ChromiumMilestoneSchedule {
   earliestBeta: string; // YYYY-MM-DD
@@ -21,8 +22,13 @@ interface ChromiumDashResponse {
  */
 export const getMilestoneSchedule = memoize(
   async (milestone: number): Promise<ChromiumMilestoneSchedule> => {
+    const start = now();
+    timingLog(`chromium M${milestone} fetch start`);
     const response = await fetch(
       `https://chromiumdash.appspot.com/fetch_milestone_schedule?mstone=${milestone}`,
+    );
+    timingLog(
+      `chromium M${milestone} fetch headers status=${response.status} ttfb=${since(start)}`,
     );
 
     if (!response.ok) {
@@ -31,7 +37,10 @@ export const getMilestoneSchedule = memoize(
       );
     }
 
-    const data = (await response.json()) as ChromiumDashResponse;
+    const body = await response.text();
+    timingLog(`chromium M${milestone} fetch done bytes=${body.length} total=${since(start)}`);
+    milestoneFetchedAt.set(milestone, now());
+    const data = JSON.parse(body) as ChromiumDashResponse;
 
     if (!data.mstones || !Array.isArray(data.mstones) || data.mstones.length === 0) {
       throw new Error(`No schedule data found for Chromium milestone ${milestone}`);
