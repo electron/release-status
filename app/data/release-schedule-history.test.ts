@@ -101,7 +101,7 @@ describe('getAbsoluteSchedule', () => {
       version: '42.0.0',
       branch: '42-x-y',
       alphaDate: '2026-03-12', // v41 stable + 2 days
-      betaDate: '2026-04-07', // Chromium earliest beta - 1 day
+      betaDate: '2026-04-09', // Chromium earliest beta + 1 day
       stableDate: '2026-05-05',
       chromiumVersion: 148,
       nodeVersion: 'node-42.0.0',
