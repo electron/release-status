@@ -134,9 +134,9 @@ export const getAbsoluteSchedule = memoize(
       const chromiumSchedule = await getMilestoneSchedule(milestone);
 
       // Alpha is two days after the previous major's stable. Beta follows Chromium's
-      // earliest beta (a Wednesday), offset by -1 to land on Tuesday
+      // earliest beta (a Wednesday), offset by +1 to land on Thursday
       const alphaDate = offsetDays(schedule.get(major - 1)!.stableDate, 2);
-      const betaDate = offsetDays(chromiumSchedule.earliestBeta, -1);
+      const betaDate = offsetDays(chromiumSchedule.earliestBeta, 1);
 
       const group = majorGroups.get(major)!;
       const latestRelease = group.releases[0];
