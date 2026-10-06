@@ -47,3 +47,23 @@ jobs:
       run: yarn typecheck
     - name: 'Test'
       run: yarn test
+  required-ci:
+    needs:
+      - build
+      - test
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: ${{ always() }}
+    steps:
+      - name: Fail if any required job failed or was cancelled
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        env:
+          BUILD_RESULT: ${{ needs.build.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          echo "One or more required jobs did not succeed:"
+          echo "  build: $BUILD_RESULT"
+          echo "  test: $TEST_RESULT"
+          exit 1
+      - name: We are done
+        run: echo "Hello World"
