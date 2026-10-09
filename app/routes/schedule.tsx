@@ -213,9 +213,9 @@ export default function Schedule() {
         <p>
           Release dates are goals and may be adjusted at any time for significant reasons, such as
           security bugfixes. Prerelease dependency versions (Chromium, Node.js) are estimates and
-          may be upgraded before the stable release. Beta dates are targets: beta.1 is published
-          automatically once Electron's Chromium version reaches Chromium's beta version, which can
-          be a few days after the listed date.
+          may be upgraded before the stable release. A major's first beta is published automatically
+          once Electron's Chromium version reaches Chromium's beta version, which can be a few days
+          after the goal date.
         </p>
       </div>
     </div>
