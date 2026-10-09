@@ -19,15 +19,24 @@ export const meta: MetaFunction = () => [
 function FormatDate({
   children: releaseDate,
   timeZone,
+  tentative,
 }: {
   children: string | null; // YYYY-MM-DD
   timeZone: string;
+  tentative: boolean;
 }) {
   if (releaseDate === null) {
     return <span>—</span>;
   }
 
-  return <span>{prettyReleaseDate({ fullDate: releaseDate + 'T00:00:00' }, timeZone)}</span>;
+  return (
+    <span>
+      <span className={tentative ? 'italic' : undefined}>
+        {prettyReleaseDate({ fullDate: releaseDate + 'T00:00:00' }, timeZone)}
+      </span>
+      {tentative && <sup title="Tentative date">†</sup>}
+    </span>
+  );
 }
 
 function DependencyRelease({
@@ -92,16 +101,24 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
         </div>
       </th>
       <td className="px-4 py-3 whitespace-nowrap">
-        <FormatDate timeZone={timeZone}>{release.alphaDate}</FormatDate>
+        <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('alphaDate')}>
+          {release.alphaDate}
+        </FormatDate>
       </td>
       <td className="px-4 py-3 whitespace-nowrap">
-        <FormatDate timeZone={timeZone}>{release.betaDate}</FormatDate>
+        <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('betaDate')}>
+          {release.betaDate}
+        </FormatDate>
       </td>
       <td className="px-4 py-3 whitespace-nowrap">
-        <FormatDate timeZone={timeZone}>{release.stableDate}</FormatDate>
+        <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('stableDate')}>
+          {release.stableDate}
+        </FormatDate>
       </td>
       <td className="px-4 py-3 whitespace-nowrap">
-        <FormatDate timeZone={timeZone}>{release.eolDate}</FormatDate>
+        <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('eolDate')}>
+          {release.eolDate}
+        </FormatDate>
       </td>
       <td className="px-4 py-3 whitespace-nowrap">
         <DependencyRelease
@@ -165,6 +182,9 @@ export default function Schedule() {
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-slate-500"></div>
             <span className="text-sm text-gray-700 dark:text-gray-300">End of Life</span>
+          </div>
+          <div className="text-sm text-gray-700 dark:text-gray-300">
+            <sup>†</sup> Tentative date
           </div>
         </div>
       </div>
