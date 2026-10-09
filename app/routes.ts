@@ -14,6 +14,7 @@ export default [
   route('releases.json', 'api/releases.ts'),
   route('active.json', 'api/active.ts'),
   route('schedule.json', 'api/schedule.ts'),
+  route('release-calendar.ics', 'api/release-calendar.ts'),
   // Redirects
   redirect('releases', 'redirects/releases.tsx'),
   redirect('releases/:channel', 'redirects/releases.tsx'),
