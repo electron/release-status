@@ -30,6 +30,7 @@ jobs:
         with:
           # Node.js 26 for the Temporal API
           node-version: 26
+          check-latest: true
       - name: Add newly EOL majors
         run: |
           node --input-type=module <<'EOF'
