@@ -1,7 +1,9 @@
 import { getRelativeSchedule } from '~/data/release-schedule';
 
 export const loader = async () => {
-  return Response.json(await getRelativeSchedule(), {
+  const schedule = await getRelativeSchedule();
+  const publicSchedule = schedule.map(({ tentativeDates: _tentativeDates, ...release }) => release);
+  return Response.json(publicSchedule, {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
