@@ -16,6 +16,7 @@ const entry = (
   chromiumVersion: 156,
   nodeVersion: '24.0.0',
   status,
+  tentativeDates: [],
 });
 
 describe('getMajorCalendarEvents', () => {
