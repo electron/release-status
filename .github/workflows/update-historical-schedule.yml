@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Get GitHub token (schedule updater)
         id: secret-service
-        uses: electron/secret-service-action@3476425e8b30555aac15b1b7096938e254b0e155 # v1.0.0
+        uses: electron/secret-service-action@23b9042f797e34674f0fe2c91608f57f9661ccf2 # v1.1.0
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
