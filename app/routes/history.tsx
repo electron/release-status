@@ -18,6 +18,7 @@ export const meta: MetaFunction = () => {
 
 type DateInfo = {
   missedNightly: boolean;
+  nightly: boolean;
   stable: string[];
   prerelease: string[];
 };
@@ -66,6 +67,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       calendarData[months[i]][day] = {
         // Ignore missed nightlies on weekends
         missedNightly: dayOfWeek !== 6 && dayOfWeek !== 0,
+        nightly: false,
         stable: [],
         prerelease: [],
       };
@@ -80,6 +82,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
     if (parsed?.prerelease[0] === 'nightly') {
       calendarData[month][day].missedNightly = false;
+      calendarData[month][day].nightly = true;
     } else if (parsed?.prerelease.length) {
       calendarData[month][day].prerelease.push(release.version);
     } else {
@@ -306,7 +309,7 @@ export default function ReleaseHistory() {
 
                     let bgColor = '';
                     let borderColor = '';
-                    const textColor = 'text-[#2f3241] dark:text-white';
+                    let textColor = 'text-[#2f3241] dark:text-white';
                     let tooltip = '';
 
                     if (dayData.missedNightly) {
@@ -332,6 +335,11 @@ export default function ReleaseHistory() {
                       tooltip = hasLotsOfReleases
                         ? `Lots of releases...`
                         : `${dayData.prerelease[0]}`;
+                    } else if (!dayData.nightly && !dayData.missedNightly) {
+                      // No releases at all on this day, lightly grey it out
+                      bgColor = 'bg-gray-50 dark:bg-gray-900/40';
+                      borderColor = 'border-gray-100 dark:border-gray-700/50';
+                      textColor = 'text-gray-400 dark:text-gray-500';
                     } else {
                       bgColor = bgColor || '';
                       borderColor = borderColor || 'border-gray-200 dark:border-gray-700';
