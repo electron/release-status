@@ -345,6 +345,23 @@ export default function ReleaseHistory() {
                       borderColor = borderColor || 'border-gray-200 dark:border-gray-700';
                     }
 
+                    const hasReleases =
+                      dayData.nightly || dayData.stable.length > 0 || dayData.prerelease.length > 0;
+
+                    if (!hasReleases) {
+                      // Nothing to show on the details page, so don't link to it
+                      return (
+                        <div
+                          key={`day-${day}`}
+                          className={`h-9 flex items-center justify-center rounded border ${bgColor} ${borderColor} relative cursor-default`}
+                          onMouseEnter={(e) => showTooltip(e, tooltip)}
+                          onMouseLeave={hideTooltip}
+                        >
+                          <span className={`text-sm ${textColor}`}>{day}</span>
+                        </div>
+                      );
+                    }
+
                     return (
                       <Link
                         key={`day-${day}`}
