@@ -109,13 +109,28 @@ export function Chrome({ children }: { children: React.ReactNode }) {
         <div className="lu-hairline-t pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-ink-muted t-dense">
           <span>Provided with ❤️ by Electron</span>
           <div className="flex items-center gap-5">
-            <Link to="https://github.com/electron/electron" target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">
+            <Link
+              to="https://github.com/electron/electron"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink transition-colors"
+            >
               GitHub
             </Link>
-            <Link to="https://electronjs.org" target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">
+            <Link
+              to="https://electronjs.org"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink transition-colors"
+            >
               Website
             </Link>
-            <Link to="https://bsky.app/profile/electronjs.org" target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">
+            <Link
+              to="https://bsky.app/profile/electronjs.org"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-ink transition-colors"
+            >
               Bluesky
             </Link>
           </div>

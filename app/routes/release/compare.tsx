@@ -265,7 +265,10 @@ export default function CompareReleases() {
                                 v{version}
                               </Link>
                             </div>
-                            <div className="lu-prose" dangerouslySetInnerHTML={{ __html: content }}></div>
+                            <div
+                              className="lu-prose"
+                              dangerouslySetInnerHTML={{ __html: content }}
+                            ></div>
                           </li>
                         );
                       })}

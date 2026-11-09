@@ -39,7 +39,9 @@ export const ChannelFilterButton = ({
       onClick={onClick}
       disabled={isLoading}
     >
-      {selected ? <span className="lu-dot !w-1.5 !h-1.5 !shadow-none" data-tone={channelTones[channel]} /> : null}
+      {selected ? (
+        <span className="lu-dot !w-1.5 !h-1.5 !shadow-none" data-tone={channelTones[channel]} />
+      ) : null}
       {prettyChannels[channel]}
     </button>
   );

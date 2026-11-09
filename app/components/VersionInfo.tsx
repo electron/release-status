@@ -1,6 +1,6 @@
 import { IconType } from '@icons-pack/react-simple-icons';
 import { Link } from 'react-router';
-import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
 
 type VersionInfoProps = {
   version: string;

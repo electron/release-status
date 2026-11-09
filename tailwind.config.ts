@@ -15,7 +15,11 @@ export default {
       },
       colors: {
         window: lu('window'),
-        surface: { DEFAULT: lu('surface'), raised: lu('surface-raised'), sunken: lu('surface-sunken') },
+        surface: {
+          DEFAULT: lu('surface'),
+          raised: lu('surface-raised'),
+          sunken: lu('surface-sunken'),
+        },
         hover: lu('hover'),
         fill: { DEFAULT: lu('fill'), strong: lu('fill-strong') },
         line: { DEFAULT: lu('line'), strong: lu('line-strong') },

@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { Link, PrefetchPageLinks, useLoaderData, useSearchParams } from 'react-router';
-import { ArrowLeft, ArrowRight, Calendar, Clock, Info, MoonIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Clock, Info, MoonIcon } from 'lucide-react';
 import { MouseEvent, useCallback, useState } from 'react';
 import { getReleasesOrUpdate } from '~/data/release-data';
 import { parse as semverParse } from 'semver';
@@ -229,7 +229,10 @@ export default function ReleaseHistory() {
         <div className="flex items-center gap-2">
           <div className="flex -space-x-0.5">
             <span className="lu-dot !shadow-none" data-tone="success"></span>
-            <span className="lu-dot !shadow-none ring-2 ring-[var(--lu-surface-sunken)]" data-tone="warning"></span>
+            <span
+              className="lu-dot !shadow-none ring-2 ring-[var(--lu-surface-sunken)]"
+              data-tone="warning"
+            ></span>
           </div>
           <span className="text-ink">Multiple releases</span>
         </div>
@@ -269,7 +272,13 @@ export default function ReleaseHistory() {
                 ) : (
                   <span
                     className="lu-badge t-tabular"
-                    data-tone={nightlyPercentage >= 90 ? 'accent' : nightlyPercentage >= 70 ? 'warning' : 'danger'}
+                    data-tone={
+                      nightlyPercentage >= 90
+                        ? 'accent'
+                        : nightlyPercentage >= 70
+                          ? 'warning'
+                          : 'danger'
+                    }
                   >
                     <MoonIcon className="w-3 h-3" />
                     {nightlyPercentage}% nightly
@@ -328,13 +337,15 @@ export default function ReleaseHistory() {
                       textColor = dayData.missedNightly ? textColor : 'text-ink font-medium';
                       tooltip = `Stable ${dayData.stable[0]} & ${dayData.prerelease[0]}`;
                     } else if (dayData.stable.length) {
-                      bgColor = bgColor || 'bg-[color-mix(in_srgb,var(--lu-success)_16%,transparent)]';
+                      bgColor =
+                        bgColor || 'bg-[color-mix(in_srgb,var(--lu-success)_16%,transparent)]';
                       textColor = dayData.missedNightly ? textColor : 'text-success font-medium';
                       tooltip = hasLotsOfReleases
                         ? `Lots of releases...`
                         : `Stable ${dayData.stable[0]}`;
                     } else if (dayData.prerelease.length) {
-                      bgColor = bgColor || 'bg-[color-mix(in_srgb,var(--lu-warning)_16%,transparent)]';
+                      bgColor =
+                        bgColor || 'bg-[color-mix(in_srgb,var(--lu-warning)_16%,transparent)]';
                       textColor = dayData.missedNightly ? textColor : 'text-warning font-medium';
                       tooltip = hasLotsOfReleases
                         ? `Lots of releases...`
@@ -411,7 +422,6 @@ export default function ReleaseHistory() {
           }}
         >
           {tooltipInfo.text}
-
         </div>
       )}
     </div>

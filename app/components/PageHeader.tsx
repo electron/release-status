@@ -44,7 +44,9 @@ export const PageHeader = ({
             {subtitle}
           </div>
         ) : null}
-        {actionButton ? <div className="flex items-center gap-2 flex-none">{actionButton}</div> : null}
+        {actionButton ? (
+          <div className="flex items-center gap-2 flex-none">{actionButton}</div>
+        ) : null}
       </div>
     </div>
   );

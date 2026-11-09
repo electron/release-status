@@ -330,9 +330,7 @@ export default function ReleaseBuild() {
               <X className="w-5 h-5" />
             </div>
             <h3 className="t-headline text-ink">Release not found</h3>
-            <p className="text-ink-muted">
-              We couldn&apos;t find a release with the ID {buildId}.
-            </p>
+            <p className="text-ink-muted">We couldn&apos;t find a release with the ID {buildId}.</p>
           </div>
         </div>
       )}

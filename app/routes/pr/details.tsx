@@ -227,10 +227,15 @@ export default function PRDetails() {
                 <CornerDownRight className="w-4 h-4" />
                 <span>
                   This is a backport of{' '}
-                  <Link to={`/pr/${prData.backportOf.number}`} className="lu-link" prefetch="intent">
+                  <Link
+                    to={`/pr/${prData.backportOf.number}`}
+                    className="lu-link"
+                    prefetch="intent"
+                  >
                     #{prData.backportOf.number}
                   </Link>{' '}
-                  for the <span className="font-mono text-[13px]">{prData.targetBranch}</span> branch.
+                  for the <span className="font-mono text-[13px]">{prData.targetBranch}</span>{' '}
+                  branch.
                 </span>
               </div>
             )}
@@ -424,7 +429,9 @@ export default function PRDetails() {
                           </Field>
                           <Field label="Release date">
                             <span className="t-tabular truncate">
-                              {backport.releasedAt || <span className="text-ink-muted">Not yet</span>}
+                              {backport.releasedAt || (
+                                <span className="text-ink-muted">Not yet</span>
+                              )}
                             </span>
                           </Field>
                         </div>
