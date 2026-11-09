@@ -38,7 +38,7 @@ export default function Index() {
       {active.currentlyRunning.length + active.queued.length > 0 ? (
         <section className="mb-10">
           <div className="flex items-center gap-2.5 mb-3 px-1">
-            <span className="lu-dot animate-pulse" data-tone="danger" />
+            <span className="lu-dot animate-pulse" data-tone="accent" />
             <h3 className="t-headline text-ink">Active builds</h3>
           </div>
           <div className="lu-card p-2 grid grid-cols-1 md:grid-cols-2 gap-x-2">

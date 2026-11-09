@@ -54,8 +54,8 @@ export const ActiveBuildCard = ({ build, queued }: ActiveBuildCardProps) => {
           Queued
         </span>
       ) : (
-        <span className="lu-badge" data-tone="danger">
-          <span className="lu-dot !w-1.5 !h-1.5 animate-pulse" data-tone="danger" />
+        <span className="lu-badge" data-tone="accent">
+          <span className="lu-dot !w-1.5 !h-1.5 animate-pulse" data-tone="accent" />
           Building
         </span>
       )}

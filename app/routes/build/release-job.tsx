@@ -41,7 +41,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return null;
 };
 
-// Lucent: red is "running or broken". A release in progress is running, so it sparks.
+// Accent for in-progress work; spark red is kept for failed or cancelled jobs.
 const getStatusTone = (status: SudowoodoRelease['status'] | 'pending' | 'success') => {
   switch (status) {
     case 'completed':
@@ -49,7 +49,7 @@ const getStatusTone = (status: SudowoodoRelease['status'] | 'pending' | 'success
       return 'success';
     case 'running':
     case 'pending':
-      return 'danger';
+      return 'accent';
     case 'failed':
     case 'cancelled':
       return 'danger';
@@ -67,7 +67,7 @@ const getStatusIcon = (status: SudowoodoRelease['status'] | 'pending' | 'success
       return <Check className="w-3 h-3" />;
     case 'running':
     case 'pending':
-      return <span className="lu-dot !w-1.5 !h-1.5 animate-pulse" data-tone="danger" />;
+      return <span className="lu-dot !w-1.5 !h-1.5 animate-pulse" data-tone="accent" />;
     case 'failed':
     case 'cancelled':
       return <X className="w-3 h-3" />;
@@ -206,8 +206,8 @@ export default function ReleaseBuild() {
               </div>
               <div className="flex-none">
                 {buildData.status === 'running' ? (
-                  <span className="lu-callout !py-2 items-center" data-tone="danger">
-                    <span className="lu-dot animate-pulse" data-tone="danger" />
+                  <span className="lu-callout !py-2 items-center" data-tone="accent">
+                    <span className="lu-dot animate-pulse" data-tone="accent" />
                     <span className="font-medium">Release in progress</span>
                   </span>
                 ) : buildData.status === 'completed' ? (
@@ -244,7 +244,7 @@ export default function ReleaseBuild() {
                                   isCurrentStage
                                     ? isBuildFailed
                                       ? 'bg-spark text-white shadow-[0_0_0_4px_var(--lu-surface),0_0_0_7px_var(--lu-spark-soft)]'
-                                      : 'bg-spark-soft text-spark shadow-[0_0_0_4px_var(--lu-surface),0_0_0_6.5px_color-mix(in_srgb,var(--lu-spark)_22%,transparent)]'
+                                      : 'bg-accent-soft text-accent shadow-[0_0_0_4px_var(--lu-surface),0_0_0_6.5px_color-mix(in_srgb,var(--lu-accent)_26%,transparent)]'
                                     : isPastStage
                                       ? 'bg-action text-action-on'
                                       : 'bg-fill-strong text-ink-muted'
@@ -257,7 +257,7 @@ export default function ReleaseBuild() {
                             isBuildFailed ? (
                               <X className="w-3.5 h-3.5" strokeWidth={2.5} />
                             ) : (
-                              <div className="w-2 h-2 bg-spark rounded-full animate-pulse"></div>
+                              <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
                             )
                           ) : (
                             <span>{index + 1}</span>
@@ -267,7 +267,9 @@ export default function ReleaseBuild() {
                           <span
                             className={`${
                               isCurrentStage
-                                ? 'font-medium text-spark'
+                                ? isBuildFailed
+                                  ? 'font-medium text-spark'
+                                  : 'font-medium text-accent'
                                 : isPastStage
                                   ? 'font-medium text-ink'
                                   : 'text-ink-faint'
