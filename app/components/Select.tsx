@@ -19,9 +19,9 @@ export const Select = ({ isDisabled, options, selected, onChange, onClick }: Sel
   );
   return (
     <div className="relative md:flex-grow-0">
-      <label className="lu-field-box relative pr-8 cursor-default">
+      <label className="lu-field-box relative !p-0 cursor-default">
         <select
-          className="appearance-none bg-transparent outline-none border-0 p-0 pr-1 min-w-0 cursor-default disabled:opacity-40"
+          className="appearance-none bg-transparent outline-none border-0 h-full w-full pl-[11px] pr-8 min-w-0 cursor-default disabled:opacity-40"
           disabled={isDisabled}
           onChange={onChangeHandler}
           onClick={onClick}

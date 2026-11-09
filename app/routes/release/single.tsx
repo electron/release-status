@@ -194,7 +194,7 @@ export default function SingleRelease() {
             <div className="flex items-center justify-between mb-6">
               <h3 className="t-title text-ink">Release notes</h3>
               <Link
-                to={`https://github.com/electron/electron/releases/tag/${version}`}
+                to={`https://github.com/electron/${version.includes('nightly') ? 'nightlies' : 'electron'}/releases/tag/${version}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="lu-button lu-button-secondary lu-button-sm"

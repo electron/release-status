@@ -25,7 +25,7 @@ export const VersionTimeline = ({
             </Link>
           </div>
 
-          <div className="h-px w-5 bg-line-strong/50 mt-[7px]"></div>
+          <div className="h-px w-5 bg-line-strong opacity-50 mt-[7px]"></div>
 
           <div className="flex items-start">
             {versionsBetween.map((version) => (
@@ -39,7 +39,7 @@ export const VersionTimeline = ({
                     v{version}
                   </Link>
                 </div>
-                <div className="h-px w-5 bg-line-strong/50 mt-[7px]"></div>
+                <div className="h-px w-5 bg-line-strong opacity-50 mt-[7px]"></div>
               </div>
             ))}
           </div>

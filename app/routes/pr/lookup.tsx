@@ -154,10 +154,10 @@ export default function PRLookup() {
                       #{pr.number}
                     </Link>
                   </td>
-                  <td className="!whitespace-normal">
+                  <td className="max-w-md">
                     <Link
                       to={`/pr/${pr.number}`}
-                      className="px-4 py-3 block text-ink line-clamp-1"
+                      className="px-4 py-3 block text-ink truncate"
                       prefetch="intent"
                       dangerouslySetInnerHTML={{ __html: pr.title }}
                     ></Link>
