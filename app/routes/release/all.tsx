@@ -162,39 +162,48 @@ export default function AllReleases() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-        <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white">All Releases</h2>
-        <Select
-          options={majors}
-          selected={major ? `v${major}` : ALL_MAJORS}
-          onChange={updateMajor}
-        />
+    <div>
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col gap-2">
+          <h2 className="t-page text-ink">All releases</h2>
+          <p className="t-lead text-ink-muted">Every Electron release, newest first.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="t-caption text-ink-muted">Major</span>
+          <Select
+            options={majors}
+            selected={major ? `v${major}` : ALL_MAJORS}
+            onChange={updateMajor}
+          />
+        </div>
       </div>
 
       <ReleaseTable
         releases={releases}
         header={
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-            <div className="flex flex-row items-start justify-between gap-4">
-              <div className="flex flex-wrap gap-2">
-                <ChannelFilterButton
-                  channel="stable"
-                  onChangeChannel={updateChanelFilter}
-                  activeChannel={channel}
-                />
-                <ChannelFilterButton
-                  channel="pre"
-                  onChangeChannel={updateChanelFilter}
-                  activeChannel={channel}
-                />
-                <ChannelFilterButton
-                  channel="nightly"
-                  onChangeChannel={updateChanelFilter}
-                  activeChannel={channel}
-                />
-              </div>
-              <div>{isLoading ? <LoaderCircle className="animate-spin" /> : null}</div>
+          <div className="px-4 py-3 flex flex-row items-center justify-between gap-4 lu-hairline-b">
+            <div className="lu-segmented">
+              <ChannelFilterButton
+                channel="stable"
+                onChangeChannel={updateChanelFilter}
+                activeChannel={channel}
+              />
+              <ChannelFilterButton
+                channel="pre"
+                onChangeChannel={updateChanelFilter}
+                activeChannel={channel}
+              />
+              <ChannelFilterButton
+                channel="nightly"
+                onChangeChannel={updateChanelFilter}
+                activeChannel={channel}
+              />
+            </div>
+            <div className="flex items-center gap-3 text-ink-muted t-dense">
+              {isLoading ? <LoaderCircle className="w-4 h-4 animate-spin text-accent" /> : null}
+              <span className="hidden sm:inline t-tabular">
+                Page {page} of {Math.max(maxPage, 1)}
+              </span>
             </div>
           </div>
         }

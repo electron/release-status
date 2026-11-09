@@ -11,6 +11,7 @@ import { Link, useLoaderData, useParams } from 'react-router';
 import { Check, Clock, ExternalLink, GitBranch, X } from 'lucide-react';
 import { getSudowoodoRelease, SudowoodoRelease } from '~/data/release-data';
 import { prettyDateString } from '~/helpers/time';
+import { PageHeader } from '~/components/PageHeader';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
 export const meta: MetaFunction = (args) => {
@@ -40,21 +41,22 @@ export const loader = async (args: LoaderFunctionArgs) => {
   return null;
 };
 
-const getStatusColor = (status: SudowoodoRelease['status'] | 'pending' | 'success') => {
+// Accent for in-progress work; spark red is kept for failed or cancelled jobs.
+const getStatusTone = (status: SudowoodoRelease['status'] | 'pending' | 'success') => {
   switch (status) {
     case 'completed':
     case 'success':
-      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      return 'success';
     case 'running':
     case 'pending':
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+      return 'accent';
     case 'failed':
     case 'cancelled':
-      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+      return 'danger';
     case 'queued':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      return 'warning';
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400';
+      return undefined;
   }
 };
 
@@ -62,31 +64,31 @@ const getStatusIcon = (status: SudowoodoRelease['status'] | 'pending' | 'success
   switch (status) {
     case 'completed':
     case 'success':
-      return <Check className="w-3.5 h-3.5 mr-1" />;
+      return <Check className="w-3 h-3" />;
     case 'running':
     case 'pending':
-      return <Clock className="w-3.5 h-3.5 mr-1" />;
+      return <span className="lu-dot !w-1.5 !h-1.5 animate-pulse" data-tone="accent" />;
     case 'failed':
     case 'cancelled':
-      return <X className="w-3.5 h-3.5 mr-1" />;
+      return <X className="w-3 h-3" />;
     case 'queued':
-      return <Clock className="w-3.5 h-3.5 mr-1" />;
+      return <Clock className="w-3 h-3" />;
     default:
       return null;
   }
 };
 
-const getTypeColor = (type: 'nightly' | 'alpha' | 'beta' | 'stable') => {
+const getTypeTone = (type: 'nightly' | 'alpha' | 'beta' | 'stable') => {
   switch (type) {
     case 'alpha':
     case 'beta':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      return 'warning';
     case 'stable':
-      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      return 'success';
     case 'nightly':
-      return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400';
+      return 'accent';
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400';
+      return undefined;
   }
 };
 
@@ -153,223 +155,182 @@ export default function ReleaseBuild() {
   const isBuildSuccess = buildData?.status === 'completed';
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div>
+      <PageHeader backTo={{ to: '/', name: 'releases' }} />
       {buildData ? (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="p-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    {isBuildSuccess ? (
-                      <Link
-                        to={`/release/${buildData.generatedElectronVersion}`}
-                        className="text-2xl font-bold text-[#2f3241] dark:text-white hover:text-[#9feaf9] transition-colors"
-                        prefetch="intent"
-                      >
-                        {buildData.generatedElectronVersion || 'Version Soon...'}
-                      </Link>
-                    ) : (
-                      <h2 className="text-2xl font-bold text-[#2f3241] dark:text-white">
-                        {buildData.generatedElectronVersion || 'Version Soon...'}
-                      </h2>
-                    )}
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTypeColor(
-                        buildData.channel,
-                      )}`}
-                    >
-                      {buildData.channel.charAt(0).toUpperCase() + buildData.channel.slice(1)}
-                    </span>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        buildData.status,
-                      )} ${buildData.status === 'running' ? 'animate-pulse' : ''}`}
-                    >
-                      {getStatusIcon(buildData.status)}
-                      {buildData.status === 'running'
-                        ? 'Building'
-                        : `${buildData.status.charAt(0).toUpperCase() + buildData.status.slice(1)}`}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <GitBranch className="w-4 h-4" />
-                      <span>
-                        Branch:{' '}
-                        <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">
-                          {buildData.branch}
-                        </code>
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>Started: {buildData.started}</span>
-                    </div>
-                    {buildData.status === 'running' && (
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>Est. completion: {buildData.estimatedCompletion}</span>
-                      </div>
-                    )}
-                  </div>
+        <div className="space-y-6 -mt-2">
+          <div className="lu-card px-5 md:px-8 py-6 md:py-7">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="t-caption text-ink-muted">Release job</span>
+                  <span className="lu-badge" data-tone={getTypeTone(buildData.channel)}>
+                    {buildData.channel.charAt(0).toUpperCase() + buildData.channel.slice(1)}
+                  </span>
+                  <span className="lu-badge" data-tone={getStatusTone(buildData.status)}>
+                    {getStatusIcon(buildData.status)}
+                    {buildData.status === 'running'
+                      ? 'Building'
+                      : `${buildData.status.charAt(0).toUpperCase() + buildData.status.slice(1)}`}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {buildData.status === 'running' ? (
-                      <span className="text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        Release in progress
-                      </span>
-                    ) : buildData.status === 'completed' ? (
-                      <span className="text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
-                        <Check className="w-4 h-4" />
-                        Release completed
-                      </span>
-                    ) : (
-                      <span className="text-red-600 dark:text-red-400 font-medium flex items-center gap-1">
-                        <X className="w-4 h-4" />
-                        Release failed
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
-                  Release Stage
-                </h3>
-                <div className="relative z-0">
-                  <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 transform -translate-y-1/2"></div>
-                  <div className="relative z-10 flex justify-between">
-                    {Object.keys(releaseStages).map((stage, index) => {
-                      const keys = Object.keys(releaseStages);
-                      const isSuccessfulLastStage = index === keys.length - 1 && isBuildSuccess;
-                      const isCurrentStage = stage === buildData.stage && !isSuccessfulLastStage;
-                      const isPastStage =
-                        keys.indexOf(buildData.stage) > index || isSuccessfulLastStage;
-
-                      return (
-                        <div key={stage} className="flex flex-col items-center relative">
-                          <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center 
-                                  ${
-                                    isCurrentStage
-                                      ? isBuildFailed
-                                        ? 'bg-red-500 text-white'
-                                        : 'bg-blue-500 text-white'
-                                      : isPastStage
-                                        ? 'bg-green-500 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-                                  }
-                                  ${
-                                    isCurrentStage
-                                      ? isBuildFailed
-                                        ? 'ring-4 ring-red-100 dark:ring-red-900/30'
-                                        : 'ring-4 ring-blue-100 dark:ring-blue-900/30'
-                                      : ''
-                                  }
-                              `}
-                          >
-                            {isPastStage ? (
-                              <Check className="w-4 h-4" />
-                            ) : isCurrentStage ? (
-                              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                            ) : (
-                              <span className="text-xs">{index + 1}</span>
-                            )}
-                          </div>
-                          <div className="mt-2 text-xs text-center max-w-[84px] overflow-hidden text-ellipsis">
-                            <span
-                              className={`${
-                                isCurrentStage
-                                  ? isBuildFailed
-                                    ? 'font-medium text-red-600 dark:text-red-400'
-                                    : 'font-medium text-blue-600 dark:text-blue-400'
-                                  : isPastStage
-                                    ? 'font-medium text-green-600 dark:text-green-400'
-                                    : 'text-gray-500 dark:text-gray-400'
-                              }`}
-                            >
-                              {releaseStages[stage]}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                {normalizedCIJobs.map((job) => (
-                  <div
-                    key={job.id}
-                    className="border border-gray-200 dark:border-gray-700 rounded-lg"
+                {isBuildSuccess ? (
+                  <Link
+                    to={`/release/${buildData.generatedElectronVersion}`}
+                    className="t-page text-ink hover:text-accent transition-colors"
+                    prefetch="intent"
                   >
-                    <div className="p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <job.Icon
-                          className="w-6 h-6 text-gray-500 dark:text-gray-400"
-                          color={job.iconColor}
-                        />
-                        <span className="font-medium text-[#2f3241] dark:text-white">
-                          {job.platform}
-                        </span>
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                            job.status,
-                          )} ${job.status === 'pending' ? 'animate-pulse' : ''}`}
-                        >
-                          {getStatusIcon(job.status)}
-                          {job.status === 'pending'
-                            ? 'Building'
-                            : job.status === 'success'
-                              ? 'Completed'
-                              : 'Failed'}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Link
-                          to={job.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-[#2f3241] dark:text-[#9feaf9] hover:underline flex items-center gap-1"
-                          prefetch="intent"
-                        >
-                          View CI Job
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
+                    {buildData.generatedElectronVersion || 'Version soon…'}
+                  </Link>
+                ) : (
+                  <h2 className="t-page text-ink">
+                    {buildData.generatedElectronVersion || 'Version soon…'}
+                  </h2>
+                )}
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-ink-muted">
+                  <div className="flex items-center gap-1.5">
+                    <GitBranch className="w-3.5 h-3.5 text-ink-faint" />
+                    <span className="font-mono text-[12.5px]">{buildData.branch}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-ink-faint" />
+                    <span>Started {buildData.started}</span>
+                  </div>
+                  {buildData.status === 'running' && (
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-ink-faint" />
+                      <span>Est. completion {buildData.estimatedCompletion}</span>
                     </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex-none">
+                {buildData.status === 'running' ? (
+                  <span className="lu-callout !py-2 items-center" data-tone="accent">
+                    <span className="lu-dot animate-pulse" data-tone="accent" />
+                    <span className="font-medium">Release in progress</span>
+                  </span>
+                ) : buildData.status === 'completed' ? (
+                  <span className="lu-callout !py-2 items-center !bg-[color-mix(in_srgb,var(--lu-success)_14%,transparent)] !text-success">
+                    <Check className="w-4 h-4 !text-success" />
+                    <span className="font-medium">Release completed</span>
+                  </span>
+                ) : (
+                  <span className="lu-callout !py-2 items-center" data-tone="danger">
+                    <X className="w-4 h-4" />
+                    <span className="font-medium text-spark">Release failed</span>
+                  </span>
+                )}
+              </div>
+            </div>
 
-                    <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900/20">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <div className="text-sm text-gray-700 dark:text-gray-300">
-                          Architectures:{' '}
-                          <span className="font-medium">{job.architectures.join(', ')}</span>
+            <div className="mb-8">
+              <h3 className="t-caption text-ink-muted mb-4">Release stage</h3>
+              <div className="relative z-0">
+                <div className="absolute top-3.5 left-4 right-4 h-px bg-line-strong opacity-30"></div>
+                <div className="relative z-10 flex justify-between">
+                  {Object.keys(releaseStages).map((stage, index) => {
+                    const keys = Object.keys(releaseStages);
+                    const isSuccessfulLastStage = index === keys.length - 1 && isBuildSuccess;
+                    const isCurrentStage = stage === buildData.stage && !isSuccessfulLastStage;
+                    const isPastStage =
+                      keys.indexOf(buildData.stage) > index || isSuccessfulLastStage;
+
+                    return (
+                      <div key={stage} className="flex flex-col items-center relative">
+                        <div
+                          className={`w-7 h-7 rounded-full flex items-center justify-center t-caption t-tabular ring-4 ring-[var(--lu-surface)]
+                                ${
+                                  isCurrentStage
+                                    ? isBuildFailed
+                                      ? 'bg-spark text-white shadow-[0_0_0_4px_var(--lu-surface),0_0_0_7px_var(--lu-spark-soft)]'
+                                      : 'bg-accent-soft text-accent shadow-[0_0_0_4px_var(--lu-surface),0_0_0_6.5px_color-mix(in_srgb,var(--lu-accent)_26%,transparent)]'
+                                    : isPastStage
+                                      ? 'bg-action text-action-on'
+                                      : 'bg-fill-strong text-ink-muted'
+                                }
+                            `}
+                        >
+                          {isPastStage ? (
+                            <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                          ) : isCurrentStage ? (
+                            isBuildFailed ? (
+                              <X className="w-3.5 h-3.5" strokeWidth={2.5} />
+                            ) : (
+                              <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                            )
+                          ) : (
+                            <span>{index + 1}</span>
+                          )}
+                        </div>
+                        <div className="mt-2.5 text-center max-w-[88px] overflow-hidden text-ellipsis t-dense leading-4">
+                          <span
+                            className={`${
+                              isCurrentStage
+                                ? isBuildFailed
+                                  ? 'font-medium text-spark'
+                                  : 'font-medium text-accent'
+                                : isPastStage
+                                  ? 'font-medium text-ink'
+                                  : 'text-ink-faint'
+                            }`}
+                          >
+                            {releaseStages[stage]}
+                          </span>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })}
+                </div>
               </div>
+            </div>
+
+            <h3 className="t-caption text-ink-muted mb-3">CI jobs</h3>
+            <div className="grid grid-cols-1 gap-3">
+              {normalizedCIJobs.map((job) => (
+                <div key={job.id} className="lu-well p-1.5">
+                  <div className="px-3 py-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <job.Icon className="w-5 h-5 text-ink-muted" color="currentColor" />
+                      <span className="font-medium text-ink">{job.platform}</span>
+                      <span className="lu-badge" data-tone={getStatusTone(job.status)}>
+                        {getStatusIcon(job.status)}
+                        {job.status === 'pending'
+                          ? 'Building'
+                          : job.status === 'success'
+                            ? 'Completed'
+                            : 'Failed'}
+                      </span>
+                    </div>
+                    <Link
+                      to={job.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="lu-button lu-button-secondary lu-button-sm"
+                      prefetch="intent"
+                    >
+                      View CI job
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+
+                  <div className="rounded-item lu-squircle bg-surface px-3 py-2.5 text-ink-muted shadow-edge">
+                    Architectures{' '}
+                    <span className="font-medium text-ink">{job.architectures.join(', ')}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden p-12">
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-              <X className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+        <div className="lu-card p-12">
+          <div className="flex flex-col items-center justify-center gap-1.5 text-center">
+            <div className="w-10 h-10 rounded-panel lu-squircle bg-fill flex items-center justify-center mb-2 text-ink-muted">
+              <X className="w-5 h-5" />
             </div>
-            <h3 className="text-xl font-semibold text-[#2f3241] dark:text-white mb-2">
-              Release Not Found
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400 text-center mb-6">
-              We couldn&apos;t find a release with the ID {buildId}.
-            </p>
+            <h3 className="t-headline text-ink">Release not found</h3>
+            <p className="text-ink-muted">We couldn&apos;t find a release with the ID {buildId}.</p>
           </div>
         </div>
       )}

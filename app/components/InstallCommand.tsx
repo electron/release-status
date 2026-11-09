@@ -35,17 +35,23 @@ export const InstallCommand = ({ name, prefix, version }: InstallCommandProps) =
   }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div className="p-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{name}</span>
+    <div className="lu-card p-1.5">
+      <div className="flex items-center justify-between pl-3 pr-1 h-8">
+        <span className="t-caption text-ink-muted">{name}</span>
         <button
-          className="text-gray-500 hover:text-[#2f3241] dark:text-gray-400 dark:hover:text-white transition-colors"
+          className="lu-button lu-button-ghost lu-button-sm lu-button-icon"
           onClick={copyCommand}
+          aria-label={`Copy ${name} command`}
         >
-          {recentlyCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+          {recentlyCopied ? (
+            <Check className="w-3.5 h-3.5 text-success" />
+          ) : (
+            <Copy className="w-3.5 h-3.5" />
+          )}
         </button>
       </div>
-      <div className="p-4 bg-gray-900 text-gray-100 font-mono text-sm overflow-x-auto">
+      <div className="lu-well px-3.5 py-3 t-code text-[12.5px] text-ink overflow-x-auto whitespace-nowrap">
+        <span className="text-ink-faint select-none">$ </span>
         {installString}
       </div>
     </div>

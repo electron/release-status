@@ -3,15 +3,15 @@ import { useCallback } from 'react';
 
 const prettyChannels = {
   stable: 'Stable',
-  pre: 'Pre Release',
+  pre: 'Pre-release',
   nightly: 'Nightly',
 };
 
-const channelColors = {
-  stable: 'green',
-  pre: 'yellow',
-  nightly: 'purple',
-};
+const channelTones = {
+  stable: 'success',
+  pre: 'warning',
+  nightly: 'accent',
+} as const;
 
 type ChannelFilterButtonProps = {
   channel: keyof typeof prettyChannels;
@@ -19,6 +19,7 @@ type ChannelFilterButtonProps = {
   activeChannel: string;
 };
 
+// One segment of the channel segmented control (wrap a row of these in `.lu-segmented`).
 export const ChannelFilterButton = ({
   channel,
   onChangeChannel,
@@ -28,22 +29,19 @@ export const ChannelFilterButton = ({
   const isLoading = state === 'loading';
 
   const onClick = useCallback(() => onChangeChannel(channel), [channel, onChangeChannel]);
-
-  const color = channelColors[channel];
-  const baseClassName = 'px-3 py-1 text-xs font-medium rounded-full transition-colors';
-  const activeClassName = `bg-${color}-100 text-${color}-800 dark:bg-${color}-900/30 dark:text-${color}-400`;
-  const inactiveClassName = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-  const disabledClassName =
-    'bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500 cursor-not-allowed';
-
-  const className = isLoading
-    ? `${baseClassName} ${disabledClassName}`
-    : activeChannel === channel
-      ? `${baseClassName} ${activeClassName}`
-      : `${baseClassName} ${inactiveClassName}`;
+  const selected = activeChannel === channel;
 
   return (
-    <button className={className} onClick={onClick} disabled={isLoading}>
+    <button
+      className="lu-segment"
+      data-selected={selected}
+      aria-pressed={selected}
+      onClick={onClick}
+      disabled={isLoading}
+    >
+      {selected ? (
+        <span className="lu-dot !w-1.5 !h-1.5 !shadow-none" data-tone={channelTones[channel]} />
+      ) : null}
       {prettyChannels[channel]}
     </button>
   );

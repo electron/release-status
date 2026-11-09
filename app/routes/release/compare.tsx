@@ -16,6 +16,7 @@ import { groupReleaseNotes, renderGroupedReleaseNotes } from '~/data/markdown';
 import { textPlainResponse, wantsTextPlain } from '~/helpers/request';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { VersionInfo } from '~/components/VersionInfo';
+import { PageHeader } from '~/components/PageHeader';
 import { useCallback } from 'react';
 import { VersionTimeline } from '~/components/VersionTimeline';
 import { Select } from '~/components/Select';
@@ -146,20 +147,23 @@ export default function CompareReleases() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white">
-              Release Comparison
-            </h2>
-          </div>
-        </div>
+        <PageHeader
+          backTo={{ to: `/release/${fromVersion}`, name: fromVersion }}
+          title="Compare releases"
+          subtitle={
+            <p className="t-lead text-ink-muted">
+              Dependency changes and the combined release notes between two versions of the same
+              major.
+            </p>
+          }
+        />
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden p-4">
-          <div className="flex flex-col sm:flex-row items-center md:justify-between gap-4">
-            <div className="flex items-center justify-center gap-2 w-full md:w-auto">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">From:</span>
+        <div className="lu-card p-4">
+          <div className="flex flex-col sm:flex-row items-center sm:justify-center gap-4">
+            <div className="flex items-center justify-center gap-3 w-full md:w-auto">
+              <span className="t-caption text-ink-muted">From</span>
               <Select
                 isDisabled={isLoading}
                 onChange={setFromVersion}
@@ -168,13 +172,13 @@ export default function CompareReleases() {
               />
             </div>
 
-            <div className="flex items-center justify-center">
-              <ArrowRight className="w-5 h-5 text-gray-400 dark:text-gray-500 sm:block hidden" />
-              <ArrowDown className="w-5 h-5 text-gray-400 dark:text-gray-500 sm:hidden block" />
+            <div className="flex items-center justify-center text-ink-faint">
+              <ArrowRight className="w-4 h-4 sm:block hidden" />
+              <ArrowDown className="w-4 h-4 sm:hidden block" />
             </div>
 
-            <div className="flex items-center justify-center gap-2 w-full md:w-auto">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">To:</span>
+            <div className="flex items-center justify-center gap-3 w-full md:w-auto">
+              <span className="t-caption text-ink-muted">To</span>
               <Select
                 isDisabled={isLoading}
                 onChange={setToVersion}
@@ -185,13 +189,11 @@ export default function CompareReleases() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-            <h3 className="text-lg font-semibold text-[#2f3241] dark:text-white">
-              Dependency Changes
-            </h3>
+        <div className="lu-card overflow-hidden">
+          <div className="px-5 md:px-6 h-12 flex items-center lu-hairline-b">
+            <h3 className="t-headline text-ink">Dependency changes</h3>
           </div>
-          <div className="p-6">
+          <div className="p-5 md:p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <VersionInfo
                 name="Chromium"
@@ -222,67 +224,51 @@ export default function CompareReleases() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-            <h3 className="text-lg font-semibold text-[#2f3241] dark:text-white">
-              Combined Release Notes
-            </h3>
+        <div className="lu-card overflow-hidden">
+          <div className="px-5 md:px-6 h-12 flex items-center justify-between lu-hairline-b">
+            <h3 className="t-headline text-ink">Combined release notes</h3>
+            <span className="t-dense text-ink-muted">
+              {versionsBetween.length + 1} version{versionsBetween.length ? 's' : ''} since{' '}
+              <Link to={`/release/${fromVersion}`} className="text-ink hover:text-accent t-tabular">
+                {fromVersion}
+              </Link>
+            </span>
           </div>
-          <div className="p-6">
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-0.5 flex-grow bg-gradient-to-r from-blue-500 via-purple-500 to-green-500"></div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Version Timeline</span>
-                <div className="h-0.5 flex-grow bg-gradient-to-r from-green-500 via-purple-500 to-blue-500"></div>
-              </div>
-
+          <div className="px-5 md:px-8 py-6">
+            <div className="lu-well py-5 mb-8">
               <VersionTimeline
                 fromVersion={fromVersion}
                 toVersion={toVersion}
                 versionsBetween={versionsBetween}
               />
-
-              <div className="text-center mt-2">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  <Link to={`/release/${toVersion}`}>{toVersion}</Link> includes changes from{' '}
-                  {versionsBetween.length + 1} version
-                  {versionsBetween.length ? 's' : ''} since{' '}
-                  <Link to={`/release/${fromVersion}`}>{fromVersion}</Link>
-                </span>
-              </div>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-10">
               {Object.keys(grouped).map((groupName) => {
                 return (
                   <div key={groupName}>
-                    <h4 className="text-lg font-semibold text-[#2f3241] dark:text-white mb-4">
-                      {groupName}
-                    </h4>
+                    <h4 className="t-title text-[19px] text-ink mb-4">{groupName}</h4>
                     <ul className="space-y-6">
                       {grouped[groupName].map(({ version, content }) => {
-                        const color = version === toElectronRelease.version ? 'green' : 'purple';
+                        const isTarget = version === toElectronRelease.version;
                         return (
                           <li
                             key={version}
-                            className={`relative pl-6 border-l-2 border-${color}-500 dark:border-${color}-700`}
+                            className={`relative pl-6 ${isTarget ? 'shadow-[inset_2px_0_0_var(--lu-accent)]' : 'shadow-[inset_2px_0_0_var(--lu-line)]'}`}
                           >
-                            <div className="absolute -left-2 top-0 flex items-center justify-center">
-                              <div
-                                className={`w-4 h-4 rounded-full bg-${color}-500 dark:bg-${color}-700`}
-                              ></div>
+                            <div className="flex items-center gap-2 mb-2">
+                              <Link
+                                to={`/release/v${version}`}
+                                className="lu-badge t-tabular hover:brightness-95"
+                                data-tone={isTarget ? 'accent' : undefined}
+                              >
+                                v{version}
+                              </Link>
                             </div>
-                            <div className="text-gray-700 dark:text-gray-300">
-                              <div className="flex items-center gap-2 mb-1">
-                                <Link
-                                  to={`/release/v${version}`}
-                                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-${color}-100 text-${color}-800 dark:bg-${color}-900/30 dark:text-${color}-400`}
-                                >
-                                  {version}
-                                </Link>
-                              </div>
-                              <div dangerouslySetInnerHTML={{ __html: content }}></div>
-                            </div>
+                            <div
+                              className="lu-prose"
+                              dangerouslySetInnerHTML={{ __html: content }}
+                            ></div>
                           </li>
                         );
                       })}
