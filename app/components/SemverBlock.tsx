@@ -8,11 +8,11 @@ type SemverBlockProps = {
 export const SemverBlock = ({ activeStyle, isActive, title, description }: SemverBlockProps) => {
   return (
     <div
-      className={`p-4 rounded-lg ${isActive ? activeStyle : 'bg-gray-50 dark:bg-gray-900/20 opacity-25'}`}
+      className={`lu-well px-4 py-3.5 transition-opacity ${isActive ? activeStyle : 'opacity-40'}`}
     >
       <div className="text-center">
-        <div className="text-lg font-bold mb-1">{title}</div>
-        <div className="text-sm">{description}</div>
+        <div className="t-headline mb-0.5">{title}</div>
+        <div className="t-dense text-ink-muted">{description}</div>
       </div>
     </div>
   );

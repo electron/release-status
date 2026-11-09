@@ -172,25 +172,29 @@ export default function ReleaseHistory() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       {preloadAllYears
         ? allowedYears.map((year) => (
             <PrefetchPageLinks key={year} page={`/history?year=${year}`} />
           ))
         : null}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
-        <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
-          <Calendar className="w-7 h-7" />
-          Release History {year}
-        </h2>
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col gap-2">
+          <h2 className="t-page text-ink flex items-baseline gap-3">
+            Release history
+            <span className="text-ink-faint t-tabular">{year}</span>
+          </h2>
+          <p className="t-lead text-ink-muted">Every day Electron shipped something, by year.</p>
+        </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
-            className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="lu-button lu-button-secondary lu-button-icon"
             onClick={decrementYear}
             disabled={year <= MIN_YEAR}
+            aria-label="Previous year"
           >
-            <ArrowLeft className="inline-block h-4" />
+            <ArrowLeft className="w-4 h-4" />
           </button>{' '}
           <Select
             options={allowedYears}
@@ -199,46 +203,43 @@ export default function ReleaseHistory() {
             onClick={onYearSelectClick}
           />
           <button
-            className="bg-white dark:bg-gray-800 hover:enabled:bg-gray-100 dark:hover:enabled:bg-gray-700 rounded-lg shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 p-1 flex items-center gap-2 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            className="lu-button lu-button-secondary lu-button-icon"
             disabled={year >= Number(allowedYears[allowedYears.length - 1])}
             onClick={incrementYear}
+            aria-label="Next year"
           >
-            <ArrowRight className="inline-block h-4" />
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-        <div className="p-4 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Stable Release</span>
+      <div className="lu-callout mb-6 flex-wrap items-center gap-x-6 gap-y-2 !py-3 !px-4">
+        <div className="flex items-center gap-2">
+          <span className="lu-dot !shadow-none" data-tone="success"></span>
+          <span className="text-ink">Stable</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="lu-dot !shadow-none" data-tone="warning"></span>
+          <span className="text-ink">Pre-release</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="lu-dot !shadow-none" data-tone="danger"></span>
+          <span className="text-ink">Missed nightly</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex -space-x-0.5">
+            <span className="lu-dot !shadow-none" data-tone="success"></span>
+            <span className="lu-dot !shadow-none ring-2 ring-[var(--lu-surface-sunken)]" data-tone="warning"></span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Pre Release</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Missed Nightly</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              <div className="w-3 h-3 rounded-tl-full rounded-bl-full bg-green-500"></div>
-              <div className="w-3 h-3 rounded-tr-full rounded-br-full bg-yellow-500"></div>
-            </div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Multiple Releases</span>
-          </div>
-          <div className="flex items-center gap-1 ml-auto">
-            <Info className="w-4 h-4 text-gray-400" />
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Click on a day to see release details
-            </span>
-          </div>
+          <span className="text-ink">Multiple releases</span>
+        </div>
+        <div className="flex items-center gap-1.5 ml-auto text-ink-muted t-dense">
+          <Info className="w-3.5 h-3.5" />
+          <span>Click a day to see its releases</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {months.map((month) => {
           const monthIndex = months.indexOf(month);
           const isFutureMonth = year === new Date().getFullYear() && monthIndex > currentMonth;
@@ -256,28 +257,29 @@ export default function ReleaseHistory() {
           return (
             <div
               key={month}
-              className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden ${
-                isFutureMonth ? 'relative' : ''
-              }`}
+              className={`lu-card overflow-hidden ${isFutureMonth ? 'relative' : ''}`}
             >
-              <div className="p-3 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <h3 className="text-base font-medium text-[#2f3241] dark:text-white">{month}</h3>
+              <div className="px-4 h-11 flex justify-between items-center lu-hairline-b">
+                <h3 className="t-headline text-ink">{month}</h3>
                 {isFutureMonth ? (
-                  <div className="flex items-center gap-1 text-blue-500 dark:text-blue-400">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-xs font-medium">Future</span>
-                  </div>
+                  <span className="lu-badge">
+                    <Clock className="w-3 h-3" />
+                    Future
+                  </span>
                 ) : (
-                  <div className="flex items-center gap-1 text-purple-500 dark:text-purple-400">
-                    <MoonIcon className="w-4 h-4" />
-                    <span className="text-xs font-medium">{nightlyPercentage}% Nightly</span>
-                  </div>
+                  <span
+                    className="lu-badge t-tabular"
+                    data-tone={nightlyPercentage >= 90 ? 'accent' : nightlyPercentage >= 70 ? 'warning' : 'danger'}
+                  >
+                    <MoonIcon className="w-3 h-3" />
+                    {nightlyPercentage}% nightly
+                  </span>
                 )}
               </div>
-              <div className={`p-4 ${isFutureMonth ? 'opacity-60' : ''}`}>
-                <div className="grid grid-cols-7 gap-1 text-center mb-2">
+              <div className={`p-3 ${isFutureMonth ? 'opacity-50' : ''}`}>
+                <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
                   {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-                    <div key={day} className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <div key={day} className="t-caption text-ink-faint py-1">
                       {day}
                     </div>
                   ))}
@@ -294,9 +296,9 @@ export default function ReleaseHistory() {
                       return (
                         <div
                           key={`day-${day}`}
-                          className="h-9 flex items-center justify-center rounded border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 relative"
+                          className="h-9 flex items-center justify-center rounded-item relative"
                         >
-                          <span className="text-sm text-gray-400 dark:text-gray-500">{day}</span>
+                          <span className="t-dense t-tabular text-ink-faint opacity-60">{day}</span>
                         </div>
                       );
                     }
@@ -307,42 +309,42 @@ export default function ReleaseHistory() {
                       dayData.stable.length === 1 && dayData.prerelease.length === 1;
                     const hasLotsOfReleases = dayData.stable.length + dayData.prerelease.length > 2;
 
+                    // Day cells are tinted wells: success for stable, warning for
+                    // pre-release, spark for a missed nightly. No borders, per Lucent.
                     let bgColor = '';
                     let borderColor = '';
-                    let textColor = 'text-[#2f3241] dark:text-white';
+                    let textColor = 'text-ink';
                     let tooltip = '';
 
                     if (dayData.missedNightly) {
-                      bgColor = 'bg-red-100 dark:bg-red-900/30';
-                      borderColor = 'border-red-300 dark:border-red-700';
+                      bgColor = 'bg-spark-soft';
+                      textColor = 'text-spark font-medium';
                       tooltip = 'Missed Nightly';
                     }
                     if (hasBoth && canListBoth) {
                       bgColor =
                         bgColor ||
-                        'bg-gradient-to-r from-green-100 to-yellow-100 dark:from-green-900/30 dark:to-yellow-900/30';
-                      borderColor = borderColor || 'border-green-300 dark:border-green-700';
+                        'bg-[linear-gradient(100deg,color-mix(in_srgb,var(--lu-success)_16%,transparent)_45%,color-mix(in_srgb,var(--lu-warning)_18%,transparent)_55%)]';
+                      textColor = dayData.missedNightly ? textColor : 'text-ink font-medium';
                       tooltip = `Stable ${dayData.stable[0]} & ${dayData.prerelease[0]}`;
                     } else if (dayData.stable.length) {
-                      bgColor = bgColor || 'bg-green-100 dark:bg-green-900/30';
-                      borderColor = borderColor || 'border-green-300 dark:border-green-700';
+                      bgColor = bgColor || 'bg-[color-mix(in_srgb,var(--lu-success)_16%,transparent)]';
+                      textColor = dayData.missedNightly ? textColor : 'text-success font-medium';
                       tooltip = hasLotsOfReleases
                         ? `Lots of releases...`
                         : `Stable ${dayData.stable[0]}`;
                     } else if (dayData.prerelease.length) {
-                      bgColor = bgColor || 'bg-yellow-100 dark:bg-yellow-900/30';
-                      borderColor = borderColor || 'border-yellow-300 dark:border-yellow-700';
+                      bgColor = bgColor || 'bg-[color-mix(in_srgb,var(--lu-warning)_16%,transparent)]';
+                      textColor = dayData.missedNightly ? textColor : 'text-warning font-medium';
                       tooltip = hasLotsOfReleases
                         ? `Lots of releases...`
                         : `${dayData.prerelease[0]}`;
                     } else if (!dayData.nightly && !dayData.missedNightly) {
                       // No releases at all on this day, lightly grey it out
-                      bgColor = 'bg-gray-50 dark:bg-gray-900/40';
-                      borderColor = 'border-gray-100 dark:border-gray-700/50';
-                      textColor = 'text-gray-400 dark:text-gray-500';
+                      bgColor = '';
+                      textColor = 'text-ink-faint opacity-60';
                     } else {
-                      bgColor = bgColor || '';
-                      borderColor = borderColor || 'border-gray-200 dark:border-gray-700';
+                      bgColor = bgColor || 'bg-surface-sunken';
                     }
 
                     const hasReleases =
@@ -353,11 +355,11 @@ export default function ReleaseHistory() {
                       return (
                         <div
                           key={`day-${day}`}
-                          className={`h-9 flex items-center justify-center rounded border ${bgColor} ${borderColor} relative cursor-default`}
+                          className={`h-9 flex items-center justify-center rounded-item lu-squircle ${bgColor} ${borderColor} relative cursor-default`}
                           onMouseEnter={(e) => showTooltip(e, tooltip)}
                           onMouseLeave={hideTooltip}
                         >
-                          <span className={`text-sm ${textColor}`}>{day}</span>
+                          <span className={`t-dense t-tabular ${textColor}`}>{day}</span>
                         </div>
                       );
                     }
@@ -368,19 +370,19 @@ export default function ReleaseHistory() {
                         to={`/history/${year}-${monthIndex + 1 < 10 ? 0 : ''}${
                           monthIndex + 1
                         }-${day < 10 ? 0 : ''}${day}`}
-                        className={`h-9 flex items-center justify-center rounded border ${bgColor} ${borderColor} relative cursor-pointer`}
+                        className={`h-9 flex items-center justify-center rounded-item lu-squircle ${bgColor} ${borderColor} relative cursor-pointer hover:shadow-edge transition-shadow`}
                         onMouseEnter={(e) => showTooltip(e, tooltip)}
                         onMouseLeave={hideTooltip}
                         prefetch="intent"
                       >
-                        <span className={`text-sm ${textColor}`}>{day}</span>
+                        <span className={`t-dense t-tabular ${textColor}`}>{day}</span>
 
                         <div className="absolute top-1 right-1 flex">
                           {dayData.stable.length > 0 ? (
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-success"></div>
                           ) : null}
                           {dayData.prerelease.length > 0 ? (
-                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 -ml-0.5"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-warning -ml-0.5"></div>
                           ) : null}
                         </div>
                       </Link>
@@ -401,7 +403,7 @@ export default function ReleaseHistory() {
       </div>
       {tooltipInfo.visible && (
         <div
-          className="fixed z-50 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap pointer-events-none"
+          className="fixed z-50 px-2.5 py-1.5 bg-[var(--lu-tooltip)] text-[var(--lu-tooltip-ink)] t-dense rounded-item whitespace-nowrap pointer-events-none shadow-popover backdrop-blur"
           style={{
             left: `${tooltipInfo.x}px`,
             top: `${tooltipInfo.y - 30}px`,
@@ -409,7 +411,7 @@ export default function ReleaseHistory() {
           }}
         >
           {tooltipInfo.text}
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+
         </div>
       )}
     </div>

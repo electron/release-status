@@ -1,13 +1,649 @@
+@import './styles/fonts.css';
+@import './styles/lucent-tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
+/* Lucent on the web. The window ground shows behind everything, the header is the one
+   piece of glass, and everything you read sits on solid sheets and cards. */
+@layer base {
+  :root {
+    /* Web reading sizes: one step up from Fiddle's desktop-dense body. */
+    --rs-type-body: 400 14px/21px var(--lu-font-sans);
+    --rs-type-lead: 400 15px/23px var(--lu-font-sans);
+    --rs-type-page-title: 650 30px/36px var(--lu-font-sans);
+    --rs-type-page-title-tracking: -0.024em;
+    --rs-content: 960px;
+  }
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: var(--lu-line-strong) transparent;
+  }
+
+  html,
+  body {
+    background: var(--lu-window);
+  }
+
+  body {
+    margin: 0;
+    color: var(--lu-ink);
+    font: var(--rs-type-body);
+    font-feature-settings: var(--lu-font-features);
+    font-optical-sizing: auto;
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    font-feature-settings: inherit;
+  }
+
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--lu-font-mono);
+  }
+
+  :where(:focus-visible) {
+    outline: 3px solid color-mix(in srgb, var(--lu-focus-ring) 70%, transparent);
+    outline-offset: 1px;
+  }
+  :where(:focus:not(:focus-visible)) {
+    outline: none;
+  }
+
+  @supports (corner-shape: squircle) {
+    .lu-squircle,
+    .lu-card,
+    .lu-card-flat,
+    .lu-button,
+    .lu-field-box,
+    .lu-segmented,
+    .lu-segment,
+    .lu-callout,
+    .lu-well,
+    .lu-row {
+      corner-shape: squircle;
+    }
+  }
+}
+
+@layer components {
+  /* Type */
+  .t-display {
+    font: var(--lu-type-display);
+    letter-spacing: var(--lu-type-display-tracking);
+  }
+  .t-page {
+    font: var(--rs-type-page-title);
+    letter-spacing: var(--rs-type-page-title-tracking);
+  }
+  .t-title {
+    font: var(--lu-type-title);
+    letter-spacing: var(--lu-type-title-tracking);
+  }
+  .t-headline {
+    font: var(--lu-type-headline);
+    letter-spacing: var(--lu-type-headline-tracking);
+  }
+  .t-body {
+    font: var(--rs-type-body);
+  }
+  .t-lead {
+    font: var(--rs-type-lead);
+  }
+  .t-dense {
+    font: var(--lu-type-body);
+    letter-spacing: var(--lu-type-body-tracking);
+  }
+  .t-label {
+    font: var(--lu-type-label);
+    letter-spacing: var(--lu-type-label-tracking);
+  }
+  .t-caption {
+    font: var(--lu-type-caption);
+    letter-spacing: var(--lu-type-caption-tracking);
+  }
+  .t-code {
+    font: var(--lu-type-code);
+  }
+  .t-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The glass header. */
+  .lu-chrome {
+    background: var(--lu-material-chrome);
+    -webkit-backdrop-filter: var(--lu-blur-chrome);
+    backdrop-filter: var(--lu-blur-chrome);
+    box-shadow: inset 0 calc(-1 * var(--lu-size-hairline)) 0 var(--lu-line);
+  }
+
+  /* Toolbar capsule: nav links gather in one. */
+  .lu-capsule {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: var(--lu-size-toolbar);
+    padding: 3px;
+    border-radius: var(--lu-radius-capsule);
+    background: var(--lu-capsule);
+    box-shadow: var(--lu-shadow-capsule);
+  }
+  .lu-capsule-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: var(--lu-size-toolbar-inner);
+    padding: 0 12px;
+    border-radius: var(--lu-radius-capsule);
+    color: var(--lu-ink-muted);
+    font: var(--lu-type-label);
+    letter-spacing: var(--lu-type-label-tracking);
+    white-space: nowrap;
+    transition:
+      background-color var(--lu-dur-fast) var(--lu-ease),
+      color var(--lu-dur-fast) var(--lu-ease),
+      box-shadow var(--lu-dur-base) var(--lu-ease);
+  }
+  .lu-capsule-item:hover {
+    color: var(--lu-ink);
+    background: var(--lu-capsule-hover);
+  }
+  .lu-capsule-item[aria-current='page'],
+  .lu-capsule-item[data-selected='true'] {
+    color: var(--lu-ink);
+    background: var(--lu-chip);
+    box-shadow: var(--lu-shadow-lift);
+  }
+  .lu-capsule-item[aria-current='page'] svg,
+  .lu-capsule-item[data-selected='true'] svg {
+    color: var(--lu-accent);
+  }
+
+  /* Cards and tables: a sheet with a 0.5px edge ring and the island shadow. */
+  .lu-card {
+    position: relative;
+    border-radius: var(--lu-radius-panel);
+    background: var(--lu-surface);
+    box-shadow: var(--lu-shadow-island);
+  }
+  .lu-card-flat {
+    position: relative;
+    border-radius: var(--lu-radius-panel);
+    background: var(--lu-surface);
+    box-shadow: inset 0 0 0 0.5px var(--lu-button-edge);
+  }
+  .lu-well {
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-surface-sunken);
+  }
+  .lu-hairline-b {
+    box-shadow: inset 0 calc(-1 * var(--lu-size-hairline)) 0 var(--lu-line);
+  }
+  .lu-hairline-t {
+    box-shadow: inset 0 var(--lu-size-hairline) 0 var(--lu-line);
+  }
+
+  .lu-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--lu-ink);
+    font: var(--rs-type-body);
+  }
+  .lu-table thead th {
+    height: 36px;
+    padding: 0 var(--lu-space-4);
+    border-bottom: var(--lu-size-hairline) solid var(--lu-line);
+    background: var(--lu-surface-sunken);
+    color: var(--lu-ink-muted);
+    font: var(--lu-type-caption);
+    letter-spacing: var(--lu-type-caption-tracking);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .lu-table thead th:first-child {
+    padding-left: var(--lu-space-6);
+  }
+  .lu-table tbody tr + tr > * {
+    border-top: var(--lu-size-hairline) solid var(--lu-line);
+  }
+  .lu-table tbody tr {
+    transition: background-color var(--lu-dur-fast) var(--lu-ease);
+  }
+  .lu-table tbody tr:hover {
+    background: var(--lu-hover);
+  }
+  .lu-table td {
+    padding: 0;
+    color: var(--lu-ink-muted);
+    white-space: nowrap;
+  }
+
+  /* Buttons (Fiddle's Button.module.css, by variant). */
+  .lu-button {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: none;
+    height: var(--lu-size-control);
+    padding: 0 13px;
+    border: 0;
+    border-radius: var(--lu-radius-control);
+    background: transparent;
+    color: var(--lu-ink);
+    font: var(--lu-type-label);
+    letter-spacing: var(--lu-type-label-tracking);
+    white-space: nowrap;
+    user-select: none;
+    cursor: default;
+    transition:
+      background-color var(--lu-dur-fast) var(--lu-ease),
+      box-shadow var(--lu-dur-fast) var(--lu-ease),
+      color var(--lu-dur-fast) var(--lu-ease),
+      opacity var(--lu-dur-fast) var(--lu-ease),
+      transform var(--lu-dur-base) var(--lu-ease);
+  }
+  .lu-button:active:not(:disabled) {
+    transform: scale(var(--lu-press-scale));
+  }
+  .lu-button:disabled {
+    opacity: 0.4;
+  }
+  .lu-button-primary {
+    padding: 0 15px 0 13px;
+    color: var(--lu-on-action);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 55%),
+      var(--lu-action);
+    box-shadow: var(--lu-shadow-primary);
+  }
+  .lu-button-primary:hover {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.04) 55%),
+      var(--lu-action);
+  }
+  .lu-button-secondary {
+    background: var(--lu-button);
+    box-shadow: var(--lu-shadow-button);
+  }
+  .lu-button-secondary:hover {
+    background: var(--lu-button-hover);
+  }
+  .lu-button-ghost {
+    color: var(--lu-ink-muted);
+  }
+  .lu-button-ghost:hover {
+    background: var(--lu-fill);
+    color: var(--lu-ink);
+  }
+  .lu-button-sm {
+    height: var(--lu-size-control-sm);
+    padding: 0 11px;
+    gap: 4px;
+  }
+  .lu-button-icon {
+    width: var(--lu-size-control);
+    padding: 0;
+  }
+  .lu-button-icon.lu-button-sm {
+    width: var(--lu-size-control-sm);
+  }
+
+  /* Links in running text. */
+  .lu-link {
+    color: var(--lu-accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--lu-accent) 40%, transparent);
+    text-underline-offset: 2px;
+    border-radius: var(--lu-radius-code);
+    transition: text-decoration-color var(--lu-dur-fast) var(--lu-ease);
+  }
+  .lu-link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* Segmented control: the channel filter. */
+  .lu-segmented {
+    display: inline-flex;
+    flex: none;
+    height: var(--lu-size-control);
+    padding: 2px;
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-fill);
+  }
+  .lu-segment {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 11px;
+    border: 0;
+    border-radius: calc(var(--lu-radius-control) - 2px);
+    background: transparent;
+    color: var(--lu-ink-muted);
+    font: var(--lu-type-body);
+    letter-spacing: var(--lu-type-body-tracking);
+    white-space: nowrap;
+    user-select: none;
+    cursor: default;
+    transition:
+      color var(--lu-dur-fast) var(--lu-ease),
+      background-color var(--lu-dur-base) var(--lu-ease),
+      box-shadow var(--lu-dur-base) var(--lu-ease);
+  }
+  .lu-segment:hover {
+    color: var(--lu-ink);
+  }
+  .lu-segment[data-selected='true'] {
+    background: var(--lu-thumb);
+    color: var(--lu-ink);
+    box-shadow: var(--lu-shadow-lift);
+  }
+  .lu-segment:disabled {
+    opacity: 0.4;
+  }
+
+  /* Fields and selects. */
+  .lu-field-box {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--lu-space-2);
+    height: var(--lu-size-control);
+    min-width: 0;
+    padding: 0 11px;
+    border: 1px solid var(--lu-line-strong);
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-field);
+    color: var(--lu-ink);
+    font: var(--lu-type-body);
+    letter-spacing: var(--lu-type-body-tracking);
+    transition:
+      border-color var(--lu-dur-fast) var(--lu-ease),
+      background-color var(--lu-dur-fast) var(--lu-ease),
+      box-shadow var(--lu-dur-base) var(--lu-ease);
+  }
+  .lu-field-box:focus-within,
+  .lu-field-box:focus {
+    border-color: var(--lu-accent);
+    box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--lu-accent) 26%, transparent);
+    outline: none;
+  }
+  .lu-field-box-lg {
+    height: 40px;
+    padding: 0 14px;
+    font: var(--rs-type-body);
+  }
+
+  /* Badges (Labels.module.css). */
+  .lu-badge {
+    --tone: var(--lu-ink-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: var(--lu-radius-capsule);
+    color: var(--tone);
+    background: color-mix(in srgb, var(--tone) 14%, transparent);
+    font: var(--lu-type-caption);
+    letter-spacing: var(--lu-type-caption-tracking);
+    white-space: nowrap;
+  }
+  .lu-badge[data-tone='accent'] {
+    --tone: var(--lu-accent);
+  }
+  .lu-badge[data-tone='success'] {
+    --tone: var(--lu-success);
+  }
+  .lu-badge[data-tone='warning'] {
+    --tone: var(--lu-warning);
+  }
+  .lu-badge[data-tone='danger'] {
+    --tone: var(--lu-spark);
+  }
+  .lu-badge-lg {
+    height: 24px;
+    padding: 0 10px;
+    font: var(--lu-type-label);
+  }
+  .lu-dot {
+    --tone: var(--lu-ink-muted);
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--tone);
+    box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--tone) 22%, transparent);
+  }
+  .lu-dot[data-tone='accent'] {
+    --tone: var(--lu-accent);
+  }
+  .lu-dot[data-tone='success'] {
+    --tone: var(--lu-success);
+  }
+  .lu-dot[data-tone='warning'] {
+    --tone: var(--lu-warning);
+  }
+  .lu-dot[data-tone='danger'] {
+    --tone: var(--lu-spark);
+  }
+
+  .lu-code {
+    padding: 2px 5px;
+    border-radius: var(--lu-radius-code);
+    background: var(--lu-fill);
+    color: var(--lu-ink);
+    font-family: var(--lu-font-mono);
+    font-size: 0.92em;
+    line-height: 1;
+  }
+  .lu-kbd {
+    display: inline-block;
+    height: 19px;
+    min-width: 22px;
+    padding: 4px 6px;
+    border-radius: var(--lu-radius-sm);
+    background: var(--lu-kbd);
+    color: var(--lu-ink-muted);
+    box-shadow:
+      0 0 0 0.5px var(--lu-line-strong),
+      0 1px 0 0.5px color-mix(in srgb, var(--lu-line-strong) 60%, transparent);
+    font: 500 11px/11px var(--lu-font-sans);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Callout (Callout.module.css). */
+  .lu-callout {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-fill);
+    color: var(--lu-ink-muted);
+    font: var(--rs-type-body);
+  }
+  .lu-callout[data-tone='accent'] {
+    background: var(--lu-accent-soft);
+    color: var(--lu-ink);
+  }
+  .lu-callout[data-tone='danger'] {
+    background: var(--lu-spark-soft);
+    color: var(--lu-ink);
+  }
+  .lu-callout > svg {
+    flex: none;
+    margin-top: 2px;
+    color: var(--lu-ink-muted);
+  }
+  .lu-callout[data-tone='accent'] > svg {
+    color: var(--lu-accent);
+  }
+  .lu-callout[data-tone='danger'] > svg {
+    color: var(--lu-spark);
+  }
+
+  /* List rows on a sheet (Content.module.css .row). */
+  .lu-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: var(--lu-space-2) 10px;
+    border-radius: var(--lu-radius-control);
+    color: var(--lu-ink);
+    transition: background-color var(--lu-dur-fast) var(--lu-ease);
+  }
+  .lu-row:hover {
+    background: var(--lu-hover);
+  }
+
+  /* Caption heads: sentence case, never shouted. */
+  .lu-section-head {
+    color: var(--lu-ink-muted);
+    font: var(--lu-type-caption);
+    letter-spacing: var(--lu-type-caption-tracking);
+  }
+
+  /* Long text rendered from Markdown (release notes, PR bodies). Element selectors
+     outrank the utility classes the renderer bakes in. */
+  .lu-prose {
+    color: var(--lu-ink);
+    font: var(--rs-type-lead);
+  }
+  .lu-prose :is(h1, h2, h3) {
+    margin: 1.6em 0 0.5em;
+    color: var(--lu-ink);
+    font: var(--lu-type-title);
+    letter-spacing: var(--lu-type-title-tracking);
+    font-size: 19px;
+    line-height: 26px;
+  }
+  .lu-prose :is(h4, h5, h6) {
+    margin: 1.4em 0 0.4em;
+    color: var(--lu-ink);
+    font: var(--lu-type-headline);
+    letter-spacing: var(--lu-type-headline-tracking);
+  }
+  .lu-prose > :first-child {
+    margin-top: 0;
+  }
+  .lu-prose :is(p, li) {
+    color: var(--lu-ink);
+    font: var(--rs-type-lead);
+  }
+  .lu-prose p {
+    margin: 0 0 0.7em;
+  }
+  .lu-prose li > p {
+    margin: 0;
+  }
+  .lu-prose ul,
+  .lu-prose ol {
+    margin: 0 0 0.9em;
+    padding-left: 1.3em;
+  }
+  .lu-prose li {
+    margin: 0 0 0.35em;
+    margin-left: 0;
+    padding-left: 0.2em;
+  }
+  .lu-prose li::marker {
+    color: var(--lu-ink-faint);
+  }
+  .lu-prose a {
+    color: var(--lu-accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--lu-accent) 35%, transparent);
+    text-underline-offset: 2px;
+  }
+  .lu-prose a:hover {
+    text-decoration-color: currentColor;
+  }
+  .lu-prose code {
+    padding: 2px 5px;
+    border-radius: var(--lu-radius-code);
+    background: var(--lu-fill);
+    color: var(--lu-ink);
+    font-family: var(--lu-font-mono);
+    font-size: 0.9em;
+    line-height: 1;
+  }
+  .lu-prose pre {
+    margin: 0 0 1em;
+    padding: var(--lu-space-3) var(--lu-space-4);
+    border-radius: var(--lu-radius-control);
+    background: var(--lu-surface-sunken);
+    color: var(--lu-ink);
+    font: var(--lu-type-code);
+    overflow-x: auto;
+  }
+  .lu-prose pre code {
+    padding: 0;
+    background: none;
+    font-size: inherit;
+    line-height: inherit;
+  }
+  .lu-prose sup {
+    color: var(--lu-ink-faint);
+  }
+  .lu-prose sup a {
+    font-weight: 600;
+  }
+  .lu-prose blockquote {
+    margin: 0 0 1em;
+    padding: 2px 0 2px var(--lu-space-4);
+    box-shadow: inset 2px 0 0 var(--lu-line-strong);
+    color: var(--lu-ink-muted);
+  }
+  .lu-prose hr {
+    height: var(--lu-size-hairline);
+    margin: 1.5em 0;
+    border: 0;
+    background: var(--lu-line);
+  }
+  .lu-prose table {
+    width: 100%;
+    margin: 0 0 1em;
+    border-collapse: collapse;
+    font: var(--rs-type-body);
+  }
+  .lu-prose th {
+    padding: 6px 10px;
+    border-bottom: var(--lu-size-hairline) solid var(--lu-line);
+    background: var(--lu-surface-sunken);
+    color: var(--lu-ink-muted);
+    font: var(--lu-type-caption);
+    text-align: left;
+  }
+  .lu-prose td {
+    padding: 6px 10px;
+    border-top: var(--lu-size-hairline) solid var(--lu-line);
+  }
+  .lu-prose img {
+    max-width: 100%;
+    border-radius: var(--lu-radius-control);
+  }
+  .lu-prose input[type='checkbox'] {
+    accent-color: var(--lu-action);
   }
 }
 
@@ -17,4 +653,10 @@ body {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

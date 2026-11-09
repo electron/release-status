@@ -31,10 +31,14 @@ function FormatDate({
 
   return (
     <span>
-      <span className={tentative ? 'italic' : undefined}>
+      <span className={tentative ? 'italic text-ink-muted' : undefined}>
         {prettyReleaseDate({ fullDate: releaseDate + 'T00:00:00' }, timeZone)}
       </span>
-      {tentative && <sup title="Tentative date">†</sup>}
+      {tentative && (
+        <sup title="Tentative date" className="text-ink-faint ml-0.5">
+          †
+        </sup>
+      )}
     </span>
   );
 }
@@ -52,12 +56,12 @@ function DependencyRelease({
     return (
       <a
         href={href}
-        className="hover:underline flex items-center"
+        className="group hover:text-accent inline-flex items-center gap-0.5 transition-colors"
         target="_blank"
         rel="noopener noreferrer"
       >
         {children}
-        <ArrowUpRight className="w-4 h-4 inline-block ml-0.5" />
+        <ArrowUpRight className="w-3.5 h-3.5 text-ink-faint group-hover:text-accent" />
       </a>
     );
   } else {
@@ -74,53 +78,49 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
 function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZone: string }) {
   const styles = {
-    nightly: {
-      row: 'bg-release-nightly text-purple-900 dark:text-purple-100',
-      status: 'bg-purple-500',
-    },
-    prerelease: {
-      row: 'bg-release-prerelease text-yellow-900 dark:text-yellow-100',
-      status: 'bg-yellow-500',
-    },
-    stable: {
-      row: 'bg-release-stable text-green-900 dark:text-green-100',
-      status: 'bg-green-500',
-    },
-    eol: {
-      row: 'opacity-50 bg-gray-100 dark:bg-gray-900/30 hover:bg-gray-200 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300',
-      status: 'bg-slate-500',
-    },
+    nightly: { row: 'bg-release-nightly', tone: 'accent', label: 'Nightly' },
+    prerelease: { row: 'bg-release-prerelease', tone: 'warning', label: 'Pre' },
+    stable: { row: 'bg-release-stable', tone: 'success', label: 'Stable' },
+    eol: { row: 'text-ink-muted hover:bg-hover', tone: undefined, label: 'EOL' },
   }[release.status];
 
+  const cell = 'px-4 h-11 whitespace-nowrap t-tabular';
+
   return (
-    <tr key={release.version} className={`${styles.row} text-sm transition-colors`}>
-      <th className="px-4 py-3 whitespace-nowrap font-semibold">
-        <div className="flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${styles.status}`}></div>
-          <span>{release.version}</span>
+    <tr key={release.version} className={`${styles.row} transition-colors`}>
+      <th className={`${cell} pl-6 text-left font-semibold text-ink`}>
+        <div className="flex items-center gap-3">
+          <span className={release.status === 'eol' ? 'text-ink-muted font-medium' : ''}>
+            {release.version}
+          </span>
+          {release.status !== 'eol' ? (
+            <span className="lu-badge" data-tone={styles.tone}>
+              {styles.label}
+            </span>
+          ) : null}
         </div>
       </th>
-      <td className="px-4 py-3 whitespace-nowrap">
+      <td className={cell}>
         <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('alphaDate')}>
           {release.alphaDate}
         </FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap">
+      <td className={cell}>
         <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('betaDate')}>
           {release.betaDate}
         </FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap">
+      <td className={`${cell} ${release.status === 'eol' ? '' : 'text-ink font-medium'}`}>
         <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('stableDate')}>
           {release.stableDate}
         </FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap">
+      <td className={cell}>
         <FormatDate timeZone={timeZone} tentative={release.tentativeDates.includes('eolDate')}>
           {release.eolDate}
         </FormatDate>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap">
+      <td className={`${cell} font-mono text-[12.5px]`}>
         <DependencyRelease
           href={`https://developer.chrome.com/blog/new-in-chrome-${release.chromiumVersion}`}
           release={release}
@@ -128,7 +128,7 @@ function Release({ release, timeZone }: { release: MajorReleaseSchedule; timeZon
           M{release.chromiumVersion}
         </DependencyRelease>
       </td>
-      <td className="px-4 py-3 whitespace-nowrap">
+      <td className={`${cell} font-mono text-[12.5px]`}>
         <DependencyRelease
           href={`https://nodejs.org/en/blog/release/v${release.nodeVersion}`}
           release={release}
@@ -144,81 +144,67 @@ export default function Schedule() {
   const { releases, timeZone } = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2 mb-3">
-          <Calendar className="w-8 h-8" />
-          Release Schedule
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          A complete schedule of Electron major releases showing key milestones including alpha,
-          beta, and stable release dates, as well as end-of-life dates and dependency versions.{' '}
-          <a
-            href="https://www.electronjs.org/docs/latest/tutorial/electron-timelines"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn more about Electron&apos;s release schedule
-          </a>
-          .
-        </p>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
-        <div className="p-4 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Stable (Supported)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Prerelease</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">Nightly</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-slate-500"></div>
-            <span className="text-sm text-gray-700 dark:text-gray-300">End of Life</span>
-          </div>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
-            <sup>†</sup> Tentative date
-          </div>
+    <div>
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col gap-2 max-w-2xl">
+          <h2 className="t-page text-ink">Release schedule</h2>
+          <p className="t-lead text-ink-muted">
+            Every Electron major with its alpha, beta, stable and end-of-life dates, and the
+            Chromium and Node.js it ships.{' '}
+            <a
+              href="https://www.electronjs.org/docs/latest/tutorial/electron-timelines"
+              className="lu-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How the schedule works
+            </a>
+            .
+          </p>
         </div>
+        <a href="/release-calendar.ics" className="lu-button lu-button-secondary">
+          <Calendar className="w-3.5 h-3.5" />
+          Add to calendar
+        </a>
       </div>
 
-      <section className="mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <section className="mb-6">
+        <div className="lu-card overflow-hidden">
+          <div className="px-4 py-3 flex flex-wrap items-center gap-x-6 gap-y-2 lu-hairline-b">
+            <div className="flex items-center gap-2">
+              <span className="lu-dot !shadow-none" data-tone="success"></span>
+              <span>Stable (supported)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="lu-dot !shadow-none" data-tone="warning"></span>
+              <span>Pre-release</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="lu-dot !shadow-none" data-tone="accent"></span>
+              <span>Nightly</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="lu-dot !shadow-none"></span>
+              <span>End of life</span>
+            </div>
+            <div className="text-ink-muted ml-auto t-dense">
+              <sup>†</sup> Tentative date
+            </div>
+          </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="lu-table [&_td]:text-inherit">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    Release
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    Alpha
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    Beta
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    Stable
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    End of Life
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    Chromium
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                    Node.js
-                  </th>
+                <tr>
+                  <th>Release</th>
+                  <th>Alpha</th>
+                  <th>Beta</th>
+                  <th>Stable</th>
+                  <th>End of life</th>
+                  <th>Chromium</th>
+                  <th>Node.js</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody>
                 {releases.map((release) => (
                   <Release key={release.version} release={release} timeZone={timeZone} />
                 ))}
@@ -228,14 +214,14 @@ export default function Schedule() {
         </div>
       </section>
 
-      <div className="flex items-start gap-2 text-sm text-gray-500 dark:text-gray-500">
-        <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+      <div className="lu-callout">
+        <Info className="w-4 h-4" />
         <p>
           Release dates are goals and may be adjusted at any time for significant reasons, such as
           security bugfixes. Prerelease dependency versions (Chromium, Node.js) are estimates and
-          may be upgraded before the stable release. A major's first beta is published automatically
-          once Electron's Chromium version reaches Chromium's beta version, which can be a few days
-          after the goal date.
+          may be upgraded before the stable release. A major&apos;s first beta is published
+          automatically once Electron&apos;s Chromium version reaches Chromium&apos;s beta version,
+          which can be a few days after the goal date.
         </p>
       </div>
     </div>

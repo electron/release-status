@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { Link, useLoaderData, useNavigate, useNavigation } from 'react-router';
 import { SiGithub } from '@icons-pack/react-simple-icons';
+import { PageHeader } from '~/components/PageHeader';
 import { getRecentPRs } from '~/data/github-data';
 import { useCallback, useState } from 'react';
 import { ExternalLink, Search } from 'lucide-react';
@@ -70,121 +71,123 @@ export default function PRLookup() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-        <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
-          <Search className="w-7 h-7" />
-          PR Lookup
-        </h2>
-        <div className="flex items-center gap-2">
+    <div>
+      <PageHeader
+        title="PR lookup"
+        subtitle={
+          <p className="t-lead text-ink-muted max-w-xl">
+            Find which Electron versions a pull request shipped in, and where its backports landed.
+          </p>
+        }
+        actionButton={
           <Link
             to="https://github.com/electron/electron/pulls"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm font-medium text-[#2f3241] dark:text-white bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors"
+            className="lu-button lu-button-secondary"
           >
-            <SiGithub className="w-4 h-4" />
-            View All PRs
+            <SiGithub size={14} />
+            View all PRs
           </Link>
-        </div>
-      </div>
+        }
+      />
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-8">
-        <div className="p-6">
-          <h3 className="text-lg font-semibold text-[#2f3241] dark:text-white mb-4">
-            Find Pull Request
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Enter a PR number to find information about a specific pull request, including which
-            Electron versions it was included in.
-          </p>
+      <div className="lu-card p-5 md:p-6 mb-8">
+        <label htmlFor="pr-number" className="t-headline text-ink block mb-1">
+          Find a pull request
+        </label>
+        <p className="text-ink-muted mb-5">
+          Enter a PR number to see the pull request, its release status and its backports.
+        </p>
 
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-grow">
-              <div className="relative">
-                <input
-                  type="tel"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Enter PR number (e.g. 46793)"
-                  className="w-full px-4 py-3 pl-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#2f3241] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2f3241] dark:focus:ring-[#9feaf9]"
-                  onKeyDown={onKeyDown}
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              </div>
-            </div>
-            <button
-              disabled={isLoading}
-              className="px-6 py-3 bg-[#2f3241] hover:bg-[#47496b] dark:bg-[#9feaf9] dark:hover:bg-[#8ad9e8] text-white dark:text-[#2f3241] font-medium rounded-lg transition-colors disabled:opacity-70"
-              onClick={lookupPR}
-            >
-              Lookup
-            </button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="lu-field-box lu-field-box-lg flex-grow">
+            <Search className="w-4 h-4 text-ink-faint flex-none" />
+            <input
+              id="pr-number"
+              type="tel"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="PR number, e.g. 46793"
+              className="flex-1 min-w-0 bg-transparent outline-none border-0 p-0 placeholder:text-ink-faint t-tabular"
+              onKeyDown={onKeyDown}
+            />
+            <span className="hidden sm:inline-flex items-center gap-1 text-ink-faint t-dense">
+              <kbd className="lu-kbd">↵</kbd>
+            </span>
           </div>
+          <button
+            disabled={isLoading}
+            className="lu-button lu-button-primary h-10 px-6"
+            onClick={lookupPR}
+          >
+            <Search className="w-4 h-4" />
+            Look up
+          </button>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-          <h3 className="text-lg font-semibold text-[#2f3241] dark:text-white">
-            Recent Pull Requests
-          </h3>
+      <div className="lu-card overflow-hidden">
+        <div className="px-5 md:px-6 h-12 flex items-center lu-hairline-b">
+          <h3 className="t-headline text-ink">Recent pull requests</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="lu-table">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  PR Number
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Title
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Author
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Created
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  GitHub
-                </th>
+              <tr>
+                <th className="w-[110px]">Number</th>
+                <th>Title</th>
+                <th className="w-[150px]">Author</th>
+                <th className="w-[200px]">Created</th>
+                <th className="w-[64px]"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody>
               {recentPRs.map((pr) => (
-                <tr
-                  key={pr.number}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#2f3241] dark:text-white">
+                <tr key={pr.number}>
+                  <td>
                     <Link
                       to={`/pr/${pr.number}`}
-                      className="hover:text-[#9feaf9] transition-colors"
+                      className="pl-6 pr-4 h-12 flex items-center text-ink font-medium t-tabular hover:text-accent transition-colors"
                       prefetch="intent"
                     >
                       #{pr.number}
                     </Link>
                   </td>
-                  <td
-                    className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 max-w-md truncate"
-                    dangerouslySetInnerHTML={{ __html: pr.title }}
-                  ></td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {pr.author}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {pr.createdAt}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="!whitespace-normal">
                     <Link
-                      to={pr.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#2f3241] dark:text-[#9feaf9] hover:text-[#47496b] dark:hover:text-white transition-colors"
-                    >
-                      <ExternalLink className="w-4 h-4 inline" />
-                    </Link>
+                      to={`/pr/${pr.number}`}
+                      className="px-4 py-3 block text-ink line-clamp-1"
+                      prefetch="intent"
+                      dangerouslySetInnerHTML={{ __html: pr.title }}
+                    ></Link>
+                  </td>
+                  <td>
+                    <span className="px-4 flex items-center gap-2">
+                      <img
+                        src={`https://github.com/${pr.author}.png?size=40`}
+                        alt=""
+                        className="w-5 h-5 rounded-full bg-fill"
+                        loading="lazy"
+                      />
+                      {pr.author}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="px-4 t-tabular">{pr.createdAt}</span>
+                  </td>
+                  <td>
+                    <span className="px-3 flex justify-end">
+                      <Link
+                        to={pr.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="lu-button lu-button-ghost lu-button-sm lu-button-icon"
+                        aria-label="Open on GitHub"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </Link>
+                    </span>
                   </td>
                 </tr>
               ))}

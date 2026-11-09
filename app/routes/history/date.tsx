@@ -3,6 +3,7 @@ import { redirect, useLoaderData, useParams } from 'react-router';
 import { Calendar } from 'lucide-react';
 import { parse as semverParse, compare as semverCompare } from 'semver';
 import { ReleaseTable } from '~/components/ReleaseTable';
+import { PageHeader } from '~/components/PageHeader';
 import { getReleasesOrUpdate } from '~/data/release-data';
 import { guessTimeZoneFromRequest } from '~/helpers/timezone';
 
@@ -67,13 +68,17 @@ export default function ReleaseDate() {
   const { releases, timeZone } = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-        <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white flex items-center gap-2">
-          <Calendar className="w-7 h-7" />
-          Releases - {params.date}
-        </h2>
-      </div>
+    <div>
+      <PageHeader
+        backTo={{ to: `/history?year=${params.date?.slice(0, 4)}`, name: 'release history' }}
+        title={`Releases on ${params.date}`}
+        subtitle={
+          <div className="flex items-center gap-2 text-ink-muted">
+            <Calendar className="w-4 h-4 text-ink-faint" />
+            <span>Everything Electron shipped that day.</span>
+          </div>
+        }
+      />
 
       <ReleaseTable
         releases={releases}
