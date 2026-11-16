@@ -1,6 +1,7 @@
 import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
-import { redirect, useLoaderData, useNavigate, useNavigation, useParams } from 'react-router';
+import { redirect, Link, useLoaderData, useNavigate, useNavigation, useParams } from 'react-router';
 import {
+  SiGithub,
   SiGooglechrome,
   SiGooglechromeHex,
   SiNodedotjs,
@@ -117,9 +118,10 @@ export default function SingleRelease() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       <div className="flex flex-col gap-6">
         <PageHeader
+          backTo={{ to: '/release', name: 'all releases' }}
           actionButton={
             version.includes('nightly') ? null : (
               <Select
@@ -133,31 +135,25 @@ export default function SingleRelease() {
           title={`Electron ${version}`}
           subtitle={
             <div
-              className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+              className="flex items-center gap-2 text-ink-muted"
               title={fullDateString(data.electronRelease.fullDate, data.timeZone)}
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-4 h-4 text-ink-faint" />
               <span>Released {prettyReleaseDate(data.electronRelease, data.timeZone)}</span>
-              <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded-full">
-                {humanFriendlyDaysSince(data.electronRelease)}
-              </span>
+              <span className="lu-badge">{humanFriendlyDaysSince(data.electronRelease)}</span>
             </div>
           }
           titleTags={[
             data.isLatestStable ? (
-              <span
-                key="latest-stable"
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-              >
-                Latest Stable
+              <span key="latest-stable" className="lu-badge lu-badge-lg" data-tone="success">
+                <span className="lu-dot !w-1.5 !h-1.5 !shadow-none" data-tone="success" />
+                Latest stable
               </span>
             ) : null,
             data.isLatestPreRelease ? (
-              <span
-                key="latest-pre"
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-              >
-                Latest Pre Release
+              <span key="latest-pre" className="lu-badge lu-badge-lg" data-tone="warning">
+                <span className="lu-dot !w-1.5 !h-1.5 !shadow-none" data-tone="warning" />
+                Latest pre-release
               </span>
             ) : null,
           ]}
@@ -168,8 +164,8 @@ export default function SingleRelease() {
           <InstallCommand version={version} name="yarn" prefix="yarn add --dev" />
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="lu-card">
+          <div className="p-5 md:p-6 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
             <VersionInfo
               name="Chromium"
               version={data.electronRelease.chrome}
@@ -193,10 +189,21 @@ export default function SingleRelease() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 md:p-6">
-            <h3 className="text-xl font-bold text-[#2f3241] dark:text-white mb-4">Release Notes</h3>
-            <div dangerouslySetInnerHTML={{ __html: data.releaseNotesHTML }} />
+        <div className="lu-card">
+          <div className="px-5 md:px-8 py-6 md:py-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="t-title text-ink">Release notes</h3>
+              <Link
+                to={`https://github.com/electron/${version.includes('nightly') ? 'nightlies' : 'electron'}/releases/tag/${version}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="lu-button lu-button-secondary lu-button-sm"
+              >
+                <SiGithub size={13} />
+                GitHub
+              </Link>
+            </div>
+            <div className="lu-prose" dangerouslySetInnerHTML={{ __html: data.releaseNotesHTML }} />
           </div>
         </div>
       </div>

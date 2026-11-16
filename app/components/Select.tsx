@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { ChevronsUpDown } from 'lucide-react';
 
 type SelectProps = {
   isDisabled?: boolean;
@@ -18,9 +19,9 @@ export const Select = ({ isDisabled, options, selected, onChange, onClick }: Sel
   );
   return (
     <div className="relative md:flex-grow-0">
-      <div className="flex items-center">
+      <label className="lu-field-box relative !p-0 cursor-default">
         <select
-          className="px-4 py-1 rounded-lg border-r-8 border-transparent border shadow-sm outline outline-1 outline-gray-200 dark:outline-gray-700 bg-white dark:bg-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-[#2f3241] dark:focus:ring-[#9feaf9] transition-all"
+          className="appearance-none bg-transparent outline-none border-0 h-full w-full pl-[11px] pr-8 min-w-0 cursor-default disabled:opacity-40"
           disabled={isDisabled}
           onChange={onChangeHandler}
           onClick={onClick}
@@ -32,7 +33,8 @@ export const Select = ({ isDisabled, options, selected, onChange, onClick }: Sel
             </option>
           ))}
         </select>
-      </div>
+        <ChevronsUpDown className="w-3.5 h-3.5 absolute right-2.5 text-ink-muted pointer-events-none" />
+      </label>
     </div>
   );
 };

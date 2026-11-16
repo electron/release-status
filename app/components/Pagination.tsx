@@ -1,5 +1,6 @@
 import { useNavigation } from 'react-router';
 import { useCallback, useMemo } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type PaginationProps = {
   page: number;
@@ -9,16 +10,14 @@ type PaginationProps = {
 
 type ButtonProps = {
   isDisabled: boolean;
-  children: string;
+  children: React.ReactNode;
   onClick: () => void;
 };
 
 const Button = ({ children, isDisabled, onClick }: ButtonProps) => {
   return (
     <button
-      className={`px-1 sm:px-2 md:px-4 py-1 sm:py-2 text-sm font-medium rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 transition-colors ${
-        isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-      }`}
+      className="lu-button lu-button-secondary"
       disabled={isDisabled}
       onClick={isDisabled ? undefined : onClick}
     >
@@ -65,34 +64,31 @@ export const Pagination = ({ page, maxPage, setPage }: PaginationProps) => {
   }, [maxPage, page]);
 
   return (
-    <div className="flex items-center justify-between mt-8">
+    <div className="flex items-center justify-between mt-6">
       <div className="flex items-center gap-2">
         <Button isDisabled={page === 1} onClick={prev}>
+          <ChevronLeft className="w-3.5 h-3.5 -ml-1" />
           Previous
         </Button>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="lu-segmented">
         {pagesToRender.map((p, index) => {
           if (p === '...') {
             return (
               <span
                 key={`...${index}`}
-                className="md:w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400"
+                className="w-6 md:w-8 flex items-center justify-center text-ink-faint t-dense"
               >
-                ...
+                …
               </span>
             );
           }
-          const className =
-            p === page
-              ? 'w-8 h-7 md:h-8 flex items-center justify-center rounded-md bg-[#2f3241] text-white text-sm font-medium'
-              : `w-8 h-7 md:h-8 flex items-center justify-center rounded-md ${
-                  isLoading ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-                } text-gray-700 dark:text-gray-300 text-sm font-medium transition-colors`;
           return (
             <button
               key={p}
-              className={`${className} ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+              className="lu-segment min-w-8 !px-2 t-tabular"
+              data-selected={p === page}
+              aria-current={p === page ? 'page' : undefined}
               onClick={p === page ? undefined : () => setPage(p)}
               disabled={isLoading}
             >
@@ -104,6 +100,7 @@ export const Pagination = ({ page, maxPage, setPage }: PaginationProps) => {
       <div className="flex items-center gap-2">
         <Button isDisabled={page === maxPage} onClick={next}>
           Next
+          <ChevronRight className="w-3.5 h-3.5 -mr-1" />
         </Button>
       </div>
     </div>

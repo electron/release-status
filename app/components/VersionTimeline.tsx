@@ -13,42 +13,42 @@ export const VersionTimeline = ({
 }: VersionTimelineProps) => {
   return (
     <div className="relative">
-      <div className="overflow-x-auto pb-4 hide-scrollbar">
-        <div className="flex items-center min-w-max px-5 justify-center">
-          <div className="flex flex-col items-center mr-2">
-            <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+      <div className="overflow-x-auto pb-2 hide-scrollbar">
+        <div className="flex items-start min-w-max px-6 justify-center">
+          <div className="flex flex-col items-center mr-1">
+            <div className="w-3 h-3 rounded-full bg-ink-muted ring-[3px] ring-fill mt-[2px]"></div>
             <Link
               to={`/release/${fromVersion}`}
-              className="text-xs font-medium mt-1 text-blue-600 dark:text-blue-400 whitespace-nowrap"
+              className="t-caption mt-2 text-ink whitespace-nowrap hover:text-accent"
             >
               {fromVersion}
             </Link>
           </div>
 
-          <div className="h-0.5 w-4 bg-gray-300 dark:bg-gray-700"></div>
+          <div className="h-px w-5 bg-line-strong opacity-50 mt-[7px]"></div>
 
-          <div className="flex items-center">
+          <div className="flex items-start">
             {versionsBetween.map((version) => (
-              <div key={version} className="flex items-center">
-                <div className="flex flex-col items-center mx-1">
-                  <div className={`w-2 h-2 rounded-full bg-purple-500`}></div>
+              <div key={version} className="flex items-start">
+                <div className="flex flex-col items-center mx-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-line-strong mt-[5px]"></div>
                   <Link
                     to={`/release/v${version}`}
-                    className="text-[10px] font-medium mt-1 text-purple-600 dark:text-purple-400 whitespace-nowrap"
+                    className="text-[10px] leading-3 font-medium mt-2.5 text-ink-faint hover:text-accent whitespace-nowrap t-tabular"
                   >
                     v{version}
                   </Link>
                 </div>
-                <div className="h-0.5 w-4 bg-gray-300 dark:bg-gray-700"></div>
+                <div className="h-px w-5 bg-line-strong opacity-50 mt-[7px]"></div>
               </div>
             ))}
           </div>
 
-          <div className="flex flex-col items-center ml-2">
-            <div className="w-4 h-4 rounded-full bg-green-500"></div>
+          <div className="flex flex-col items-center ml-1">
+            <div className="w-3 h-3 rounded-full bg-accent ring-[3px] ring-accent-soft mt-[2px]"></div>
             <Link
               to={`/release/${toVersion}`}
-              className="text-xs font-medium mt-1 text-green-600 dark:text-green-400 whitespace-nowrap"
+              className="t-caption mt-2 text-accent whitespace-nowrap"
             >
               {toVersion}
             </Link>
@@ -56,8 +56,8 @@ export const VersionTimeline = ({
         </div>
       </div>
 
-      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white dark:from-gray-800 to-transparent pointer-events-none"></div>
-      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white dark:from-gray-800 to-transparent pointer-events-none"></div>
+      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-surface to-transparent pointer-events-none"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-surface to-transparent pointer-events-none"></div>
     </div>
   );
 };

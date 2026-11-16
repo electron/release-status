@@ -21,31 +21,33 @@ export const PageHeader = ({
   subtitle,
 }: PageHeaderProps) => {
   return (
-    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+    <div className="flex flex-col gap-3 mb-8">
       {backTo ? (
-        <div className="flex items-center gap-2">
+        <div>
           <Link
             to={backTo.to}
-            className="flex items-center gap-1 text-sm font-medium text-[#2f3241] dark:text-white hover:text-[#47496b] dark:hover:text-[#9feaf9] transition-colors"
+            className="lu-button lu-button-ghost lu-button-sm -ml-3"
             prefetch="intent"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5" />
             Back to {backTo.name}
           </Link>
         </div>
       ) : null}
-      {title ? (
-        <div className="flex flex-col gap-1">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <h2 className="text-3xl font-bold text-[#2f3241] dark:text-white">{title}</h2>
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+        {title ? (
+          <div className="flex flex-col gap-2 min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="t-page text-ink">{title}</h2>
               {titleTags}
             </div>
+            {subtitle}
           </div>
-          {subtitle}
-        </div>
-      ) : null}
-      {actionButton ? <div className="flex items-center gap-2">{actionButton}</div> : null}
+        ) : null}
+        {actionButton ? (
+          <div className="flex items-center gap-2 flex-none">{actionButton}</div>
+        ) : null}
+      </div>
     </div>
   );
 };

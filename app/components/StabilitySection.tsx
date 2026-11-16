@@ -15,11 +15,12 @@ const stabilityNames = {
   nightly: 'Nightly',
 };
 
-const stabilityColors = {
-  stable: 'bg-green-500',
-  prerelease: 'bg-yellow-500',
-  nightly: 'bg-purple-500',
-};
+// Lucent tones: success for stable, warning for pre-release, accent for nightly.
+export const stabilityTones = {
+  stable: 'success',
+  prerelease: 'warning',
+  nightly: 'accent',
+} as const;
 
 export function StabilitySection({
   stability,
@@ -30,11 +31,9 @@ export function StabilitySection({
 }: StabilitySectionProps) {
   return (
     <section>
-      <div className="flex items-center gap-2 mb-4">
-        <div className={`${stabilityColors[stability]} w-2 h-2 rounded-full`}></div>
-        <h3 className="text-xl font-semibold text-[#2f3241] dark:text-white">
-          {stabilityNames[stability]}
-        </h3>
+      <div className="flex items-center gap-2.5 mb-3 px-1">
+        <span className="lu-dot" data-tone={stabilityTones[stability]} />
+        <h3 className="t-headline text-ink">{stabilityNames[stability]}</h3>
       </div>
       <ReleaseTable
         releases={releases}
